@@ -192,431 +192,586 @@
     /* तुम्‍हारा JS code unchanged रहेगा यहाँ */
   </script>
 </body>
-</html>        #prevBtn:hover, #nextBtn:hover {
-            background-color: #2d9249;
-        }
-        
-        button:disabled {
-            background-color: var(--dark-gray);
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
-        .player-section {
-            display: flex;
-            gap: 25px;
-        }
-        
-        .video-container {
-            flex: 2;
-            background-color: #000;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-        }
-        
-        .pdf-container {
-            flex: 1;
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            height: 500px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .pdf-header {
-            padding: 12px 15px;
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 500;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            background-color: white;
-            border-top: 1px solid #eee;
-        }
-        
-        .video-info {
-            background-color: white;
-            padding: 20px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            margin-top: 10px;
-        }
-        
-        #videoPlayer {
-            width: 100%;
-            height: 500px;
-            background-color: #000;
-        }
-        
-        #pdfViewer {
-            width: 100%;
-            height: 100%;
-            border: none;
-            flex-grow: 1;
-        }
-        
-        .playlist {
-            margin-top: 20px;
-            background-color: white;
-            padding: 20px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-        }
-        
-        .playlist h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .playlist-items {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        
-        .playlist-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-        
-        .playlist-item:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .playlist-item.active {
-            background-color: #e3f2fd;
-            font-weight: 500;
-            color: var(--primary-color);
-        }
-        
-        .status-messages {
-            margin-top: 15px;
-        }
-        
-        .status {
-            padding: 10px;
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            border-radius: var(--border-radius);
-            margin-bottom: 10px;
-        }
-        
-        .error {
-            padding: 10px;
-            background-color: #ffebee;
-            color: var(--danger-color);
-            border-radius: var(--border-radius);
-        }
-        
-        /* Loading spinner */
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .player-section {
-                flex-direction: column;
-            }
-            
-            #videoPlayer, .pdf-container {
-                height: 400px;
-            }
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player with PDF Viewer</title>
+  <style>
+    :root {
+      --primary: #4f8cff;
+      --secondary: #00c896;
+      --danger: #ff4d6d;
+      --radius: 14px;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --blur: blur(16px);
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      color: #222;
+      transition: 0.3s;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #141e30, #243b55);
+        color: #f1f1f1;
+      }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--blur);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      padding: 20px;
+    }
+
+    h2, h3 {
+      margin: 0 0 15px;
+      color: var(--primary);
+    }
+
+    .file-input-container input[type="file"] {
+      width: 100%;
+      padding: 14px;
+      border: 2px dashed #aaa;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.2);
+      transition: border-color 0.3s;
+    }
+    .file-input-container input[type="file"]:hover {
+      border-color: var(--primary);
+    }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+    #loadBtn {
+      width: 100%;
+      background: linear-gradient(45deg, var(--primary), #7aa2ff);
+    }
+    #loadBtn:hover { transform: translateY(-2px); }
+
+    #prevBtn, #nextBtn {
+      background: linear-gradient(45deg, var(--secondary), #00e6af);
+    }
+    #prevBtn:hover, #nextBtn:hover { transform: scale(1.05); }
+
+    button:disabled {
+      background: #777 !important;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .player-section {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .video-container, .pdf-container {
+      flex: 1;
+      min-width: 350px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #000;
+      position: relative;
+    }
+    #videoPlayer, #pdfViewer {
+      width: 100%;
+      height: 450px;
+      border: none;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .playlist {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .playlist-item {
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.1);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .playlist-item:hover { background: rgba(79,140,255,0.2); }
+    .playlist-item.active {
+      background: var(--primary);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .status {
+      padding: 10px;
+      border-radius: var(--radius);
+      margin-top: 10px;
+      background: rgba(0,255,100,0.1);
+      color: #0f0;
+    }
+    .error {
+      padding: 10px;
+      border-radius: var(--radius);
+      margin-top: 10px;
+      background: rgba(255,0,0,0.1);
+      color: var(--danger);
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="upload-section">
-            <h2>Upload your video txt file</h2>
-            <div class="file-input-container">
-                <input type="file" id="fileInput" accept=".txt">
-            </div>
-            <div class="button-container">
-                <button id="loadBtn">
-                    <i class="fas fa-upload"></i> Load Videos
-                </button>
-            </div>
-            <div class="status-messages">
-                <div class="status" id="status"></div>
-                <div class="error" id="error"></div>
-            </div>
-        </div>
-
-        <div class="video-info" id="videoInfo" style="display: none;">
-            <h3 id="videoTitle">No video loaded</h3>
-            <p id="videoIndex">0/0</p>
-        </div>
-
-        <div class="player-section">
-            <div class="video-container">
-                <video id="videoPlayer" controls></video>
-                <div class="controls">
-                    <button id="prevBtn">
-                        <i class="fas fa-arrow-left"></i> Previous
-                    </button>
-                    <button id="nextBtn">
-                        Next <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="pdf-container">
-                <div class="pdf-header">
-                    <i class="fas fa-file-pdf"></i> PDF Viewer
-                </div>
-                <iframe id="pdfViewer" src="about:blank"></iframe>
-            </div>
-        </div>
-
-        <div class="playlist" id="playlist" style="display: none;">
-            <h3><i class="fas fa-list"></i> Playlist</h3>
-            <div class="playlist-items" id="playlistItems"></div>
-        </div>
+  <div class="container">
+    <div class="card upload-section">
+      <h2><i class="fas fa-upload"></i> Upload your video txt file</h2>
+      <div class="file-input-container">
+        <input type="file" id="fileInput" accept=".txt">
+      </div>
+      <button id="loadBtn"><i class="fas fa-file-import"></i> Load Videos</button>
+      <div id="status" class="status"></div>
+      <div id="error" class="error"></div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const fileInput = document.getElementById('fileInput');
-            const loadBtn = document.getElementById('loadBtn');
-            const videoPlayer = document.getElementById('videoPlayer');
-            const pdfViewer = document.getElementById('pdfViewer');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const videoTitle = document.getElementById('videoTitle');
-            const videoIndex = document.getElementById('videoIndex');
-            const playlistItems = document.getElementById('playlistItems');
-            const videoInfo = document.getElementById('videoInfo');
-            const playlist = document.getElementById('playlist');
-            const status = document.getElementById('status');
-            const error = document.getElementById('error');
+    <div class="card video-info" id="videoInfo" style="display:none;">
+      <h3 id="videoTitle">No video loaded</h3>
+      <p id="videoIndex">0/0</p>
+    </div>
 
-            let videos = [];
-            let currentIndex = -1;
+    <div class="player-section">
+      <div class="video-container card">
+        <video id="videoPlayer" controls></video>
+        <div class="controls">
+          <button id="prevBtn"><i class="fas fa-arrow-left"></i> Previous</button>
+          <button id="nextBtn">Next <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+      <div class="pdf-container card">
+        <iframe id="pdfViewer" src="about:blank"></iframe>
+      </div>
+    </div>
 
-            // Load videos from text file
-            loadBtn.addEventListener('click', function() {
-                const file = fileInput.files[0];
-                if (!file) {
-                    showError('Please select a file first');
-                    return;
-                }
+    <div class="card playlist" id="playlist" style="display:none;">
+      <h3><i class="fas fa-list"></i> Playlist</h3>
+      <div id="playlistItems"></div>
+    </div>
+  </div>
 
-                // Show loading state
-                loadBtn.innerHTML = '<span class="spinner"></span> Loading...';
-                loadBtn.disabled = true;
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const content = e.target.result;
-                    parseVideoLinks(content);
-                    
-                    // Reset button state
-                    loadBtn.innerHTML = '<i class="fas fa-upload"></i> Load Videos';
-                    loadBtn.disabled = false;
-                };
-                
-                reader.onerror = function() {
-                    showError('Error reading file');
-                    loadBtn.innerHTML = '<i class="fas fa-upload"></i> Load Videos';
-                    loadBtn.disabled = false;
-                };
-                
-                reader.readAsText(file);
-            });
-
-            function showError(message) {
-                error.textContent = message;
-                setTimeout(() => error.textContent = '', 5000);
-            }
-
-            function parseVideoLinks(content) {
-                videos = [];
-                const lines = content.split('\n');
-                let currentVideo = null;
-                let ignoredCount = 0;
-                
-                lines.forEach(line => {
-                    if (line.trim() === '') return;
-                    
-                    // Check if line contains a video (.m3u8) or PDF (.pdf)
-                    const isVideo = line.includes('.m3u8');
-                    const isPDF = line.includes('.pdf');
-                    
-                    if (isVideo) {
-                        // Extract title and URL
-                        const parts = line.split(':http');
-                        const title = parts[0].trim();
-                        const url = 'http' + (parts[1] || '').trim();
-                        
-                        // New video entry
-                        if (currentVideo) {
-                            videos.push(currentVideo);
-                        }
-                        currentVideo = {
-                            title: title,
-                            videoUrl: url,
-                            pdfUrl: null
-                        };
-                    } else if (isPDF) {
-                        // Extract title and URL
-                        const parts = line.split(':http');
-                        const title = parts[0].trim();
-                        const url = 'http' + (parts[1] || '').trim();
-                        
-                        if (currentVideo) {
-                            // Add PDF to current video
-                            currentVideo.pdfUrl = url;
-                        } else {
-                            // PDF without video - we'll ignore it
-                            ignoredCount++;
-                        }
-                    } else {
-                        // Not a video or PDF - ignore
-                        ignoredCount++;
-                    }
-                });
-                
-                // Add the last video if exists
-                if (currentVideo) {
-                    videos.push(currentVideo);
-                }
-                
-                if (videos.length > 0) {
-                    displayPlaylist();
-                    playVideo(0);
-                    videoInfo.style.display = 'block';
-                    playlist.style.display = 'block';
-                    status.textContent = `Loaded ${videos.length} videos. Ignored ${ignoredCount} non-video/PDF links.`;
-                } else {
-                    status.textContent = `No valid video links found. Found ${ignoredCount} non-video/PDF links.`;
-                    showError('No valid .m3u8 video links found in the file');
-                }
-            }
-
-            function displayPlaylist() {
-                playlistItems.innerHTML = '';
-                videos.forEach((video, index) => {
-                    const item = document.createElement('div');
-                    item.className = 'playlist-item';
-                    if (index === currentIndex) {
-                        item.classList.add('active');
-                    }
-                    
-                    // Add icon based on content
-                    const icon = document.createElement('i');
-                    icon.className = video.pdfUrl ? 'fas fa-film' : 'fas fa-video';
-                    icon.style.marginRight = '8px';
-                    
-                    item.appendChild(icon);
-                    item.appendChild(document.createTextNode(video.title));
-                    
-                    item.addEventListener('click', () => {
-                        playVideo(index);
-                    });
-                    playlistItems.appendChild(item);
-                });
-            }
-
-            function playVideo(index) {
-                if (index < 0 || index >= videos.length) return;
-                
-                currentIndex = index;
-                const video = videos[currentIndex];
-                
-                // Update UI
-                videoTitle.textContent = video.title;
-                videoIndex.textContent = `${currentIndex + 1}/${videos.length}`;
-                
-                // Play video
-                if (video.videoUrl) {
-                    videoPlayer.src = `https://pro-ultra-hd-stream-player.woodmirror.workers.dev/?start=${encodeURIComponent(video.videoUrl)}`;
-                    videoPlayer.load();
-                    videoPlayer.play().catch(e => {
-                        console.log('Autoplay prevented:', e);
-                        showError('Click the play button to start video');
-                    });
-                }
-                
-                // Load PDF if available
-                if (video.pdfUrl) {
-                    pdfViewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(video.pdfUrl)}&embedded=true`;
-                } else {
-                    pdfViewer.src = 'about:blank';
-                }
-                
-                // Update playlist highlighting
-                const items = playlistItems.querySelectorAll('.playlist-item');
-                items.forEach((item, i) => {
-                    if (i === currentIndex) {
-                        item.classList.add('active');
-                    } else {
-                        item.classList.remove('active');
-                    }
-                });
-                
-                // Update button states
-                prevBtn.disabled = currentIndex === 0;
-                nextBtn.disabled = currentIndex === videos.length - 1;
-            }
-
-            // Navigation
-            prevBtn.addEventListener('click', () => {
-                if (currentIndex > 0) {
-                    playVideo(currentIndex - 1);
-                }
-            });
-
-            nextBtn.addEventListener('click', () => {
-                if (currentIndex < videos.length - 1) {
-                    playVideo(currentIndex + 1);
-                }
-            });
-
-            // Keyboard shortcuts
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft' && !prevBtn.disabled) {
-                    prevBtn.click();
-                } else if (e.key === 'ArrowRight' && !nextBtn.disabled) {
-                    nextBtn.click();
-                }
-            });
-
-            // Handle video errors
-            videoPlayer.addEventListener('error', () => {
-                showError('Error loading video. Trying with direct URL...');
-                // Try playing directly without proxy
-                const video = videos[currentIndex];
-                if (video && video.videoUrl) {
-                    videoPlayer.src = video.videoUrl;
-                    videoPlayer.load();
-                    videoPlayer.play().catch(e => {
-                        console.log('Direct play failed:', e);
-                        showError('Video playback failed. The video may be unavailable.');
-                    });
-                }
-            });
-        });
-    </script>
+  <!-- Same JS as before (no changes) -->
+  <script>
+    /* तुम्‍हारा JS code unchanged रहेगा यहाँ */
+  </script>
 </body>
-  </html>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player with PDF Viewer</title>
+  <style>
+    :root {
+      --primary: #4f8cff;
+      --secondary: #00c896;
+      --danger: #ff4d6d;
+      --radius: 14px;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --blur: blur(16px);
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      color: #222;
+      transition: 0.3s;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #141e30, #243b55);
+        color: #f1f1f1;
+      }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--blur);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      padding: 20px;
+    }
+
+    h2, h3 {
+      margin: 0 0 15px;
+      color: var(--primary);
+    }
+
+    .file-input-container input[type="file"] {
+      width: 100%;
+      padding: 14px;
+      border: 2px dashed #aaa;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.2);
+      transition: border-color 0.3s;
+    }
+    .file-input-container input[type="file"]:hover {
+      border-color: var(--primary);
+    }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+    #loadBtn {
+      width: 100%;
+      background: linear-gradient(45deg, var(--primary), #7aa2ff);
+    }
+    #loadBtn:hover { transform: translateY(-2px); }
+
+    #prevBtn, #nextBtn {
+      background: linear-gradient(45deg, var(--secondary), #00e6af);
+    }
+    #prevBtn:hover, #nextBtn:hover { transform: scale(1.05); }
+
+    button:disabled {
+      background: #777 !important;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .player-section {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .video-container, .pdf-container {
+      flex: 1;
+      min-width: 350px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #000;
+      position: relative;
+    }
+    #videoPlayer, #pdfViewer {
+      width: 100%;
+      height: 450px;
+      border: none;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .playlist {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .playlist-item {
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.1);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .playlist-item:hover { background: rgba(79,140,255,0.2); }
+    .playlist-item.active {
+      background: var(--primary);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .status {
+      padding: 10px;
+      border-radius: var(--radius);
+      margin-top: 10px;
+      background: rgba(0,255,100,0.1);
+      color: #0f0;
+    }
+    .error {
+      padding: 10px;
+      border-radius: var(--radius);
+      margin-top: 10px;
+      background: rgba(255,0,0,0.1);
+      color: var(--danger);
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card upload-section">
+      <h2><i class="fas fa-upload"></i> Upload your video txt file</h2>
+      <div class="file-input-container">
+        <input type="file" id="fileInput" accept=".txt">
+      </div>
+      <button id="loadBtn"><i class="fas fa-file-import"></i> Load Videos</button>
+      <div id="status" class="status"></div>
+      <div id="error" class="error"></div>
+    </div>
+
+    <div class="card video-info" id="videoInfo" style="display:none;">
+      <h3 id="videoTitle">No video loaded</h3>
+      <p id="videoIndex">0/0</p>
+    </div>
+
+    <div class="player-section">
+      <div class="video-container card">
+        <video id="videoPlayer" controls></video>
+        <div class="controls">
+          <button id="prevBtn"><i class="fas fa-arrow-left"></i> Previous</button>
+          <button id="nextBtn">Next <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+      <div class="pdf-container card">
+        <iframe id="pdfViewer" src="about:blank"></iframe>
+      </div>
+    </div>
+
+    <div class="card playlist" id="playlist" style="display:none;">
+      <h3><i class="fas fa-list"></i> Playlist</h3>
+      <div id="playlistItems"></div>
+    </div>
+  </div>
+
+  <!-- Same JS as before (no changes) -->
+  <script>
+    /* तुम्‍हारा JS code unchanged रहेगा यहाँ */
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player with PDF Viewer</title>
+  <style>
+    :root {
+      --primary: #4f8cff;
+      --secondary: #00c896;
+      --danger: #ff4d6d;
+      --radius: 14px;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --blur: blur(16px);
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      color: #222;
+      transition: 0.3s;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #141e30, #243b55);
+        color: #f1f1f1;
+      }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--blur);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      padding: 20px;
+    }
+
+    h2, h3 {
+      margin: 0 0 15px;
+      color: var(--primary);
+    }
+
+    .file-input-container input[type="file"] {
+      width: 100%;
+      padding: 14px;
+      border: 2px dashed #aaa;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.2);
+      transition: border-color 0.3s;
+    }
+    .file-input-container input[type="file"]:hover {
+      border-color: var(--primary);
+    }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+    #loadBtn {
+      width: 100%;
+      background: linear-gradient(45deg, var(--primary), #7aa2ff);
+    }
+    #loadBtn:hover { transform: translateY(-2px); }
+
+    #prevBtn, #nextBtn {
+      background: linear-gradient(45deg, var(--secondary), #00e6af);
+    }
+    #prevBtn:hover, #nextBtn:hover { transform: scale(1.05); }
+
+    button:disabled {
+      background: #777 !important;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .player-section {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .video-container, .pdf-container {
+      flex: 1;
+      min-width: 350px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #000;
+      position: relative;
+    }
+    #videoPlayer, #pdfViewer {
+      width: 100%;
+      height: 450px;
+      border: none;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .playlist {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .playlist-item {
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.1);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .playlist-item:hover { background: rgba(79,140,255,0.2); }
+    .playlist-item.active {
+      background: var(--primary);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .status {
+      padding: 10px;
+      border-radius: var(--radius);
+      margin-top: 10px;
+      background: rgba(0,255,100,0.1);
+      color: #0f0;
+    }
+    .error {
+      padding: 10px;
+      border-radius: var(--radius);
+      margin-top: 10px;
+      background: rgba(255,0,0,0.1);
+      color: var(--danger);
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card upload-section">
+      <h2><i class="fas fa-upload"></i> Upload your video txt file</h2>
+      <div class="file-input-container">
+        <input type="file" id="fileInput" accept=".txt">
+      </div>
+      <button id="loadBtn"><i class="fas fa-file-import"></i> Load Videos</button>
+      <div id="status" class="status"></div>
+      <div id="error" class="error"></div>
+    </div>
+
+    <div class="card video-info" id="videoInfo" style="display:none;">
+      <h3 id="videoTitle">No video loaded</h3>
+      <p id="videoIndex">0/0</p>
+    </div>
+
+    <div class="player-section">
+      <div class="video-container card">
+        <video id="videoPlayer" controls></video>
+        <div class="controls">
+          <button id="prevBtn"><i class="fas fa-arrow-left"></i> Previous</button>
+          <button id="nextBtn">Next <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+      <div class="pdf-container card">
+        <iframe id="pdfViewer" src="about:blank"></iframe>
+      </div>
+    </div>
+
+    <div class="card playlist" id="playlist" style="display:none;">
+      <h3><i class="fas fa-list"></i> Playlist</h3>
+      <div id="playlistItems"></div>
+    </div>
+  </div>
+
+  <!-- Same JS as before (no changes) -->
+  <script>
+    /* तुम्‍हारा JS code unchanged रहेगा यहाँ */
+  </script>
+</body>
+</html>
