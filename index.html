@@ -3,46 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Player with PDF Viewer</title>
+  <title>Study Player</title>
   <style>
     :root {
-      --primary: #4f8cff;
-      --secondary: #00c896;
-      --danger: #ff4d6d;
-      --radius: 14px;
-      --glass-bg: rgba(255, 255, 255, 0.1);
-      --blur: blur(16px);
+      --primary: #2563eb;
+      --secondary: #16a34a;
+      --danger: #ef4444;
+      --bg-light: #f9fafb;
+      --radius: 12px;
     }
 
     body {
       font-family: "Segoe UI", sans-serif;
       margin: 0;
-      padding: 20px;
-      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-      color: #222;
-      transition: 0.3s;
+      background: var(--bg-light);
+      color: #111;
     }
 
-    @media (prefers-color-scheme: dark) {
-      body {
-        background: linear-gradient(135deg, #141e30, #243b55);
-        color: #f1f1f1;
-      }
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 15px 25px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
     .container {
       max-width: 1200px;
-      margin: auto;
+      margin: 20px auto;
+      padding: 0 15px;
       display: flex;
       flex-direction: column;
       gap: 25px;
     }
 
     .card {
-      background: var(--glass-bg);
-      backdrop-filter: var(--blur);
+      background: #fff;
       border-radius: var(--radius);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       padding: 20px;
     }
 
@@ -53,10 +52,10 @@
 
     .file-input-container input[type="file"] {
       width: 100%;
-      padding: 14px;
-      border: 2px dashed #aaa;
+      padding: 12px;
+      border: 2px dashed #cbd5e1;
       border-radius: var(--radius);
-      background: rgba(255,255,255,0.2);
+      background: #f8fafc;
       transition: border-color 0.3s;
     }
     .file-input-container input[type="file"]:hover {
@@ -64,28 +63,29 @@
     }
 
     button {
-      padding: 12px 24px;
+      padding: 10px 20px;
       border: none;
       border-radius: var(--radius);
       cursor: pointer;
       font-weight: 600;
-      color: #fff;
-      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      transition: 0.2s;
     }
     #loadBtn {
       width: 100%;
-      background: linear-gradient(45deg, var(--primary), #7aa2ff);
+      background: var(--primary);
+      color: #fff;
     }
-    #loadBtn:hover { transform: translateY(-2px); }
+    #loadBtn:hover { background: #1d4ed8; }
 
     #prevBtn, #nextBtn {
-      background: linear-gradient(45deg, var(--secondary), #00e6af);
+      background: var(--secondary);
+      color: #fff;
     }
-    #prevBtn:hover, #nextBtn:hover { transform: scale(1.05); }
+    #prevBtn:hover, #nextBtn:hover { background: #15803d; }
 
     button:disabled {
-      background: #777 !important;
-      opacity: 0.6;
+      background: #94a3b8 !important;
       cursor: not-allowed;
     }
 
@@ -96,75 +96,112 @@
     }
     .video-container, .pdf-container {
       flex: 1;
-      min-width: 350px;
+      min-width: 360px;
       border-radius: var(--radius);
       overflow: hidden;
       background: #000;
-      position: relative;
     }
     #videoPlayer, #pdfViewer {
       width: 100%;
-      height: 450px;
+      height: 420px;
       border: none;
     }
 
     .controls {
       display: flex;
       justify-content: space-between;
-      padding: 10px 15px;
-      background: rgba(0,0,0,0.3);
+      padding: 10px;
+      background: #f1f5f9;
+    }
+
+    .video-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .video-info h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: var(--primary);
     }
 
     .playlist {
-      max-height: 300px;
+      max-height: 320px;
       overflow-y: auto;
     }
     .playlist-item {
-      padding: 12px;
-      margin: 8px 0;
+      padding: 12px 14px;
+      margin: 6px 0;
       border-radius: var(--radius);
-      background: rgba(255,255,255,0.1);
+      background: #f8fafc;
       cursor: pointer;
+      border: 1px solid #e2e8f0;
       transition: 0.3s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .playlist-item:hover { background: rgba(79,140,255,0.2); }
+    .playlist-item:hover { background: #e0f2fe; }
     .playlist-item.active {
       background: var(--primary);
       color: #fff;
-      font-weight: bold;
+      font-weight: 600;
+    }
+    .playlist-item .status-check {
+      font-size: 1rem;
+      color: var(--secondary);
+      display: none;
+    }
+    .playlist-item.completed .status-check {
+      display: inline;
     }
 
     .status {
       padding: 10px;
       border-radius: var(--radius);
       margin-top: 10px;
-      background: rgba(0,255,100,0.1);
-      color: #0f0;
+      background: #dcfce7;
+      color: #166534;
     }
     .error {
       padding: 10px;
       border-radius: var(--radius);
       margin-top: 10px;
-      background: rgba(255,0,0,0.1);
+      background: #fee2e2;
       color: var(--danger);
+    }
+
+    .search-box {
+      margin-bottom: 15px;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 10px;
+      border-radius: var(--radius);
+      border: 1px solid #cbd5e1;
+      font-size: 0.95rem;
     }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+  <header>
+    📚 Study Player
+  </header>
+
   <div class="container">
     <div class="card upload-section">
-      <h2><i class="fas fa-upload"></i> Upload your video txt file</h2>
+      <h2><i class="fas fa-upload"></i> Upload your course file</h2>
       <div class="file-input-container">
         <input type="file" id="fileInput" accept=".txt">
       </div>
-      <button id="loadBtn"><i class="fas fa-file-import"></i> Load Videos</button>
+      <button id="loadBtn"><i class="fas fa-file-import"></i> Load Lessons</button>
       <div id="status" class="status"></div>
       <div id="error" class="error"></div>
     </div>
 
     <div class="card video-info" id="videoInfo" style="display:none;">
-      <h3 id="videoTitle">No video loaded</h3>
+      <h3 id="videoTitle">No lesson loaded</h3>
       <p id="videoIndex">0/0</p>
     </div>
 
@@ -182,14 +219,133 @@
     </div>
 
     <div class="card playlist" id="playlist" style="display:none;">
-      <h3><i class="fas fa-list"></i> Playlist</h3>
+      <h3><i class="fas fa-list"></i> Course Playlist</h3>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Search lessons...">
+      </div>
       <div id="playlistItems"></div>
     </div>
   </div>
 
-  <!-- Same JS as before (no changes) -->
   <script>
-    /* तुम्‍हारा JS code unchanged रहेगा यहाँ */
+    document.addEventListener('DOMContentLoaded', function() {
+      const fileInput = document.getElementById('fileInput');
+      const loadBtn = document.getElementById('loadBtn');
+      const videoPlayer = document.getElementById('videoPlayer');
+      const pdfViewer = document.getElementById('pdfViewer');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const videoTitle = document.getElementById('videoTitle');
+      const videoIndex = document.getElementById('videoIndex');
+      const playlistItems = document.getElementById('playlistItems');
+      const videoInfo = document.getElementById('videoInfo');
+      const playlist = document.getElementById('playlist');
+      const status = document.getElementById('status');
+      const error = document.getElementById('error');
+      const searchInput = document.getElementById('searchInput');
+
+      let videos = [];
+      let currentIndex = -1;
+
+      loadBtn.addEventListener('click', function() {
+        const file = fileInput.files[0];
+        if (!file) {
+          showError('Please select a file first');
+          return;
+        }
+        loadBtn.textContent = "⏳ Loading...";
+        loadBtn.disabled = true;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          parseVideoLinks(e.target.result);
+          loadBtn.textContent = "📂 Load Lessons";
+          loadBtn.disabled = false;
+        };
+        reader.onerror = function() {
+          showError('Error reading file');
+          loadBtn.textContent = "📂 Load Lessons";
+          loadBtn.disabled = false;
+        };
+        reader.readAsText(file);
+      });
+
+      function showError(msg) {
+        error.textContent = msg;
+        setTimeout(()=> error.textContent='', 5000);
+      }
+
+      function parseVideoLinks(content) {
+        videos = [];
+        const lines = content.split('\n');
+        let currentVideo = null;
+        lines.forEach(line=>{
+          if(line.trim()==='') return;
+          const isVideo = line.includes('.m3u8');
+          const isPDF = line.includes('.pdf');
+          if(isVideo){
+            const parts = line.split(':http');
+            const title = parts[0].trim();
+            const url = 'http'+(parts[1]||'').trim();
+            if(currentVideo) videos.push(currentVideo);
+            currentVideo = {title, videoUrl:url, pdfUrl:null, completed:false};
+          } else if(isPDF && currentVideo){
+            const parts = line.split(':http');
+            const url = 'http'+(parts[1]||'').trim();
+            currentVideo.pdfUrl=url;
+          }
+        });
+        if(currentVideo) videos.push(currentVideo);
+        if(videos.length>0){
+          displayPlaylist();
+          playVideo(0);
+          videoInfo.style.display='flex';
+          playlist.style.display='block';
+          status.textContent = `Loaded ${videos.length} lessons.`;
+        } else {
+          showError('No valid .m3u8 video links found.');
+        }
+      }
+
+      function displayPlaylist() {
+        playlistItems.innerHTML='';
+        videos.forEach((video, i)=>{
+          const item=document.createElement('div');
+          item.className='playlist-item'+(i===currentIndex?' active':'');
+          if(video.completed) item.classList.add('completed');
+          item.innerHTML = `<span>${video.title}</span> <span class="status-check">✔</span>`;
+          item.addEventListener('click',()=> playVideo(i));
+          playlistItems.appendChild(item);
+        });
+      }
+
+      function playVideo(index){
+        if(index<0||index>=videos.length) return;
+        currentIndex=index;
+        const video=videos[currentIndex];
+        videoTitle.textContent=video.title;
+        videoIndex.textContent=`${currentIndex+1}/${videos.length}`;
+        videoPlayer.src=`https://pro-ultra-hd-stream-player.woodmirror.workers.dev/?start=${encodeURIComponent(video.videoUrl)}`;
+        videoPlayer.load();
+        videoPlayer.play().catch(()=>showError('Click play button to start'));
+        pdfViewer.src=video.pdfUrl?`https://docs.google.com/gview?url=${encodeURIComponent(video.pdfUrl)}&embedded=true`:'about:blank';
+        videos[currentIndex].completed=true;
+        displayPlaylist();
+        prevBtn.disabled=currentIndex===0;
+        nextBtn.disabled=currentIndex===videos.length-1;
+      }
+
+      prevBtn.addEventListener('click',()=> playVideo(currentIndex-1));
+      nextBtn.addEventListener('click',()=> playVideo(currentIndex+1));
+
+      searchInput.addEventListener('input',()=>{
+        const query=searchInput.value.toLowerCase();
+        const items=playlistItems.querySelectorAll('.playlist-item');
+        items.forEach((item,i)=>{
+          const match=videos[i].title.toLowerCase().includes(query);
+          item.style.display=match?'flex':'none';
+        });
+      });
+    });
   </script>
 </body>
 </html>
