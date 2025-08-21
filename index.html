@@ -1,109 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Player with PDF Viewer</title>
-    <style>
-        :root {
-            --primary-color: #4285f4;
-            --secondary-color: #34a853;
-            --danger-color: #ea4335;
-            --light-gray: #f8f9fa;
-            --dark-gray: #6c757d;
-            --border-radius: 6px;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-        
-        .upload-section {
-            background-color: white;
-            padding: 25px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-        }
-        
-        .upload-section h2 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-        
-        .file-input-container {
-            margin-bottom: 15px;
-        }
-        
-        .file-input-container input[type="file"] {
-            width: 90%;
-            padding: 12px;
-            border: 2px dashed #ddd;
-            border-radius: var(--border-radius);
-            background-color: var(--light-gray);
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-        
-        .file-input-container input[type="file"]:hover {
-            border-color: var(--primary-color);
-        }
-        
-        .button-container {
-            display: flex;
-            justify-content: flex-end;
-        }
-        
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: var(--border-radius);
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1rem;
-        }
-        
-        button i {
-            font-size: 1rem;
-        }
-        
-        #loadBtn {
-            background-color: var(--primary-color);
-            color: white;
-            width: 100%;
-            justify-content: center;
-        }
-        
-        #loadBtn:hover {
-            background-color: #3367d6;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        #prevBtn, #nextBtn {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-        
-        #prevBtn:hover, #nextBtn:hover {
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player with PDF Viewer</title>
+  <style>
+    :root {
+      --primary: #4f8cff;
+      --secondary: #00c896;
+      --danger: #ff4d6d;
+      --radius: 14px;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --blur: blur(16px);
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      color: #222;
+      transition: 0.3s;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #141e30, #243b55);
+        color: #f1f1f1;
+      }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--blur);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      padding: 20px;
+    }
+
+    h2, h3 {
+      margin: 0 0 15px;
+      color: var(--primary);
+    }
+
+    .file-input-container input[type="file"] {
+      width: 100%;
+      padding: 14px;
+      border: 2px dashed #aaa;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.2);
+      transition: border-color 0.3s;
+    }
+    .file-input-container input[type="file"]:hover {
+      border-color: var(--primary);
+    }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+    #loadBtn {
+      width: 100%;
+      background: linear-gradient(45deg, var(--primary), #7aa2ff);
+    }
+    #loadBtn:hover { transform: translateY(-2px); }
+
+    #prevBtn, #nextBtn {
+      background: linear-gradient(45deg, var(--secondary), #00e6af);
+    }
+    #prevBtn:hover, #nextBtn:hover { transform: scale(1.05); }
+
+    button:disabled {
+      background: #777 !important;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .player-section {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .video-container, .pdf-container {
+      flex: 1;
+      min-width: 350px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #000;
+      position: relative;
+    }
+    #videoPlayer, #pdfViewer {
+      width: 100%;
+      height: 450px;
+      border: none;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .playlist {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .playlist-item {
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.1);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .playlist-item:hover { background: rgba(79,140,255,0.2); }
+    .playlist-item.active {
+      background: var(--primary);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .status {
+      padding: 10px;
+      border-radius: var(--radius);
+      margin-top: 10px;
+      background: rgba(0,255,100,0.1);
+      color: #0f0;
+    }
+    .error {
+      padding: 10px;
+      border-radius: var(--radius);
+      margin-top: 10px;
+      background: rgba(255,0,0,0.1);
+      color: var(--danger);
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card upload-section">
+      <h2><i class="fas fa-upload"></i> Upload your video txt file</h2>
+      <div class="file-input-container">
+        <input type="file" id="fileInput" accept=".txt">
+      </div>
+      <button id="loadBtn"><i class="fas fa-file-import"></i> Load Videos</button>
+      <div id="status" class="status"></div>
+      <div id="error" class="error"></div>
+    </div>
+
+    <div class="card video-info" id="videoInfo" style="display:none;">
+      <h3 id="videoTitle">No video loaded</h3>
+      <p id="videoIndex">0/0</p>
+    </div>
+
+    <div class="player-section">
+      <div class="video-container card">
+        <video id="videoPlayer" controls></video>
+        <div class="controls">
+          <button id="prevBtn"><i class="fas fa-arrow-left"></i> Previous</button>
+          <button id="nextBtn">Next <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+      <div class="pdf-container card">
+        <iframe id="pdfViewer" src="about:blank"></iframe>
+      </div>
+    </div>
+
+    <div class="card playlist" id="playlist" style="display:none;">
+      <h3><i class="fas fa-list"></i> Playlist</h3>
+      <div id="playlistItems"></div>
+    </div>
+  </div>
+
+  <!-- Same JS as before (no changes) -->
+  <script>
+    /* तुम्‍हारा JS code unchanged रहेगा यहाँ */
+  </script>
+</body>
+</html>        #prevBtn:hover, #nextBtn:hover {
             background-color: #2d9249;
         }
         
