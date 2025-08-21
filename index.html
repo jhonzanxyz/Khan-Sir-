@@ -247,14 +247,17 @@
       let videos = [];
       let currentIndex = -1;
 
+      // --- Original working code ---
       loadBtn.addEventListener('click', function() {
         const file = fileInput.files[0];
         if (!file) {
           showError('Please select a file first');
           return;
         }
+
         loadBtn.textContent = "⏳ Loading...";
         loadBtn.disabled = true;
+
         const reader = new FileReader();
         reader.onload = function(e) {
           parseVideoLinks(e.target.result);
@@ -324,12 +327,17 @@
         const video=videos[currentIndex];
         videoTitle.textContent=video.title;
         videoIndex.textContent=`${currentIndex+1}/${videos.length}`;
+
+        // --- Same proxy as before ---
         videoPlayer.src=`https://pro-ultra-hd-stream-player.woodmirror.workers.dev/?start=${encodeURIComponent(video.videoUrl)}`;
         videoPlayer.load();
         videoPlayer.play().catch(()=>showError('Click play button to start'));
+
         pdfViewer.src=video.pdfUrl?`https://docs.google.com/gview?url=${encodeURIComponent(video.pdfUrl)}&embedded=true`:'about:blank';
-        videos[currentIndex].completed=true;
+
+        videos[currentIndex].completed=true; // mark completed
         displayPlaylist();
+
         prevBtn.disabled=currentIndex===0;
         nextBtn.disabled=currentIndex===videos.length-1;
       }
@@ -337,6 +345,7 @@
       prevBtn.addEventListener('click',()=> playVideo(currentIndex-1));
       nextBtn.addEventListener('click',()=> playVideo(currentIndex+1));
 
+      // --- Search filter ---
       searchInput.addEventListener('input',()=>{
         const query=searchInput.value.toLowerCase();
         const items=playlistItems.querySelectorAll('.playlist-item');
@@ -345,6 +354,18 @@
           item.style.display=match?'flex':'none';
         });
       });
+
+      // --- Handle video errors (original logic) ---
+      videoPlayer.addEventListener('error', () => {
+        showError('Error loading video. Trying with direct URL...');
+        const video = videos[currentIndex];
+        if (video && video.videoUrl) {
+          videoPlayer.src = video.videoUrl;
+          videoPlayer.load();
+          videoPlayer.play().catch(()=> showError('Video playback failed.'));
+        }
+      });
+
     });
   </script>
 </body>
