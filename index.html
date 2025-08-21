@@ -12,14 +12,12 @@
       --bg-light: #f9fafb;
       --radius: 12px;
     }
-
     body {
       font-family: "Segoe UI", sans-serif;
       margin: 0;
       background: var(--bg-light);
       color: #111;
     }
-
     header {
       background: var(--primary);
       color: #fff;
@@ -28,166 +26,38 @@
       font-weight: bold;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-
-    .container {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 0 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 25px;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      padding: 20px;
-    }
-
-    h2, h3 {
-      margin: 0 0 15px;
-      color: var(--primary);
-    }
-
-    .file-input-container input[type="file"] {
-      width: 100%;
-      padding: 12px;
-      border: 2px dashed #cbd5e1;
-      border-radius: var(--radius);
-      background: #f8fafc;
-      transition: border-color 0.3s;
-    }
-    .file-input-container input[type="file"]:hover {
-      border-color: var(--primary);
-    }
-
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: 0.2s;
-    }
-    #loadBtn {
-      width: 100%;
-      background: var(--primary);
-      color: #fff;
-    }
+    .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; display: flex; flex-direction: column; gap: 25px; }
+    .card { background: #fff; border-radius: var(--radius); box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 20px; }
+    h2, h3 { margin: 0 0 15px; color: var(--primary); }
+    .file-input-container input[type="file"] { width: 100%; padding: 12px; border: 2px dashed #cbd5e1; border-radius: var(--radius); background: #f8fafc; }
+    .file-input-container input[type="file"]:hover { border-color: var(--primary); }
+    button { padding: 10px 20px; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: 0.2s; }
+    #loadBtn { width: 100%; background: var(--primary); color: #fff; }
     #loadBtn:hover { background: #1d4ed8; }
-
-    #prevBtn, #nextBtn {
-      background: var(--secondary);
-      color: #fff;
-    }
+    #prevBtn, #nextBtn { background: var(--secondary); color: #fff; }
     #prevBtn:hover, #nextBtn:hover { background: #15803d; }
-
-    button:disabled {
-      background: #94a3b8 !important;
-      cursor: not-allowed;
-    }
-
-    .player-section {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .video-container, .pdf-container {
-      flex: 1;
-      min-width: 360px;
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: #000;
-    }
-    #videoPlayer, #pdfViewer {
-      width: 100%;
-      height: 420px;
-      border: none;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px;
-      background: #f1f5f9;
-    }
-
-    .video-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .video-info h3 {
-      margin: 0;
-      font-size: 1.2rem;
-      color: var(--primary);
-    }
-
-    .playlist {
-      max-height: 320px;
-      overflow-y: auto;
-    }
-    .playlist-item {
-      padding: 12px 14px;
-      margin: 6px 0;
-      border-radius: var(--radius);
-      background: #f8fafc;
-      cursor: pointer;
-      border: 1px solid #e2e8f0;
-      transition: 0.3s;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    button:disabled { background: #94a3b8 !important; cursor: not-allowed; }
+    .player-section { display: flex; gap: 20px; flex-wrap: wrap; }
+    .video-container, .pdf-container { flex: 1; min-width: 360px; border-radius: var(--radius); overflow: hidden; background: #000; }
+    #videoPlayer, #pdfViewer { width: 100%; height: 420px; border: none; }
+    .controls { display: flex; justify-content: space-between; padding: 10px; background: #f1f5f9; }
+    .video-info { display: flex; justify-content: space-between; align-items: center; }
+    .video-info h3 { margin: 0; font-size: 1.2rem; color: var(--primary); }
+    .playlist { max-height: 400px; overflow-y: auto; }
+    .topic-title { font-weight: bold; margin: 10px 0 5px; color: var(--primary); }
+    .playlist-item { padding: 12px 14px; margin: 6px 0; border-radius: var(--radius); background: #f8fafc; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.3s; display: flex; justify-content: space-between; align-items: center; }
     .playlist-item:hover { background: #e0f2fe; }
-    .playlist-item.active {
-      background: var(--primary);
-      color: #fff;
-      font-weight: 600;
-    }
-    .playlist-item .status-check {
-      font-size: 1rem;
-      color: var(--secondary);
-      display: none;
-    }
-    .playlist-item.completed .status-check {
-      display: inline;
-    }
-
-    .status {
-      padding: 10px;
-      border-radius: var(--radius);
-      margin-top: 10px;
-      background: #dcfce7;
-      color: #166534;
-    }
-    .error {
-      padding: 10px;
-      border-radius: var(--radius);
-      margin-top: 10px;
-      background: #fee2e2;
-      color: var(--danger);
-    }
-
-    .search-box {
-      margin-bottom: 15px;
-    }
-    .search-box input {
-      width: 100%;
-      padding: 10px;
-      border-radius: var(--radius);
-      border: 1px solid #cbd5e1;
-      font-size: 0.95rem;
-    }
+    .playlist-item.active { background: var(--primary); color: #fff; font-weight: 600; }
+    .playlist-item .status-check { font-size: 1rem; color: var(--secondary); display: none; }
+    .playlist-item.completed .status-check { display: inline; }
+    .status { padding: 10px; border-radius: var(--radius); margin-top: 10px; background: #dcfce7; color: #166534; }
+    .error { padding: 10px; border-radius: var(--radius); margin-top: 10px; background: #fee2e2; color: var(--danger); }
+    .search-box { margin-bottom: 15px; }
+    .search-box input { width: 100%; padding: 10px; border-radius: var(--radius); border: 1px solid #cbd5e1; font-size: 0.95rem; }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <header>
-    📚 Study Player
-  </header>
+  <header>📚 Study Player</header>
 
   <div class="container">
     <div class="card upload-section">
@@ -247,17 +117,14 @@
       let videos = [];
       let currentIndex = -1;
 
-      // --- Original working code ---
       loadBtn.addEventListener('click', function() {
         const file = fileInput.files[0];
         if (!file) {
           showError('Please select a file first');
           return;
         }
-
         loadBtn.textContent = "⏳ Loading...";
         loadBtn.disabled = true;
-
         const reader = new FileReader();
         reader.onload = function(e) {
           parseVideoLinks(e.target.result);
@@ -281,16 +148,25 @@
         videos = [];
         const lines = content.split('\n');
         let currentVideo = null;
+        let currentTopic = "General";
+
         lines.forEach(line=>{
           if(line.trim()==='') return;
+
+          if(line.startsWith('#')) {
+            currentTopic = line.replace('#','').trim();
+            return;
+          }
+
           const isVideo = line.includes('.m3u8');
           const isPDF = line.includes('.pdf');
+
           if(isVideo){
             const parts = line.split(':http');
             const title = parts[0].trim();
             const url = 'http'+(parts[1]||'').trim();
             if(currentVideo) videos.push(currentVideo);
-            currentVideo = {title, videoUrl:url, pdfUrl:null, completed:false};
+            currentVideo = {title, videoUrl:url, pdfUrl:null, completed:false, topic:currentTopic};
           } else if(isPDF && currentVideo){
             const parts = line.split(':http');
             const url = 'http'+(parts[1]||'').trim();
@@ -298,6 +174,7 @@
           }
         });
         if(currentVideo) videos.push(currentVideo);
+
         if(videos.length>0){
           displayPlaylist();
           playVideo(0);
@@ -311,7 +188,15 @@
 
       function displayPlaylist() {
         playlistItems.innerHTML='';
+        let lastTopic="";
         videos.forEach((video, i)=>{
+          if(video.topic!==lastTopic){
+            const topicDiv=document.createElement('div');
+            topicDiv.className='topic-title';
+            topicDiv.textContent=video.topic;
+            playlistItems.appendChild(topicDiv);
+            lastTopic=video.topic;
+          }
           const item=document.createElement('div');
           item.className='playlist-item'+(i===currentIndex?' active':'');
           if(video.completed) item.classList.add('completed');
@@ -327,17 +212,12 @@
         const video=videos[currentIndex];
         videoTitle.textContent=video.title;
         videoIndex.textContent=`${currentIndex+1}/${videos.length}`;
-
-        // --- Same proxy as before ---
         videoPlayer.src=`https://pro-ultra-hd-stream-player.woodmirror.workers.dev/?start=${encodeURIComponent(video.videoUrl)}`;
         videoPlayer.load();
         videoPlayer.play().catch(()=>showError('Click play button to start'));
-
         pdfViewer.src=video.pdfUrl?`https://docs.google.com/gview?url=${encodeURIComponent(video.pdfUrl)}&embedded=true`:'about:blank';
-
-        videos[currentIndex].completed=true; // mark completed
+        videos[currentIndex].completed=true;
         displayPlaylist();
-
         prevBtn.disabled=currentIndex===0;
         nextBtn.disabled=currentIndex===videos.length-1;
       }
@@ -345,17 +225,17 @@
       prevBtn.addEventListener('click',()=> playVideo(currentIndex-1));
       nextBtn.addEventListener('click',()=> playVideo(currentIndex+1));
 
-      // --- Search filter ---
       searchInput.addEventListener('input',()=>{
         const query=searchInput.value.toLowerCase();
-        const items=playlistItems.querySelectorAll('.playlist-item');
+        const items=playlistItems.querySelectorAll('.playlist-item, .topic-title');
         items.forEach((item,i)=>{
-          const match=videos[i].title.toLowerCase().includes(query);
+          if(item.classList.contains('topic-title')) return;
+          const idx=[...playlistItems.querySelectorAll('.playlist-item')].indexOf(item);
+          const match=videos[idx].title.toLowerCase().includes(query);
           item.style.display=match?'flex':'none';
         });
       });
 
-      // --- Handle video errors (original logic) ---
       videoPlayer.addEventListener('error', () => {
         showError('Error loading video. Trying with direct URL...');
         const video = videos[currentIndex];
@@ -365,7 +245,6 @@
           videoPlayer.play().catch(()=> showError('Video playback failed.'));
         }
       });
-
     });
   </script>
 </body>
