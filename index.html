@@ -208,6 +208,11 @@
             font-size: 0.9rem;
         }
         
+        .video-controls-left, .video-controls-right {
+            display: flex;
+            gap: 5px;
+        }
+        
         .pdf-container {
             display: none;
             margin: 20px 0;
@@ -305,12 +310,25 @@
                     <video id="videoPlayer" controls></video>
                 </div>
                 <div class="video-controls">
-                    <button id="backToListBtn">
-                        <i class="fas fa-list"></i> Back to Playlist
-                    </button>
-                    <button id="viewPdfBtn">
-                        <i class="fas fa-file-pdf"></i> View PDF
-                    </button>
+                    <div class="video-controls-left">
+                        <button id="prevBtn">
+                            <i class="fas fa-step-backward"></i> Previous
+                        </button>
+                        <button id="playPauseBtn">
+                            <i class="fas fa-play"></i> Play
+                        </button>
+                        <button id="nextBtn">
+                            Next <i class="fas fa-step-forward"></i>
+                        </button>
+                    </div>
+                    <div class="video-controls-right">
+                        <button id="backToListBtn">
+                            <i class="fas fa-list"></i> Playlist
+                        </button>
+                        <button id="viewPdfBtn">
+                            <i class="fas fa-file-pdf"></i> View PDF
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -345,6 +363,9 @@
             const viewPdfBtn = document.getElementById('viewPdfBtn');
             const backToListBtn = document.getElementById('backToListBtn');
             const backToVideoBtn = document.getElementById('backToVideoBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const playPauseBtn = document.getElementById('playPauseBtn');
 
             let videos = [];
             let currentIndex = -1;
@@ -507,8 +528,16 @@
                     });
                 }
                 
+                // Load PDF if available
+                if (video.pdfUrl) {
+                    pdfViewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(video.pdfUrl)}&embedded=true`;
+                }
+                
                 // Update playlist highlighting
                 updatePlaylistHighlight();
+                
+                // Update button states
+                updateNavigationButtons();
             }
 
             function updatePlaylistHighlight() {
@@ -520,6 +549,28 @@
                         item.classList.remove('active');
                     }
                 });
+            }
+
+            function updateNavigationButtons() {
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex === videos.length - 1;
+                
+                // Style disabled buttons
+                if (currentIndex === 0) {
+                    prevBtn.style.opacity = '0.5';
+                    prevBtn.style.cursor = 'not-allowed';
+                } else {
+                    prevBtn.style.opacity = '1';
+                    prevBtn.style.cursor = 'pointer';
+                }
+                
+                if (currentIndex === videos.length - 1) {
+                    nextBtn.style.opacity = '0.5';
+                    nextBtn.style.cursor = 'not-allowed';
+                } else {
+                    nextBtn.style.opacity = '1';
+                    nextBtn.style.cursor = 'pointer';
+                }
             }
 
             // Search functionality
@@ -547,6 +598,40 @@
                     displayPlaylist(filteredVideos);
                 }
             }
+
+            // Play/Pause functionality
+            playPauseBtn.addEventListener('click', () => {
+                if (videoPlayer.paused) {
+                    videoPlayer.play();
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                } else {
+                    videoPlayer.pause();
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+                }
+            });
+
+            // Listen to video player events to update play/pause button
+            videoPlayer.addEventListener('play', () => {
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+            });
+
+            videoPlayer.addEventListener('pause', () => {
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+            });
+
+            // Previous video
+            prevBtn.addEventListener('click', () => {
+                if (currentIndex > 0) {
+                    playVideo(currentIndex - 1);
+                }
+            });
+
+            // Next video
+            nextBtn.addEventListener('click', () => {
+                if (currentIndex < videos.length - 1) {
+                    playVideo(currentIndex + 1);
+                }
+            });
 
             // View PDF button
             viewPdfBtn.addEventListener('click', () => {
@@ -589,6 +674,23 @@
                         console.log('Direct play failed:', e);
                         showError('Video playback failed. The video may be unavailable.');
                     });
+                }
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Space bar for play/pause
+                if (e.code === 'Space' && videoSection.style.display === 'block') {
+                    e.preventDefault();
+                    playPauseBtn.click();
+                }
+                // Left arrow for previous
+                else if (e.key === 'ArrowLeft' && !prevBtn.disabled) {
+                    prevBtn.click();
+                }
+                // Right arrow for next
+                else if (e.key === 'ArrowRight' && !nextBtn.disabled) {
+                    nextBtn.click();
                 }
             });
         });
