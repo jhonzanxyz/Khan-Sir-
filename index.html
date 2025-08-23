@@ -11,19 +11,33 @@
             --light-gray: #f8f9fa;
             --border-radius: 6px;
             --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --card-bg: white;
+            --header-bg: #4285f4;
+            --header-text: white;
         }
         
         body {
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f8f9fa;
-            color: #333;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --header-bg: #2c3e50;
+            --header-text: white;
         }
         
         header {
-            background-color: var(--primary-color);
-            color: white;
+            background-color: var(--header-bg);
+            color: var(--header-text);
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
@@ -47,6 +61,26 @@
             width: 40px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid var(--header-text);
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--header-text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .theme-toggle:hover {
+            background-color: rgba(255,255,255,0.1);
         }
         
         .container {
@@ -56,7 +90,7 @@
         }
         
         .upload-section {
-            background-color: white;
+            background-color: var(--card-bg);
             padding: 30px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
@@ -106,7 +140,7 @@
         }
         
         .playlist {
-            background-color: white;
+            background-color: var(--card-bg);
             padding: 20px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
@@ -136,6 +170,8 @@
             border: 1px solid #ddd;
             border-radius: var(--border-radius);
             font-size: 0.9rem;
+            background-color: var(--bg-color);
+            color: var(--text-color);
         }
         
         #searchBtn {
@@ -201,7 +237,7 @@
             display: flex;
             justify-content: space-between;
             padding: 10px;
-            background-color: white;
+            background-color: var(--card-bg);
             border: 1px solid #eee;
             border-top: none;
             border-radius: 0 0 var(--border-radius) var(--border-radius);
@@ -248,7 +284,7 @@
             text-align: center;
             margin: 20px 0;
             padding: 15px;
-            background-color: white;
+            background-color: var(--card-bg);
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             color: #d32f2f;
@@ -256,13 +292,22 @@
             border-top: 3px solid #d32f2f;
         }
         
-        .developer-info a {
-            color: #1976d2;
-            text-decoration: none;
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
         
-        .developer-info a:hover {
-            text-decoration: underline;
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3367d6;
         }
         
         @media (max-width: 768px) {
@@ -290,9 +335,12 @@
 <body>
     <header>
         <div class="logo-container">
-            <img src="https://via.placeholder.com/40" alt="Logo" class="logo-img">
+            <img src="https://i.imgur.com/0XbEk5G.png" alt="Khan Sir Logo" class="logo-img">
             <h1 class="logo">Khan Sir Player</h1>
         </div>
+        <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
     </header>
     
     <div class="container">
@@ -359,7 +407,7 @@
         </div>
         
         <div class="pdf-container" id="pdfContainer">
-            <div style="display: flex; justify-content: space-between; padding: 12px; background-color: white; border-radius: var(--border-radius); margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; padding: 12px; background-color: var(--card-bg); border-radius: var(--border-radius); margin-bottom: 10px;">
                 <h3 style="margin: 0; color: var(--primary-color); font-size: 1.1rem;"><i class="fas fa-file-pdf"></i> PDF Document</h3>
                 <button id="backToVideoBtn">
                     <i class="fas fa-video"></i> Back to Video
@@ -391,9 +439,19 @@
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
             const playPauseBtn = document.getElementById('playPauseBtn');
+            const themeToggle = document.getElementById('themeToggle');
 
             let videos = [];
             let currentIndex = -1;
+            let isDarkMode = false;
+
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('darkMode');
+            if (savedTheme === 'true') {
+                isDarkMode = true;
+                document.body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
 
             // Update file name display
             fileInput.addEventListener('change', function() {
@@ -402,6 +460,20 @@
                 } else {
                     fileName.textContent = 'No file selected';
                 }
+            });
+
+            // Theme toggle functionality
+            themeToggle.addEventListener('click', function() {
+                isDarkMode = !isDarkMode;
+                document.body.classList.toggle('dark-mode', isDarkMode);
+                
+                // Change icon
+                themeToggle.innerHTML = isDarkMode ? 
+                    '<i class="fas fa-sun"></i>' : 
+                    '<i class="fas fa-moon"></i>';
+                
+                // Save preference
+                localStorage.setItem('darkMode', isDarkMode);
             });
 
             // Load videos from text file
