@@ -3,234 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WOODcraft - Advanced Video Player</title>
+    <title>Khan Sir Player</title>
     <style>
         :root {
             --primary-color: #4285f4;
             --secondary-color: #34a853;
-            --danger-color: #ea4335;
             --light-gray: #f8f9fa;
-            --dark-gray: #6c757d;
             --border-radius: 6px;
             --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
             background-color: #f8f9fa;
             color: #333;
-            line-height: 1.6;
         }
         
-        .dark-mode {
-            background-color: #121212;
-            color: #e0e0e0;
-        }
-        
-        .dark-mode .upload-section,
-        .dark-mode .video-container,
-        .dark-mode .pdf-container,
-        .dark-mode .playlist,
-        .dark-mode .status,
-        .dark-mode .error {
-            background-color: #1e1e1e;
-            color: #e0e0e0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-        
-        .dark-mode .file-input-container input[type="file"] {
-            background-color: #2d2d2d;
-            border-color: #444;
-            color: #e0e0e0;
-        }
-        
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 15px;
+        header {
             background-color: var(--primary-color);
             color: white;
-            border-radius: var(--border-radius);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
         
         .logo {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: bold;
             margin: 0;
         }
         
-        .upload-section {
-            background-color: white;
-            padding: 25px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
+        .logo-img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
         }
         
-        .upload-section h2 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            margin-bottom: 15px;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .upload-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin: 20px 0;
+            text-align: center;
         }
         
         .file-input-container {
-            margin-bottom: 15px;
+            margin: 20px 0;
         }
         
-        .file-input-container input[type="file"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px dashed #ddd;
+        input[type="file"] {
+            display: none;
+        }
+        
+        .file-label {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
             border-radius: var(--border-radius);
-            background-color: var(--light-gray);
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
         }
         
-        .file-input-container input[type="file"]:hover {
-            border-color: var(--primary-color);
-        }
-        
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+        .file-label:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         button {
             padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
             border: none;
             border-radius: var(--border-radius);
-            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1rem;
-        }
-        
-        button i {
-            font-size: 1rem;
-        }
-        
-        #loadBtn {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        #loadBtn:hover {
-            background-color: #3367d6;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        #prevBtn, #nextBtn {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-        
-        #prevBtn:hover, #nextBtn:hover {
-            background-color: #2d9249;
-        }
-        
-        .speed-btn, .theme-btn, .quality-btn, .share-btn, .download-btn {
-            background-color: #6c757d;
-            color: white;
-        }
-        
-        .speed-btn:hover, .theme-btn:hover, .quality-btn:hover, .share-btn:hover, .download-btn:hover {
-            background-color: #5a6268;
-        }
-        
-        button:disabled {
-            background-color: var(--dark-gray);
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
-        .player-section {
-            display: flex;
-            gap: 25px;
-        }
-        
-        .video-container {
-            flex: 2;
-            background-color: #000;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            position: relative;
-        }
-        
-        .pdf-container {
-            flex: 1;
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            height: 500px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .pdf-header {
-            padding: 12px 15px;
-            background-color: var(--primary-color);
-            color: white;
+            transition: all 0.3s ease;
+            margin: 10px;
             font-weight: 500;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            background-color: white;
-            border-top: 1px solid #eee;
-        }
-        
-        .video-info {
-            background-color: white;
-            padding: 20px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            margin-top: 10px;
-        }
-        
-        #videoPlayer {
-            width: 100%;
-            height: 500px;
-            background-color: #000;
-        }
-        
-        #pdfViewer {
-            width: 100%;
-            height: 100%;
-            border: none;
-            flex-grow: 1;
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         .playlist {
-            margin-top: 20px;
             background-color: white;
             padding: 20px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
+            margin: 20px 0;
+            display: none;
         }
         
         .playlist h3 {
@@ -289,21 +170,38 @@
             color: var(--primary-color);
         }
         
-        .playlist-thumbnail {
-            width: 60px;
-            height: 40px;
-            background-color: #000;
-            flex-shrink: 0;
+        .video-container {
+            display: block;
+            margin: 20px 0;
+            display: none;
         }
         
-        .playlist-thumbnail img {
+        #videoPlayer {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: 500px;
+            background-color: #000;
+            border-radius: var(--border-radius);
         }
         
-        .status-messages {
-            margin-top: 15px;
+        .video-controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: white;
+            border: 1px solid #eee;
+            border-top: none;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+        
+        .pdf-container {
+            display: none;
+            margin: 20px 0;
+        }
+        
+        #pdfViewer {
+            width: 100%;
+            height: 800px;
+            border: none;
         }
         
         .status {
@@ -311,7 +209,8 @@
             background-color: #e8f5e9;
             color: #2e7d32;
             border-radius: var(--border-radius);
-            margin-bottom: 10px;
+            margin: 10px 0;
+            display: none;
         }
         
         .error {
@@ -319,231 +218,43 @@
             background-color: #ffebee;
             color: var(--danger-color);
             border-radius: var(--border-radius);
-        }
-        
-        .dark-mode .status {
-            background-color: #2d402d;
-            color: #8aff8a;
-        }
-        
-        .dark-mode .error {
-            background-color: #402d2d;
-            color: #ff8a8a;
-        }
-        
-        /* Loading spinner */
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Progress bar */
-        .progress-container {
-            width: 100%;
-            height: 5px;
-            background-color: #ddd;
-            margin-top: 10px;
-            border-radius: 3px;
-        }
-        
-        .dark-mode .progress-container {
-            background-color: #333;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background-color: var(--primary-color);
-            width: 0%;
-            border-radius: 3px;
-            transition: width 0.1s linear;
-        }
-        
-        /* Quality selector dropdown */
-        .quality-selector {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .quality-options {
+            margin: 10px 0;
             display: none;
-            position: absolute;
-            right: 0;
-            background-color: #f9f9f9;
-            min-width: 120px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-            border-radius: 4px;
-        }
-        
-        .quality-options button {
-            width: 100%;
-            text-align: left;
-            padding: 8px 12px;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .quality-options button:hover {
-            background-color: #ddd;
-        }
-        
-        .quality-selector.active .quality-options {
-            display: block;
-        }
-        
-        /* Share modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 500px;
-        }
-        
-        .close {
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .share-links {
-            margin-top: 15px;
-        }
-        
-        .share-links button {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .player-section {
-                flex-direction: column;
-            }
-            
-            #videoPlayer, .pdf-container {
-                height: 400px;
-            }
-            
-            .button-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            #prevBtn, #nextBtn, #loadBtn {
-                width: 100%;
-                justify-content: center;
-            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <header>
+        <div class="logo-container">
+            <img src="https://via.placeholder.com/40" alt="Logo" class="logo-img">
+            <h1 class="logo">Khan Sir Player</h1>
+        </div>
+    </header>
+    
     <div class="container">
-        <div class="header">
-            <h1 class="logo">WOODcraft</h1>
+        <div class="status" id="status"></div>
+        <div class="error" id="error"></div>
+        
+        <div class="upload-section" id="uploadSection">
+            <h2>Upload Your Course File</h2>
+            <p>Select your .txt file containing video links</p>
+            
+            <div class="file-input-container">
+                <input type="file" id="fileInput" accept=".txt" />
+                <label for="fileInput" class="file-label">
+                    <i class="fas fa-upload"></i> Choose TXT File
+                </label>
+                <p id="fileName" style="margin-top: 10px; color: #666;">No file selected</p>
+            </div>
+            
+            <button id="loadBtn">
+                <i class="fas fa-play"></i> Load Videos
+            </button>
         </div>
         
-        <div class="upload-section">
-            <h2>Upload your video txt file</h2>
-            <div class="file-input-container">
-                <input type="file" id="fileInput" accept=".txt">
-            </div>
-            <div class="button-container">
-                <button id="loadBtn">
-                    <i class="fas fa-upload"></i> Load Videos
-                </button>
-                <div>
-                    <button class="theme-btn" id="themeToggle">
-                        <i class="fas fa-moon"></i> Dark Mode
-                    </button>
-                </div>
-            </div>
-            <div class="status-messages">
-                <div class="status" id="status"></div>
-                <div class="error" id="error"></div>
-            </div>
-        </div>
-
-        <div class="video-info" id="videoInfo" style="display: none;">
-            <h3 id="videoTitle">No video loaded</h3>
-            <p id="videoIndex">0/0</p>
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-        </div>
-
-        <div class="player-section">
-            <div class="video-container">
-                <video id="videoPlayer" controls></video>
-                <div class="controls">
-                    <button id="prevBtn">
-                        <i class="fas fa-arrow-left"></i> Previous
-                    </button>
-                    <div class="quality-selector">
-                        <button class="quality-btn" id="qualityBtn">
-                            <i class="fas fa-cog"></i> Auto
-                        </button>
-                        <div class="quality-options" id="qualityOptions">
-                            <button data-quality="auto">Auto</button>
-                            <button data-quality="1080">1080p</button>
-                            <button data-quality="720">720p</button>
-                            <button data-quality="480">480p</button>
-                            <button data-quality="360">360p</button>
-                        </div>
-                    </div>
-                    <button class="speed-btn" id="speedBtn">
-                        <i class="fas fa-tachometer-alt"></i> 1x
-                    </button>
-                    <button id="nextBtn">
-                        Next <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="pdf-container">
-                <div class="pdf-header">
-                    <div><i class="fas fa-file-pdf"></i> PDF Viewer</div>
-                    <div>
-                        <button id="bookmarkBtn" title="Bookmark current position">
-                            <i class="fas fa-bookmark"></i>
-                        </button>
-                        <button id="downloadBtn" title="Download PDF">
-                            <i class="fas fa-download"></i>
-                        </button>
-                        <button id="shareBtn" title="Share video">
-                            <i class="fas fa-share-alt"></i>
-                        </button>
-                    </div>
-                </div>
-                <iframe id="pdfViewer" src="about:blank"></iframe>
-            </div>
-        </div>
-
-        <div class="playlist" id="playlist" style="display: none;">
-            <h3><i class="fas fa-list"></i> Playlist</h3>
+        <div class="playlist" id="playlist">
+            <h3><i class="fas fa-list"></i> Course Playlist</h3>
             <div class="search-container">
                 <input type="text" id="searchInput" placeholder="Search videos...">
                 <button id="searchBtn"><i class="fas fa-search"></i></button>
@@ -551,59 +262,60 @@
             <div class="playlist-items" id="playlistItems"></div>
         </div>
         
-        <!-- Share Modal -->
-        <div id="shareModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h3>Share Video</h3>
-                <p>Share the current video with others:</p>
-                <input type="text" id="shareLink" readonly style="width: 100%; padding: 10px; margin: 10px 0;">
-                <button id="copyLinkBtn"><i class="fas fa-copy"></i> Copy Link</button>
-                <div class="share-links">
-                    <button id="shareFacebook"><i class="fab fa-facebook"></i> Share on Facebook</button>
-                    <button id="shareTwitter"><i class="fab fa-twitter"></i> Share on Twitter</button>
-                    <button id="shareLinkedIn"><i class="fab fa-linkedin"></i> Share on LinkedIn</button>
-                </div>
+        <div class="video-container" id="videoContainer">
+            <video id="videoPlayer" controls></video>
+            <div class="video-controls">
+                <button id="backToListBtn">
+                    <i class="fas fa-list"></i> Back to Playlist
+                </button>
+                <button id="viewPdfBtn">
+                    <i class="fas fa-file-pdf"></i> View PDF
+                </button>
             </div>
+        </div>
+        
+        <div class="pdf-container" id="pdfContainer">
+            <div style="display: flex; justify-content: space-between; padding: 15px; background-color: white; border-radius: var(--border-radius); margin-bottom: 10px;">
+                <h3 style="margin: 0; color: var(--primary-color);"><i class="fas fa-file-pdf"></i> PDF Document</h3>
+                <button id="backToVideoBtn">
+                    <i class="fas fa-video"></i> Back to Video
+                </button>
+            </div>
+            <iframe id="pdfViewer" src="about:blank"></iframe>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const fileInput = document.getElementById('fileInput');
+            const fileName = document.getElementById('fileName');
             const loadBtn = document.getElementById('loadBtn');
+            const uploadSection = document.getElementById('uploadSection');
+            const playlist = document.getElementById('playlist');
+            const videoContainer = document.getElementById('videoContainer');
+            const pdfContainer = document.getElementById('pdfContainer');
             const videoPlayer = document.getElementById('videoPlayer');
             const pdfViewer = document.getElementById('pdfViewer');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const speedBtn = document.getElementById('speedBtn');
-            const qualityBtn = document.getElementById('qualityBtn');
-            const qualityOptions = document.getElementById('qualityOptions');
-            const themeToggle = document.getElementById('themeToggle');
-            const bookmarkBtn = document.getElementById('bookmarkBtn');
-            const downloadBtn = document.getElementById('downloadBtn');
-            const shareBtn = document.getElementById('shareBtn');
-            const searchInput = document.getElementById('searchInput');
-            const searchBtn = document.getElementById('searchBtn');
-            const videoTitle = document.getElementById('videoTitle');
-            const videoIndex = document.getElementById('videoIndex');
             const playlistItems = document.getElementById('playlistItems');
-            const videoInfo = document.getElementById('videoInfo');
-            const playlist = document.getElementById('playlist');
             const status = document.getElementById('status');
             const error = document.getElementById('error');
-            const progressBar = document.getElementById('progressBar');
-            const shareModal = document.getElementById('shareModal');
-            const closeBtn = document.querySelector('.close');
-            const shareLink = document.getElementById('shareLink');
-            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const viewPdfBtn = document.getElementById('viewPdfBtn');
+            const backToListBtn = document.getElementById('backToListBtn');
+            const backToVideoBtn = document.getElementById('backToVideoBtn');
 
             let videos = [];
             let currentIndex = -1;
-            let currentSpeed = 1.0;
-            let currentQuality = 'auto';
-            let isDarkMode = false;
-            const speeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+
+            // Update file name display
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    fileName.textContent = this.files[0].name;
+                } else {
+                    fileName.textContent = 'No file selected';
+                }
+            });
 
             // Load videos from text file
             loadBtn.addEventListener('click', function() {
@@ -614,7 +326,7 @@
                 }
 
                 // Show loading state
-                loadBtn.innerHTML = '<span class="spinner"></span> Loading...';
+                loadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
                 loadBtn.disabled = true;
 
                 const reader = new FileReader();
@@ -623,13 +335,13 @@
                     parseVideoLinks(content);
                     
                     // Reset button state
-                    loadBtn.innerHTML = '<i class="fas fa-upload"></i> Load Videos';
+                    loadBtn.innerHTML = '<i class="fas fa-play"></i> Load Videos';
                     loadBtn.disabled = false;
                 };
                 
                 reader.onerror = function() {
                     showError('Error reading file');
-                    loadBtn.innerHTML = '<i class="fas fa-upload"></i> Load Videos';
+                    loadBtn.innerHTML = '<i class="fas fa-play"></i> Load Videos';
                     loadBtn.disabled = false;
                 };
                 
@@ -638,19 +350,24 @@
 
             function showError(message) {
                 error.textContent = message;
-                setTimeout(() => error.textContent = '', 5000);
+                error.style.display = 'block';
+                setTimeout(() => {
+                    error.style.display = 'none';
+                }, 5000);
             }
 
             function showStatus(message) {
                 status.textContent = message;
-                setTimeout(() => status.textContent = '', 5000);
+                status.style.display = 'block';
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 5000);
             }
 
             function parseVideoLinks(content) {
                 videos = [];
                 const lines = content.split('\n');
                 let currentVideo = null;
-                let ignoredCount = 0;
                 
                 lines.forEach(line => {
                     if (line.trim() === '') return;
@@ -683,13 +400,7 @@
                         if (currentVideo) {
                             // Add PDF to current video
                             currentVideo.pdfUrl = url;
-                        } else {
-                            // PDF without video - we'll ignore it
-                            ignoredCount++;
                         }
-                    } else {
-                        // Not a video or PDF - ignore
-                        ignoredCount++;
                     }
                 });
                 
@@ -699,18 +410,14 @@
                 }
                 
                 if (videos.length > 0) {
-                    displayPlaylist();
-                    // Try to load saved progress
-                    loadProgress();
-                    if (currentIndex === -1) {
-                        playVideo(0);
-                    }
-                    videoInfo.style.display = 'block';
+                    // Hide upload section and show playlist
+                    uploadSection.style.display = 'none';
                     playlist.style.display = 'block';
-                    status.textContent = `Loaded ${videos.length} videos. Ignored ${ignoredCount} non-video/PDF links.`;
+                    
+                    displayPlaylist();
+                    showStatus(`Loaded ${videos.length} videos.`);
                 } else {
-                    status.textContent = `No valid video links found. Found ${ignoredCount} non-video/PDF links.`;
-                    showError('No valid .m3u8 video links found in the file');
+                    showError('No valid video links found in the file');
                 }
             }
 
@@ -720,31 +427,20 @@
                 videosToDisplay.forEach((video, index) => {
                     const item = document.createElement('div');
                     item.className = 'playlist-item';
-                    const actualIndex = videos.indexOf(video);
-                    if (actualIndex === currentIndex) {
+                    if (index === currentIndex) {
                         item.classList.add('active');
                     }
                     
-                    // Add thumbnail (placeholder)
-                    const thumbDiv = document.createElement('div');
-                    thumbDiv.className = 'playlist-thumbnail';
-                    const img = document.createElement('img');
-                    img.src = 'https://via.placeholder.com/60x40/000000/FFFFFF?text=Video';
-                    img.alt = 'Thumbnail';
-                    thumbDiv.appendChild(img);
-                    item.appendChild(thumbDiv);
-                    
                     // Add icon based on content
                     const icon = document.createElement('i');
-                    icon.className = video.pdfUrl ? 'fas fa-film' : 'fas fa-video';
+                    icon.className = 'fas fa-play-circle';
                     icon.style.marginRight = '8px';
                     
                     item.appendChild(icon);
                     item.appendChild(document.createTextNode(video.title));
                     
                     item.addEventListener('click', () => {
-                        const actualIndex = videos.indexOf(video);
-                        playVideo(actualIndex);
+                        playVideo(index);
                     });
                     playlistItems.appendChild(item);
                 });
@@ -756,15 +452,13 @@
                 currentIndex = index;
                 const video = videos[currentIndex];
                 
-                // Update UI
-                videoTitle.textContent = video.title;
-                videoIndex.textContent = `${currentIndex + 1}/${videos.length}`;
+                // Hide playlist and show video player
+                playlist.style.display = 'none';
+                videoContainer.style.display = 'block';
                 
                 // Play video
                 if (video.videoUrl) {
-                    // Add quality parameter to URL
-                    const qualityParam = currentQuality !== 'auto' ? `&quality=${currentQuality}` : '';
-                    videoPlayer.src = `https://pro-ultra-hd-stream-player.woodmirror.workers.dev/?start=${encodeURIComponent(video.videoUrl)}${qualityParam}`;
+                    videoPlayer.src = `https://pro-ultra-hd-stream-player.woodmirror.workers.dev/?start=${encodeURIComponent(video.videoUrl)}`;
                     videoPlayer.load();
                     videoPlayer.play().catch(e => {
                         console.log('Autoplay prevented:', e);
@@ -772,203 +466,20 @@
                     });
                 }
                 
-                // Load PDF if available
-                if (video.pdfUrl) {
-                    pdfViewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(video.pdfUrl)}&embedded=true`;
-                } else {
-                    pdfViewer.src = 'about:blank';
-                }
-                
                 // Update playlist highlighting
                 updatePlaylistHighlight();
-                
-                // Update button states
-                prevBtn.disabled = currentIndex === 0;
-                nextBtn.disabled = currentIndex === videos.length - 1;
-                
-                // Save progress
-                saveProgress();
-                
-                // Update share link
-                updateShareLink();
             }
 
             function updatePlaylistHighlight() {
                 const items = playlistItems.querySelectorAll('.playlist-item');
                 items.forEach((item, i) => {
-                    const actualIndex = Array.from(items).indexOf(item);
-                    const video = videos.find(v => 
-                        v.title === item.textContent.replace('', '').replace('', '').trim()
-                    );
-                    const videoIndex = videos.indexOf(video);
-                    
-                    if (videoIndex === currentIndex) {
+                    if (i === currentIndex) {
                         item.classList.add('active');
                     } else {
                         item.classList.remove('active');
                     }
                 });
             }
-
-            // Navigation
-            prevBtn.addEventListener('click', () => {
-                if (currentIndex > 0) {
-                    playVideo(currentIndex - 1);
-                }
-            });
-
-            nextBtn.addEventListener('click', () => {
-                if (currentIndex < videos.length - 1) {
-                    playVideo(currentIndex + 1);
-                }
-            });
-
-            // Speed control
-            speedBtn.addEventListener('click', toggleSpeed);
-            
-            function toggleSpeed() {
-                const currentIndex = speeds.indexOf(currentSpeed);
-                const nextIndex = (currentIndex + 1) % speeds.length;
-                currentSpeed = speeds[nextIndex];
-                videoPlayer.playbackRate = currentSpeed;
-                speedBtn.innerHTML = `<i class="fas fa-tachometer-alt"></i> ${currentSpeed}x`;
-                showStatus(`Playback speed: ${currentSpeed}x`);
-            }
-
-            // Quality control
-            qualityBtn.addEventListener('click', () => {
-                const selector = document.querySelector('.quality-selector');
-                selector.classList.toggle('active');
-            });
-            
-            // Close quality selector when clicking outside
-            document.addEventListener('click', (e) => {
-                const selector = document.querySelector('.quality-selector');
-                if (!selector.contains(e.target)) {
-                    selector.classList.remove('active');
-                }
-            });
-            
-            // Quality options click
-            qualityOptions.addEventListener('click', (e) => {
-                if (e.target.tagName === 'BUTTON' && e.target.dataset.quality) {
-                    currentQuality = e.target.dataset.quality;
-                    qualityBtn.innerHTML = `<i class="fas fa-cog"></i> ${currentQuality === 'auto' ? 'Auto' : currentQuality + 'p'}`;
-                    document.querySelector('.quality-selector').classList.remove('active');
-                    
-                    // Reload video with new quality
-                    if (currentIndex !== -1) {
-                        playVideo(currentIndex);
-                    }
-                    
-                    showStatus(`Quality set to ${currentQuality === 'auto' ? 'Auto' : currentQuality + 'p'}`);
-                }
-            });
-
-            // Theme toggle
-            themeToggle.addEventListener('click', () => {
-                isDarkMode = !isDarkMode;
-                document.body.classList.toggle('dark-mode', isDarkMode);
-                themeToggle.innerHTML = isDarkMode ? 
-                    '<i class="fas fa-sun"></i> Light Mode' : 
-                    '<i class="fas fa-moon"></i> Dark Mode';
-                
-                // Save theme preference
-                localStorage.setItem('darkMode', isDarkMode);
-            });
-
-            // Bookmark current position
-            bookmarkBtn.addEventListener('click', () => {
-                if (currentIndex === -1) {
-                    showError('No video is currently playing');
-                    return;
-                }
-                
-                const bookmark = {
-                    index: currentIndex,
-                    title: videos[currentIndex].title,
-                    timestamp: Math.floor(videoPlayer.currentTime),
-                    videoTitle: videos[currentIndex].title,
-                    date: new Date().toLocaleString()
-                };
-                
-                let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
-                bookmarks.push(bookmark);
-                localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-                
-                showStatus('Bookmarked current position!');
-            });
-
-            // Download PDF
-            downloadBtn.addEventListener('click', () => {
-                if (currentIndex === -1 || !videos[currentIndex].pdfUrl) {
-                    showError('No PDF available to download');
-                    return;
-                }
-                
-                const link = document.createElement('a');
-                link.href = videos[currentIndex].pdfUrl;
-                link.download = videos[currentIndex].title + '.pdf';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                showStatus('Downloading PDF...');
-            });
-
-            // Share functionality
-            shareBtn.addEventListener('click', () => {
-                if (currentIndex === -1) {
-                    showError('No video to share');
-                    return;
-                }
-                
-                updateShareLink();
-                shareModal.style.display = 'block';
-            });
-            
-            // Close modal
-            closeBtn.addEventListener('click', () => {
-                shareModal.style.display = 'none';
-            });
-            
-            // Close modal when clicking outside
-            window.addEventListener('click', (e) => {
-                if (e.target === shareModal) {
-                    shareModal.style.display = 'none';
-                }
-            });
-            
-            // Update share link
-            function updateShareLink() {
-                const baseUrl = window.location.href.split('?')[0];
-                const link = `${baseUrl}?video=${currentIndex}`;
-                shareLink.value = link;
-            }
-            
-            // Copy link
-            copyLinkBtn.addEventListener('click', () => {
-                shareLink.select();
-                document.execCommand('copy');
-                showStatus('Link copied to clipboard!');
-            });
-            
-            // Social sharing
-            document.getElementById('shareFacebook').addEventListener('click', () => {
-                const url = encodeURIComponent(shareLink.value);
-                window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
-            });
-            
-            document.getElementById('shareTwitter').addEventListener('click', () => {
-                const url = encodeURIComponent(shareLink.value);
-                const text = encodeURIComponent(`Check out this video: ${videos[currentIndex].title}`);
-                window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
-            });
-            
-            document.getElementById('shareLinkedIn').addEventListener('click', () => {
-                const url = encodeURIComponent(shareLink.value);
-                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
-            });
 
             // Search functionality
             searchBtn.addEventListener('click', searchVideos);
@@ -996,27 +507,33 @@
                 }
             }
 
-            // Keyboard shortcuts
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft' && !prevBtn.disabled) {
-                    prevBtn.click();
-                } else if (e.key === 'ArrowRight' && !nextBtn.disabled) {
-                    nextBtn.click();
-                } else if (e.key === 's' || e.key === 'S') {
-                    speedBtn.click();
-                } else if (e.key === 'b' || e.key === 'B') {
-                    bookmarkBtn.click();
-                } else if (e.key === 'q' || e.key === 'Q') {
-                    qualityBtn.click();
+            // View PDF button
+            viewPdfBtn.addEventListener('click', () => {
+                if (currentIndex === -1 || !videos[currentIndex].pdfUrl) {
+                    showError('No PDF available for this video');
+                    return;
+                }
+                
+                // Hide video and show PDF
+                videoContainer.style.display = 'none';
+                pdfContainer.style.display = 'block';
+                
+                // Load PDF
+                if (videos[currentIndex].pdfUrl) {
+                    pdfViewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(videos[currentIndex].pdfUrl)}&embedded=true`;
                 }
             });
 
-            // Progress bar update
-            videoPlayer.addEventListener('timeupdate', () => {
-                if (videoPlayer.duration) {
-                    const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100;
-                    progressBar.style.width = `${progress}%`;
-                }
+            // Back to playlist button
+            backToListBtn.addEventListener('click', () => {
+                videoContainer.style.display = 'none';
+                playlist.style.display = 'block';
+            });
+
+            // Back to video button
+            backToVideoBtn.addEventListener('click', () => {
+                pdfContainer.style.display = 'none';
+                videoContainer.style.display = 'block';
             });
 
             // Handle video errors
@@ -1031,54 +548,6 @@
                         console.log('Direct play failed:', e);
                         showError('Video playback failed. The video may be unavailable.');
                     });
-                }
-            });
-
-            // Save and load progress
-            function saveProgress() {
-                const progress = {
-                    videoIndex: currentIndex,
-                    videoTime: videoPlayer.currentTime,
-                    timestamp: Date.now()
-                };
-                localStorage.setItem('videoProgress', JSON.stringify(progress));
-            }
-
-            function loadProgress() {
-                const savedTheme = localStorage.getItem('darkMode');
-                if (savedTheme === 'true') {
-                    isDarkMode = true;
-                    document.body.classList.add('dark-mode');
-                    themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-                }
-                
-                const saved = localStorage.getItem('videoProgress');
-                if (saved) {
-                    const progress = JSON.parse(saved);
-                    if (progress.videoIndex < videos.length) {
-                        playVideo(progress.videoIndex);
-                        videoPlayer.currentTime = progress.videoTime;
-                        showStatus('Loaded your previous progress');
-                    }
-                }
-            }
-
-            // Auto-save progress periodically
-            setInterval(() => {
-                if (currentIndex !== -1 && !isNaN(videoPlayer.currentTime)) {
-                    saveProgress();
-                }
-            }, 30000); // Save every 30 seconds
-            
-            // Handle URL parameters for sharing
-            window.addEventListener('load', () => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const videoIndex = urlParams.get('video');
-                if (videoIndex !== null && videos.length > 0) {
-                    const index = parseInt(videoIndex);
-                    if (index >= 0 && index < videos.length) {
-                        playVideo(index);
-                    }
                 }
             });
         });
