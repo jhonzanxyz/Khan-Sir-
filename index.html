@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Video Player with PDF Viewer</title>
+    <title>WOODcraft - Advanced Video Player</title>
     <style>
         :root {
             --primary-color: #4285f4;
@@ -53,6 +53,21 @@
             gap: 25px;
         }
         
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        
         .upload-section {
             background-color: white;
             padding: 25px;
@@ -90,6 +105,8 @@
             justify-content: space-between;
             margin-top: 15px;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         
         button {
@@ -129,12 +146,12 @@
             background-color: #2d9249;
         }
         
-        .speed-btn, .theme-btn {
+        .speed-btn, .theme-btn, .quality-btn, .share-btn, .download-btn {
             background-color: #6c757d;
             color: white;
         }
         
-        .speed-btn:hover, .theme-btn:hover {
+        .speed-btn:hover, .theme-btn:hover, .quality-btn:hover, .share-btn:hover, .download-btn:hover {
             background-color: #5a6268;
         }
         
@@ -350,6 +367,77 @@
             transition: width 0.1s linear;
         }
         
+        /* Quality selector dropdown */
+        .quality-selector {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .quality-options {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+        }
+        
+        .quality-options button {
+            width: 100%;
+            text-align: left;
+            padding: 8px 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .quality-options button:hover {
+            background-color: #ddd;
+        }
+        
+        .quality-selector.active .quality-options {
+            display: block;
+        }
+        
+        /* Share modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+        }
+        
+        .close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .share-links {
+            margin-top: 15px;
+        }
+        
+        .share-links button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .player-section {
@@ -375,6 +463,10 @@
 </head>
 <body>
     <div class="container">
+        <div class="header">
+            <h1 class="logo">WOODcraft</h1>
+        </div>
+        
         <div class="upload-section">
             <h2>Upload your video txt file</h2>
             <div class="file-input-container">
@@ -384,9 +476,11 @@
                 <button id="loadBtn">
                     <i class="fas fa-upload"></i> Load Videos
                 </button>
-                <button class="theme-btn" id="themeToggle">
-                    <i class="fas fa-moon"></i> Dark Mode
-                </button>
+                <div>
+                    <button class="theme-btn" id="themeToggle">
+                        <i class="fas fa-moon"></i> Dark Mode
+                    </button>
+                </div>
             </div>
             <div class="status-messages">
                 <div class="status" id="status"></div>
@@ -409,6 +503,18 @@
                     <button id="prevBtn">
                         <i class="fas fa-arrow-left"></i> Previous
                     </button>
+                    <div class="quality-selector">
+                        <button class="quality-btn" id="qualityBtn">
+                            <i class="fas fa-cog"></i> Auto
+                        </button>
+                        <div class="quality-options" id="qualityOptions">
+                            <button data-quality="auto">Auto</button>
+                            <button data-quality="1080">1080p</button>
+                            <button data-quality="720">720p</button>
+                            <button data-quality="480">480p</button>
+                            <button data-quality="360">360p</button>
+                        </div>
+                    </div>
                     <button class="speed-btn" id="speedBtn">
                         <i class="fas fa-tachometer-alt"></i> 1x
                     </button>
@@ -420,9 +526,17 @@
             <div class="pdf-container">
                 <div class="pdf-header">
                     <div><i class="fas fa-file-pdf"></i> PDF Viewer</div>
-                    <button id="bookmarkBtn" title="Bookmark current position">
-                        <i class="fas fa-bookmark"></i>
-                    </button>
+                    <div>
+                        <button id="bookmarkBtn" title="Bookmark current position">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                        <button id="downloadBtn" title="Download PDF">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button id="shareBtn" title="Share video">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
                 </div>
                 <iframe id="pdfViewer" src="about:blank"></iframe>
             </div>
@@ -436,6 +550,22 @@
             </div>
             <div class="playlist-items" id="playlistItems"></div>
         </div>
+        
+        <!-- Share Modal -->
+        <div id="shareModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Share Video</h3>
+                <p>Share the current video with others:</p>
+                <input type="text" id="shareLink" readonly style="width: 100%; padding: 10px; margin: 10px 0;">
+                <button id="copyLinkBtn"><i class="fas fa-copy"></i> Copy Link</button>
+                <div class="share-links">
+                    <button id="shareFacebook"><i class="fab fa-facebook"></i> Share on Facebook</button>
+                    <button id="shareTwitter"><i class="fab fa-twitter"></i> Share on Twitter</button>
+                    <button id="shareLinkedIn"><i class="fab fa-linkedin"></i> Share on LinkedIn</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -447,8 +577,12 @@
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
             const speedBtn = document.getElementById('speedBtn');
+            const qualityBtn = document.getElementById('qualityBtn');
+            const qualityOptions = document.getElementById('qualityOptions');
             const themeToggle = document.getElementById('themeToggle');
             const bookmarkBtn = document.getElementById('bookmarkBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const shareBtn = document.getElementById('shareBtn');
             const searchInput = document.getElementById('searchInput');
             const searchBtn = document.getElementById('searchBtn');
             const videoTitle = document.getElementById('videoTitle');
@@ -459,10 +593,15 @@
             const status = document.getElementById('status');
             const error = document.getElementById('error');
             const progressBar = document.getElementById('progressBar');
+            const shareModal = document.getElementById('shareModal');
+            const closeBtn = document.querySelector('.close');
+            const shareLink = document.getElementById('shareLink');
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
 
             let videos = [];
             let currentIndex = -1;
             let currentSpeed = 1.0;
+            let currentQuality = 'auto';
             let isDarkMode = false;
             const speeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
 
@@ -623,7 +762,9 @@
                 
                 // Play video
                 if (video.videoUrl) {
-                    videoPlayer.src = `https://pro-ultra-hd-stream-player.woodmirror.workers.dev/?start=${encodeURIComponent(video.videoUrl)}`;
+                    // Add quality parameter to URL
+                    const qualityParam = currentQuality !== 'auto' ? `&quality=${currentQuality}` : '';
+                    videoPlayer.src = `https://pro-ultra-hd-stream-player.woodmirror.workers.dev/?start=${encodeURIComponent(video.videoUrl)}${qualityParam}`;
                     videoPlayer.load();
                     videoPlayer.play().catch(e => {
                         console.log('Autoplay prevented:', e);
@@ -647,6 +788,9 @@
                 
                 // Save progress
                 saveProgress();
+                
+                // Update share link
+                updateShareLink();
             }
 
             function updatePlaylistHighlight() {
@@ -691,6 +835,36 @@
                 showStatus(`Playback speed: ${currentSpeed}x`);
             }
 
+            // Quality control
+            qualityBtn.addEventListener('click', () => {
+                const selector = document.querySelector('.quality-selector');
+                selector.classList.toggle('active');
+            });
+            
+            // Close quality selector when clicking outside
+            document.addEventListener('click', (e) => {
+                const selector = document.querySelector('.quality-selector');
+                if (!selector.contains(e.target)) {
+                    selector.classList.remove('active');
+                }
+            });
+            
+            // Quality options click
+            qualityOptions.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON' && e.target.dataset.quality) {
+                    currentQuality = e.target.dataset.quality;
+                    qualityBtn.innerHTML = `<i class="fas fa-cog"></i> ${currentQuality === 'auto' ? 'Auto' : currentQuality + 'p'}`;
+                    document.querySelector('.quality-selector').classList.remove('active');
+                    
+                    // Reload video with new quality
+                    if (currentIndex !== -1) {
+                        playVideo(currentIndex);
+                    }
+                    
+                    showStatus(`Quality set to ${currentQuality === 'auto' ? 'Auto' : currentQuality + 'p'}`);
+                }
+            });
+
             // Theme toggle
             themeToggle.addEventListener('click', () => {
                 isDarkMode = !isDarkMode;
@@ -714,7 +888,8 @@
                     index: currentIndex,
                     title: videos[currentIndex].title,
                     timestamp: Math.floor(videoPlayer.currentTime),
-                    videoTitle: videos[currentIndex].title
+                    videoTitle: videos[currentIndex].title,
+                    date: new Date().toLocaleString()
                 };
                 
                 let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
@@ -722,6 +897,77 @@
                 localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
                 
                 showStatus('Bookmarked current position!');
+            });
+
+            // Download PDF
+            downloadBtn.addEventListener('click', () => {
+                if (currentIndex === -1 || !videos[currentIndex].pdfUrl) {
+                    showError('No PDF available to download');
+                    return;
+                }
+                
+                const link = document.createElement('a');
+                link.href = videos[currentIndex].pdfUrl;
+                link.download = videos[currentIndex].title + '.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showStatus('Downloading PDF...');
+            });
+
+            // Share functionality
+            shareBtn.addEventListener('click', () => {
+                if (currentIndex === -1) {
+                    showError('No video to share');
+                    return;
+                }
+                
+                updateShareLink();
+                shareModal.style.display = 'block';
+            });
+            
+            // Close modal
+            closeBtn.addEventListener('click', () => {
+                shareModal.style.display = 'none';
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === shareModal) {
+                    shareModal.style.display = 'none';
+                }
+            });
+            
+            // Update share link
+            function updateShareLink() {
+                const baseUrl = window.location.href.split('?')[0];
+                const link = `${baseUrl}?video=${currentIndex}`;
+                shareLink.value = link;
+            }
+            
+            // Copy link
+            copyLinkBtn.addEventListener('click', () => {
+                shareLink.select();
+                document.execCommand('copy');
+                showStatus('Link copied to clipboard!');
+            });
+            
+            // Social sharing
+            document.getElementById('shareFacebook').addEventListener('click', () => {
+                const url = encodeURIComponent(shareLink.value);
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+            });
+            
+            document.getElementById('shareTwitter').addEventListener('click', () => {
+                const url = encodeURIComponent(shareLink.value);
+                const text = encodeURIComponent(`Check out this video: ${videos[currentIndex].title}`);
+                window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+            });
+            
+            document.getElementById('shareLinkedIn').addEventListener('click', () => {
+                const url = encodeURIComponent(shareLink.value);
+                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
             });
 
             // Search functionality
@@ -760,6 +1006,8 @@
                     speedBtn.click();
                 } else if (e.key === 'b' || e.key === 'B') {
                     bookmarkBtn.click();
+                } else if (e.key === 'q' || e.key === 'Q') {
+                    qualityBtn.click();
                 }
             });
 
@@ -821,6 +1069,18 @@
                     saveProgress();
                 }
             }, 30000); // Save every 30 seconds
+            
+            // Handle URL parameters for sharing
+            window.addEventListener('load', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const videoIndex = urlParams.get('video');
+                if (videoIndex !== null && videos.length > 0) {
+                    const index = parseInt(videoIndex);
+                    if (index >= 0 && index < videos.length) {
+                        playVideo(index);
+                    }
+                }
+            });
         });
     </script>
 </body>
