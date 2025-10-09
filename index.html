@@ -3,8 +3,21 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Quotation Generator</title>
+    <title>Modern Quotation Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #dbeafe;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 12px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,193 +25,244 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f1f5f9;
+            color: var(--dark);
             padding: 20px;
+            line-height: 1.6;
         }
 
         .container {
             display: flex;
-            gap: 20px;
-            max-width: 1200px;
+            gap: 24px;
+            max-width: 1400px;
             margin: 0 auto;
             flex-wrap: wrap;
         }
 
-        .form-section {
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
             flex: 1;
             min-width: 300px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .preview-section {
-            flex: 2;
-            min-width: 500px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 i {
+            color: var(--primary);
+        }
+
+        h3 {
+            font-size: 16px;
+            margin: 20px 0 12px;
+            color: var(--gray);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         input, textarea, button {
             width: 100%;
-            padding: 8px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         button {
-            background: #007BFF;
+            background: var(--primary);
             color: white;
+            font-weight: 600;
             cursor: pointer;
-            padding: 10px;
-            font-weight: bold;
             border: none;
-            border-radius: 4px;
+            margin-top: 8px;
+            padding: 12px;
+            font-size: 15px;
             transition: background 0.3s;
         }
 
         button:hover {
-            background: #0056b3;
+            background: #1d4ed8;
         }
 
-        .btn-generate {
-            background: #28a745;
+        .btn-success {
+            background: var(--success);
         }
 
-        .btn-generate:hover {
-            background: #218838;
+        .btn-success:hover {
+            background: #0da271;
         }
 
-        .btn-print {
-            background: #6c757d;
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
         }
 
-        .btn-print:hover {
-            background: #545b62;
+        .btn-outline:hover {
+            background: var(--primary-light);
         }
 
-        /* Quotation Output Styling */
+        .item-row > div {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .item-row input {
+            padding: 10px;
+            font-size: 13px;
+        }
+
+        /* Preview Output - Modern Quotation */
         #quotationOutput {
-            font-size: 12pt;
-            line-height: 1.6;
-            padding: 30px;
+            min-height: 600px;
+            padding: 40px;
             background: white;
-            min-height: 500px;
-            border: 1px solid #ddd;
-            page-break-inside: avoid;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            font-size: 14px;
+            position: relative;
         }
 
         .quotation-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #007BFF;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
         }
 
         .logo-placeholder {
-            width: 100px;
-            height: 50px;
-            background: linear-gradient(45deg, #ffcc00, #ff9900);
-            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), #1d4ed8);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
             color: white;
-        }
-
-        .company-info {
-            text-align: right;
-            font-size: 11pt;
-        }
-
-        .header-title {
-            font-size: 24pt;
             font-weight: bold;
-            color: #dc3545;
-            margin: 0;
+            font-size: 18px;
         }
 
-        .address {
-            font-size: 11pt;
-            margin: 5px 0;
+        .company-info h1 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            color: var(--dark);
+        }
+
+        .company-info p {
+            font-size: 13px;
+            color: var(--gray);
+            margin: 2px 0;
         }
 
         .date-ref {
             display: flex;
             justify-content: space-between;
             margin: 20px 0;
-            font-size: 11pt;
+            font-size: 14px;
         }
 
         .to-section {
-            margin: 20px 0;
-            line-height: 1.4;
+            margin: 25px 0;
         }
 
         .to-section p {
-            margin: 2px 0;
+            margin: 4px 0;
         }
 
         .quotation-title {
             text-align: center;
-            font-weight: bold;
-            margin: 20px 0;
-            text-decoration: underline;
+            font-weight: 800;
+            font-size: 20px;
+            margin: 25px 0;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 11pt;
-        }
-
-        .items-table th,
-        .items-table td {
-            border: 1px solid #333;
-            padding: 6px;
-            text-align: left;
+            margin: 25px 0;
         }
 
         .items-table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+            padding: 12px 10px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .items-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .items-table tr:last-child td {
+            border-bottom: none;
         }
 
         .total-row td {
-            font-weight: bold;
+            font-weight: 700;
+            color: var(--dark);
         }
 
         .notes {
             margin-top: 30px;
-            font-size: 11pt;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .notes p {
+            margin: 6px 0;
         }
 
         .signature {
             margin-top: 50px;
-            font-style: italic;
-            padding-top: 20px;
-            border-top: 1px dashed #999;
-            text-align: left;
+            display: flex;
+            justify-content: flex-end;
+            gap: 100px;
+        }
+
+        .signature div {
+            text-align: center;
         }
 
         .footer {
-            margin-top: 40px;
-            padding-top: 10px;
-            border-top: 2px solid #007BFF;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
             display: flex;
             justify-content: center;
-            gap: 20px;
-            font-size: 11pt;
-            color: #333;
+            gap: 24px;
+            color: var(--gray);
+            font-size: 13px;
         }
 
         @media print {
@@ -210,56 +274,80 @@
             }
             #quotationOutput {
                 position: absolute;
-                left: 0;
                 top: 0;
+                left: 0;
                 width: 100%;
-                padding: 30px;
+                height: auto;
+                box-shadow: none;
+                border-radius: 0;
+                padding: 30mm;
                 box-sizing: border-box;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            .signature {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 30px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="form-section">
-            <h2>Generate Quotation</h2>
+        <!-- Form Section -->
+        <div class="card">
+            <h2><i class="fas fa-file-invoice"></i> Generate Quotation</h2>
 
-            <h3>Company Info</h3>
+            <h3><i class="fas fa-building"></i> Company Info</h3>
             <input type="text" id="companyName" placeholder="Company Name" value="VAMAN FACILITATORS">
-            <input type="text" id="address" placeholder="Address" value="Saraiyahat Road, Dumka, JHARKHAND, Pin: -814151">
-            <input type="text" id="gst" placeholder="GST Number" value="GST : 20CGSPM3903L1Z8">
+            <input type="text" id="address" placeholder="Address" value="Saraiyahat Road, Dumka, JHARKHAND, Pin: 814151">
+            <input type="text" id="gst" placeholder="GST Number" value="GST: 20CGSPM3903L1Z8">
 
-            <h3>Client Info</h3>
+            <h3><i class="fas fa-user"></i> Client Info</h3>
             <input type="text" id="clientName" placeholder="Client Name" value="The Project Manager">
             <input type="text" id="clientAddress" placeholder="Client Address" value="Pravah, Deoghar, Jharkhand">
 
-            <h3>Quotation Details</h3>
+            <h3><i class="fas fa-info-circle"></i> Quotation Details</h3>
             <input type="text" id="date" placeholder="Date (DD-MM-YYYY)" value="04-10-2025">
             <input type="text" id="refNo" placeholder="Ref No." value="18/vA/25">
 
-            <h3>Project Title</h3>
+            <h3><i class="fas fa-project-diagram"></i> Project Title</h3>
             <input type="text" id="projectTitle" placeholder="Project Title" value="Construction of boundary wall.">
 
-            <h3>Items Table</h3>
+            <h3><i class="fas fa-list"></i> Items</h3>
             <div id="itemsContainer"></div>
-            <button onclick="addRow()">+ Add Item</button>
+            <button type="button" onclick="addRow()" style="background:#475569"><i class="fas fa-plus"></i> Add Item</button>
 
-            <h3>Notes</h3>
-            <textarea id="notes" rows="4" placeholder="Enter notes...">1. Rate valid only 60 days.
+            <h3><i class="fas fa-sticky-note"></i> Notes</h3>
+            <textarea id="notes" rows="4">1. Rate valid only 60 days.
 2. The work will be completed in 10 days.
 3. Payment 50% advance.</textarea>
 
-            <h3>Contact Info (Footer)</h3>
+            <h3><i class="fas fa-phone"></i> Contact (Footer)</h3>
             <input type="text" id="mobile" placeholder="Mobile" value="Mob.: 9471250846">
-            <input type="email" id="email" placeholder="Email" value="E-mail-vaman87v@gmail.com">
+            <input type="email" id="email" placeholder="Email" value="vaman87v@gmail.com">
 
-            <button onclick="generateQuotation()" class="btn-generate">Generate Quotation</button>
+            <button type="button" onclick="generateQuotation()" class="btn-success">
+                <i class="fas fa-bolt"></i> Generate Quotation
+            </button>
         </div>
 
-        <div class="preview-section">
-            <h3>Preview</h3>
-            <div id="quotationOutput">Fill the form and click "Generate Quotation"</div>
-            <button onclick="printQuotation()" class="btn-print">Print / Save as PDF</button>
+        <!-- Preview Section -->
+        <div class="card">
+            <h2><i class="fas fa-eye"></i> Preview</h2>
+            <div id="quotationOutput">
+                <p style="color: var(--gray); text-align: center; margin-top: 100px;">
+                    Fill the form and click <strong>"Generate Quotation"</strong> to preview.
+                </p>
+            </div>
+            <button type="button" onclick="printQuotation()" class="btn-outline" style="margin-top: 20px;">
+                <i class="fas fa-print"></i> Print / Save as PDF
+            </button>
         </div>
     </div>
 
@@ -273,11 +361,11 @@
             const row = document.createElement('div');
             row.className = 'item-row';
             row.innerHTML = `
-                <div style="display: flex; gap: 5px; margin: 5px 0;">
+                <div>
                     <input type="text" placeholder="Sl. No" value="${rowCount}" style="width: 60px;">
                     <input type="text" placeholder="Description" style="flex: 2;">
                     <input type="text" placeholder="Size" style="width: 80px;">
-                    <input type="number" placeholder="Qty" step="0.01" style="width: 80px;">
+                    <input type="number" placeholder="Qty" step="0.01" style="width: 70px;">
                     <input type="number" placeholder="Rate" step="0.01" style="width: 80px;">
                     <input type="number" placeholder="Amount" step="0.01" style="width: 100px;" readonly>
                 </div>
@@ -285,138 +373,147 @@
             container.appendChild(row);
 
             const inputs = row.querySelectorAll('input');
-            const qtyInput = inputs[3];
-            const rateInput = inputs[4];
-            const amountInput = inputs[5];
+            const qty = inputs[3];
+            const rate = inputs[4];
+            const amount = inputs[5];
 
-            [qtyInput, rateInput].forEach(input => {
+            [qty, rate].forEach(input => {
                 input.addEventListener('input', () => {
-                    const qty = parseFloat(qtyInput.value) || 0;
-                    const rate = parseFloat(rateInput.value) || 0;
-                    amountInput.value = (qty * rate).toFixed(2);
+                    const q = parseFloat(qty.value) || 0;
+                    const r = parseFloat(rate.value) || 0;
+                    amount.value = (q * r).toFixed(2);
                 });
             });
         }
 
         function generateQuotation() {
-            const companyName = document.getElementById('companyName').value || 'Your Company';
-            const address = document.getElementById('address').value;
-            const gst = document.getElementById('gst').value;
-            const clientName = document.getElementById('clientName').value;
-            const clientAddress = document.getElementById('clientAddress').value;
-            const date = document.getElementById('date').value;
-            const refNo = document.getElementById('refNo').value;
-            const projectTitle = document.getElementById('projectTitle').value;
-            const notes = document.getElementById('notes').value;
-            const mobile = document.getElementById('mobile').value;
-            const email = document.getElementById('email').value;
+            const data = {
+                company: document.getElementById('companyName').value || 'Your Company',
+                address: document.getElementById('address').value,
+                gst: document.getElementById('gst').value,
+                client: document.getElementById('clientName').value,
+                clientAddr: document.getElementById('clientAddress').value,
+                date: document.getElementById('date').value,
+                ref: document.getElementById('refNo').value,
+                title: document.getElementById('projectTitle').value,
+                notes: document.getElementById('notes').value,
+                mobile: document.getElementById('mobile').value,
+                email: document.getElementById('email').value
+            };
 
             const rows = Array.from(document.querySelectorAll('.item-row'));
             const items = rows.map(row => {
                 const inputs = row.querySelectorAll('input');
                 return {
-                    slNo: inputs[0].value,
+                    sl: inputs[0].value,
                     desc: inputs[1].value,
                     size: inputs[2].value,
                     qty: inputs[3].value,
                     rate: inputs[4].value,
-                    amount: inputs[5].value
+                    amt: inputs[5].value
                 };
             });
 
-            let totalCost = 0;
-            items.forEach(item => {
-                totalCost += parseFloat(item.amount) || 0;
-            });
+            let total = items.reduce((sum, item) => sum + (parseFloat(item.amt) || 0), 0);
+            const transport = 18200;
+            const gstAmt = total * 0.18;
+            const grandTotal = total + transport + gstAmt;
 
-            const transportCharge = 18200.00;
-            const gstAmount = totalCost * 0.18;
-            const grandTotal = totalCost + transportCharge + gstAmount;
+            const notesHtml = data.notes
+                .split('\n')
+                .filter(line => line.trim())
+                .map(line => `<p>${line.trim()}</p>`)
+                .join('');
 
-            let output = `
+            const output = `
                 <div class="quotation-header">
-                    <div><div class="logo-placeholder">LOGO</div></div>
+                    <div class="logo-placeholder">V</div>
                     <div class="company-info">
-                        <p><strong>${companyName}</strong></p>
-                        <p>${address}</p>
-                        <p>${gst}</p>
+                        <h1>${data.company}</h1>
+                        <p>${data.address}</p>
+                        <p>${data.gst}</p>
                     </div>
                 </div>
 
                 <div class="date-ref">
-                    <span>Date: <u>${date}</u></span>
-                    <span>Ref No.: <u>${refNo}</u></span>
+                    <span><strong>Date:</strong> ${data.date}</span>
+                    <span><strong>Ref No.:</strong> ${data.ref}</span>
                 </div>
 
                 <div class="to-section">
-                    <p>To,</p>
-                    <p>${clientName}</p>
-                    <p>${clientAddress.split(',').join('<br>')}</p>
+                    <p><strong>To,</strong></p>
+                    <p>${data.client}</p>
+                    <p>${data.clientAddr.replace(/,/g, '<br>')}</p>
                 </div>
 
-                <div class="quotation-title">QUOTATION</div>
+                <div class="quotation-title">Quotation</div>
 
-                <p>${projectTitle}</p>
+                <p style="margin-bottom: 20px;">${data.title}</p>
 
                 <table class="items-table">
                     <thead>
                         <tr>
                             <th>Sl. No</th>
-                            <th>Description of work</th>
+                            <th>Description</th>
                             <th>Size</th>
-                            <th>Qty.</th>
+                            <th>Qty</th>
                             <th>Rate</th>
-                            <th>Amount</th>
+                            <th>Amount (₹)</th>
                         </tr>
                     </thead>
                     <tbody>
-            `;
-
-            items.forEach(item => {
-                output += `
-                    <tr>
-                        <td>${item.slNo}</td>
-                        <td>${item.desc}</td>
-                        <td>${item.size}</td>
-                        <td>${item.qty}</td>
-                        <td>${item.rate}</td>
-                        <td>${item.amount}</td>
-                    </tr>
-                `;
-            });
-
-            output += `
+                        ${items.map(item => `
+                            <tr>
+                                <td>${item.sl}</td>
+                                <td>${item.desc}</td>
+                                <td>${item.size}</td>
+                                <td>${item.qty}</td>
+                                <td>${item.rate}</td>
+                                <td>${item.amt}</td>
+                            </tr>
+                        `).join('')}
                     </tbody>
                     <tfoot>
                         <tr class="total-row">
                             <td colspan="5">Total Cost</td>
-                            <td>${totalCost.toFixed(2)}</td>
+                            <td>${total.toFixed(2)}</td>
                         </tr>
                         <tr>
-                            <td colspan="5">Transport charge</td>
-                            <td>${transportCharge.toFixed(2)}</td>
+                            <td colspan="5">Transport Charge</td>
+                            <td>${transport.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">GST (18%)</td>
+                            <td>${gstAmt.toFixed(2)}</td>
                         </tr>
                         <tr class="total-row">
-                            <td colspan="5">Total Amount inc. 18% GST</td>
+                            <td colspan="5">Grand Total (INR)</td>
                             <td>${grandTotal.toFixed(2)}</td>
                         </tr>
                     </tfoot>
                 </table>
 
                 <div class="notes">
-                    <p><strong>Note:</strong></p>
-                    ${notes.split('\n').map(line => line.trim() ? `<p>${line}</p>` : '').join('')}
+                    <p><strong>Notes:</strong></p>
+                    ${notesHtml}
                 </div>
 
                 <div class="signature">
-                    <p>For ${companyName}</p>
-                    <p>_________________________</p>
-                    <p>(Authorized Signatory)</p>
+                    <div>
+                        <p>For ${data.company}</p>
+                        <p style="margin-top: 60px;">_________________________</p>
+                        <p>Authorized Signatory</p>
+                    </div>
+                    <div>
+                        <p>Accepted By Client</p>
+                        <p style="margin-top: 60px;">_________________________</p>
+                        <p>Signature</p>
+                    </div>
                 </div>
 
                 <div class="footer">
-                    <span>📞 ${mobile}</span>
-                    <span>✉️ ${email}</span>
+                    <span><i class="fas fa-mobile-alt"></i> ${data.mobile}</span>
+                    <span><i class="fas fa-envelope"></i> ${data.email}</span>
                 </div>
             `;
 
@@ -424,17 +521,18 @@
         }
 
         function printQuotation() {
-            if (document.getElementById('quotationOutput').textContent.trim() === 'Fill the form and click "Generate Quotation"') {
+            const preview = document.getElementById('quotationOutput');
+            if (preview.innerHTML.includes('Fill the form')) {
                 alert('Please generate a quotation first!');
                 return;
             }
             window.print();
         }
 
-        // Add one default row on load
-        window.onload = () => {
+        // Add first row on load
+        window.addEventListener('load', () => {
             addRow();
-        };
+        });
     </script>
 </body>
 </html>
