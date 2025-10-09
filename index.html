@@ -265,6 +265,7 @@
             font-size: 13px;
         }
 
+        /* 🖨️ PRINT STYLES — THIS IS THE MAGIC PART FOR MODERN PDF */
         @media print {
             body * {
                 visibility: hidden;
@@ -282,6 +283,53 @@
                 border-radius: 0;
                 padding: 30mm;
                 box-sizing: border-box;
+                font-size: 12pt;
+                line-height: 1.5;
+                color: #000;
+                background: #fff;
+                page-break-inside: avoid;
+            }
+            .quotation-header {
+                border-bottom: 2px solid #2563eb;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+            }
+            .logo-placeholder {
+                background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                color: white;
+                font-weight: bold;
+            }
+            .items-table th {
+                background: #dbeafe;
+                color: #2563eb;
+            }
+            .items-table td {
+                border: 1px solid #ccc;
+            }
+            .total-row td {
+                font-weight: bold;
+                border-top: 2px solid #333;
+            }
+            .signature {
+                page-break-inside: avoid;
+                margin-top: 80px;
+            }
+            .footer {
+                border-top: 2px solid #2563eb;
+                margin-top: 60px;
+                padding-top: 10px;
+                font-size: 11pt;
+            }
+            .date-ref span {
+                font-weight: bold;
+            }
+            .quotation-title {
+                color: #dc3545;
+                font-size: 18pt;
+            }
+            @page {
+                size: A4;
+                margin: 15mm;
             }
         }
 
@@ -431,108 +479,4 @@
                     <div class="company-info">
                         <h1>${data.company}</h1>
                         <p>${data.address}</p>
-                        <p>${data.gst}</p>
-                    </div>
-                </div>
-
-                <div class="date-ref">
-                    <span><strong>Date:</strong> ${data.date}</span>
-                    <span><strong>Ref No.:</strong> ${data.ref}</span>
-                </div>
-
-                <div class="to-section">
-                    <p><strong>To,</strong></p>
-                    <p>${data.client}</p>
-                    <p>${data.clientAddr.replace(/,/g, '<br>')}</p>
-                </div>
-
-                <div class="quotation-title">Quotation</div>
-
-                <p style="margin-bottom: 20px;">${data.title}</p>
-
-                <table class="items-table">
-                    <thead>
-                        <tr>
-                            <th>Sl. No</th>
-                            <th>Description</th>
-                            <th>Size</th>
-                            <th>Qty</th>
-                            <th>Rate</th>
-                            <th>Amount (₹)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${items.map(item => `
-                            <tr>
-                                <td>${item.sl}</td>
-                                <td>${item.desc}</td>
-                                <td>${item.size}</td>
-                                <td>${item.qty}</td>
-                                <td>${item.rate}</td>
-                                <td>${item.amt}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                    <tfoot>
-                        <tr class="total-row">
-                            <td colspan="5">Total Cost</td>
-                            <td>${total.toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="5">Transport Charge</td>
-                            <td>${transport.toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="5">GST (18%)</td>
-                            <td>${gstAmt.toFixed(2)}</td>
-                        </tr>
-                        <tr class="total-row">
-                            <td colspan="5">Grand Total (INR)</td>
-                            <td>${grandTotal.toFixed(2)}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-
-                <div class="notes">
-                    <p><strong>Notes:</strong></p>
-                    ${notesHtml}
-                </div>
-
-                <div class="signature">
-                    <div>
-                        <p>For ${data.company}</p>
-                        <p style="margin-top: 60px;">_________________________</p>
-                        <p>Authorized Signatory</p>
-                    </div>
-                    <div>
-                        <p>Accepted By Client</p>
-                        <p style="margin-top: 60px;">_________________________</p>
-                        <p>Signature</p>
-                    </div>
-                </div>
-
-                <div class="footer">
-                    <span><i class="fas fa-mobile-alt"></i> ${data.mobile}</span>
-                    <span><i class="fas fa-envelope"></i> ${data.email}</span>
-                </div>
-            `;
-
-            document.getElementById('quotationOutput').innerHTML = output;
-        }
-
-        function printQuotation() {
-            const preview = document.getElementById('quotationOutput');
-            if (preview.innerHTML.includes('Fill the form')) {
-                alert('Please generate a quotation first!');
-                return;
-            }
-            window.print();
-        }
-
-        // Add first row on load
-        window.addEventListener('load', () => {
-            addRow();
-        });
-    </script>
-</body>
-</html>
+                        <p>${data
