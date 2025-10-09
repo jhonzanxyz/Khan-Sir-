@@ -1,213 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Multi-Template Quotation Maker</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-<style>
-  body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
-  h1 { text-align: center; color: #333; }
-  .container { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-  label { display: block; margin-top: 10px; font-weight: bold; }
-  input, textarea, select { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
-  textarea { resize: vertical; }
-  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-  table, th, td { border: 1px solid #ccc; }
-  th, td { padding: 8px; text-align: center; }
-  button { margin-top: 10px; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
-  .add-btn { background: #4CAF50; color: #fff; }
-  .pdf-btn { background: #2196F3; color: #fff; }
-  .totals { margin-top: 15px; text-align: right; font-weight: bold; }
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Quotation Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .form-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .preview-section {
+            flex: 2;
+            min-width: 500px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        input, textarea, button {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #007BFF;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .btn-generate {
+            background: #28a745;
+        }
+
+        .btn-generate:hover {
+            background: #218838;
+        }
+
+        .btn-print {
+            background: #6c757d;
+        }
+
+        .btn-print:hover {
+            background: #545b62;
+        }
+
+        /* Quotation Output Styling */
+        #quotationOutput {
+            font-size: 12pt;
+            line-height: 1.6;
+            padding: 30px;
+            background: white;
+            min-height: 500px;
+            border: 1px solid #ddd;
+            page-break-inside: avoid;
+        }
+
+        .quotation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .logo-placeholder {
+            width: 100px;
+            height: 50px;
+            background: linear-gradient(45deg, #ffcc00, #ff9900);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .company-info {
+            text-align: right;
+            font-size: 11pt;
+        }
+
+        .header-title {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #dc3545;
+            margin: 0;
+        }
+
+        .address {
+            font-size: 11pt;
+            margin: 5px 0;
+        }
+
+        .date-ref {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            font-size: 11pt;
+        }
+
+        .to-section {
+            margin: 20px 0;
+            line-height: 1.4;
+        }
+
+        .to-section p {
+            margin: 2px 0;
+        }
+
+        .quotation-title {
+            text-align: center;
+            font-weight: bold;
+            margin: 20px 0;
+            text-decoration: underline;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 11pt;
+        }
+
+        .items-table th,
+        .items-table td {
+            border: 1px solid #333;
+            padding: 6px;
+            text-align: left;
+        }
+
+        .items-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .total-row td {
+            font-weight: bold;
+        }
+
+        .notes {
+            margin-top: 30px;
+            font-size: 11pt;
+        }
+
+        .signature {
+            margin-top: 50px;
+            font-style: italic;
+            padding-top: 20px;
+            border-top: 1px dashed #999;
+            text-align: left;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 10px;
+            border-top: 2px solid #007BFF;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 11pt;
+            color: #333;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #quotationOutput, #quotationOutput * {
+                visibility: visible;
+            }
+            #quotationOutput {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 30px;
+                box-sizing: border-box;
+            }
+        }
+    </style>
 </head>
 <body>
-<h1>Multi-Template Quotation Maker</h1>
-<div class="container">
-  <label>Upload Company Logo:</label>
-  <input type="file" id="logoUpload" accept="image/*">
+    <div class="container">
+        <div class="form-section">
+            <h2>Generate Quotation</h2>
 
-  <label>Company Name:</label>
-  <input type="text" id="company" placeholder="Your Company Name">
-  
-  <label>Company Address:</label>
-  <input type="text" id="companyAddress" placeholder="Address Line, City">
+            <h3>Company Info</h3>
+            <input type="text" id="companyName" placeholder="Company Name" value="VAMAN FACILITATORS">
+            <input type="text" id="address" placeholder="Address" value="Saraiyahat Road, Dumka, JHARKHAND, Pin: -814151">
+            <input type="text" id="gst" placeholder="GST Number" value="GST : 20CGSPM3903L1Z8">
 
-  <label>Client Name:</label>
-  <input type="text" id="client" placeholder="Client Name">
+            <h3>Client Info</h3>
+            <input type="text" id="clientName" placeholder="Client Name" value="The Project Manager">
+            <input type="text" id="clientAddress" placeholder="Client Address" value="Pravah, Deoghar, Jharkhand">
 
-  <label>Client Address:</label>
-  <input type="text" id="clientAddress" placeholder="Client Address">
+            <h3>Quotation Details</h3>
+            <input type="text" id="date" placeholder="Date (DD-MM-YYYY)" value="04-10-2025">
+            <input type="text" id="refNo" placeholder="Ref No." value="18/vA/25">
 
-  <label>Tax Type:</label>
-  <input type="text" id="taxType" placeholder="e.g. GST or VAT">
+            <h3>Project Title</h3>
+            <input type="text" id="projectTitle" placeholder="Project Title" value="Construction of boundary wall.">
 
-  <label>Tax Percentage (%):</label>
-  <input type="number" id="tax" value="0" min="0" oninput="updateLiveTotal()">
+            <h3>Items Table</h3>
+            <div id="itemsContainer"></div>
+            <button onclick="addRow()">+ Add Item</button>
 
-  <label>Select Template Style:</label>
-  <select id="templateSelect">
-    <option value="classic">Classic</option>
-    <option value="modern">Modern</option>
-    <option value="minimal">Minimal</option>
-  </select>
+            <h3>Notes</h3>
+            <textarea id="notes" rows="4" placeholder="Enter notes...">1. Rate valid only 60 days.
+2. The work will be completed in 10 days.
+3. Payment 50% advance.</textarea>
 
-  <table id="itemsTable">
-    <tr>
-      <th>#</th>
-      <th>Item</th>
-      <th>Description</th>
-      <th>Qty</th>
-      <th>Price (₹)</th>
-      <th>Discount (₹)</th>
-      <th>Total (₹)</th>
-    </tr>
-  </table>
-  
-  <button class="add-btn" onclick="addItem()">+ Add Item</button>
-  <button class="pdf-btn" onclick="generatePDF()">Generate PDF</button>
+            <h3>Contact Info (Footer)</h3>
+            <input type="text" id="mobile" placeholder="Mobile" value="Mob.: 9471250846">
+            <input type="email" id="email" placeholder="Email" value="E-mail-vaman87v@gmail.com">
 
-  <div class="totals" id="liveTotals">
-    Subtotal: ₹0.00 | Tax: ₹0.00 | Grand Total: ₹0.00
-  </div>
-</div>
+            <button onclick="generateQuotation()" class="btn-generate">Generate Quotation</button>
+        </div>
 
-<script>
-let uploadedLogo = null;
+        <div class="preview-section">
+            <h3>Preview</h3>
+            <div id="quotationOutput">Fill the form and click "Generate Quotation"</div>
+            <button onclick="printQuotation()" class="btn-print">Print / Save as PDF</button>
+        </div>
+    </div>
 
-// Logo upload
-document.getElementById('logoUpload').addEventListener('change', function(e){
-  const reader = new FileReader();
-  reader.onload = function(event){ uploadedLogo = event.target.result; }
-  reader.readAsDataURL(e.target.files[0]);
-});
+    <script>
+        let rowCount = 0;
 
-// Add item row
-function addItem(){
-  let table = document.getElementById("itemsTable");
-  let row = table.insertRow();
-  row.insertCell(0).innerText = table.rows.length - 1;
-  row.insertCell(1).innerHTML = `<input type='text' placeholder='Item Name'>`;
-  row.insertCell(2).innerHTML = `<input type='text' placeholder='Description'>`;
-  row.insertCell(3).innerHTML = `<input type='number' value='1' min='1' onchange='updateRow(this)'>`;
-  row.insertCell(4).innerHTML = `<input type='number' value='0' min='0' onchange='updateRow(this)'>`;
-  row.insertCell(5).innerHTML = `<input type='number' value='0' min='0' onchange='updateRow(this)'>`;
-  row.insertCell(6).innerHTML = `<span>0</span>`;
-  updateLiveTotal();
-}
+        function addRow() {
+            const container = document.getElementById('itemsContainer');
+            rowCount++;
 
-// Update row total
-function updateRow(el){
-  let row = el.parentNode.parentNode;
-  let qty = parseFloat(row.cells[3].children[0].value) || 0;
-  let price = parseFloat(row.cells[4].children[0].value) || 0;
-  let discount = parseFloat(row.cells[5].children[0].value) || 0;
-  let total = (qty * price) - discount;
-  row.cells[6].children[0].innerText = total.toFixed(2);
-  updateLiveTotal();
-}
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.innerHTML = `
+                <div style="display: flex; gap: 5px; margin: 5px 0;">
+                    <input type="text" placeholder="Sl. No" value="${rowCount}" style="width: 60px;">
+                    <input type="text" placeholder="Description" style="flex: 2;">
+                    <input type="text" placeholder="Size" style="width: 80px;">
+                    <input type="number" placeholder="Qty" step="0.01" style="width: 80px;">
+                    <input type="number" placeholder="Rate" step="0.01" style="width: 80px;">
+                    <input type="number" placeholder="Amount" step="0.01" style="width: 100px;" readonly>
+                </div>
+            `;
+            container.appendChild(row);
 
-// Live totals
-function updateLiveTotal(){
-  let table = document.getElementById("itemsTable");
-  let subtotal = 0;
-  for(let i=1;i<table.rows.length;i++){
-    subtotal += parseFloat(table.rows[i].cells[6].children[0].innerText) || 0;
-  }
-  let taxPercent = parseFloat(document.getElementById("tax").value) || 0;
-  let taxAmount = subtotal * taxPercent / 100;
-  let grandTotal = subtotal + taxAmount;
-  document.getElementById("liveTotals").innerText =
-    `Subtotal: ₹${subtotal.toFixed(2)} | Tax: ₹${taxAmount.toFixed(2)} | Grand Total: ₹${grandTotal.toFixed(2)}`;
-}
+            const inputs = row.querySelectorAll('input');
+            const qtyInput = inputs[3];
+            const rateInput = inputs[4];
+            const amountInput = inputs[5];
 
-// PDF generation
-function generatePDF(){
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p','mm','a4');
+            [qtyInput, rateInput].forEach(input => {
+                input.addEventListener('input', () => {
+                    const qty = parseFloat(qtyInput.value) || 0;
+                    const rate = parseFloat(rateInput.value) || 0;
+                    amountInput.value = (qty * rate).toFixed(2);
+                });
+            });
+        }
 
-  let company = document.getElementById("company").value;
-  let companyAddress = document.getElementById("companyAddress").value;
-  let client = document.getElementById("client").value;
-  let clientAddress = document.getElementById("clientAddress").value;
-  let taxType = document.getElementById("taxType").value || "Tax";
-  let taxPercent = parseFloat(document.getElementById("tax").value) || 0;
-  let template = document.getElementById("templateSelect").value;
+        function generateQuotation() {
+            const companyName = document.getElementById('companyName').value || 'Your Company';
+            const address = document.getElementById('address').value;
+            const gst = document.getElementById('gst').value;
+            const clientName = document.getElementById('clientName').value;
+            const clientAddress = document.getElementById('clientAddress').value;
+            const date = document.getElementById('date').value;
+            const refNo = document.getElementById('refNo').value;
+            const projectTitle = document.getElementById('projectTitle').value;
+            const notes = document.getElementById('notes').value;
+            const mobile = document.getElementById('mobile').value;
+            const email = document.getElementById('email').value;
 
-  // Template styles
-  let headerColor = [100,149,237];
-  let fontName = "helvetica";
-  let lineY = 50;
-  if(template === "modern"){ headerColor=[0,128,128]; fontName="times"; lineY=52; }
-  else if(template === "minimal"){ headerColor=[80,80,80]; fontName="courier"; lineY=48; }
+            const rows = Array.from(document.querySelectorAll('.item-row'));
+            const items = rows.map(row => {
+                const inputs = row.querySelectorAll('input');
+                return {
+                    slNo: inputs[0].value,
+                    desc: inputs[1].value,
+                    size: inputs[2].value,
+                    qty: inputs[3].value,
+                    rate: inputs[4].value,
+                    amount: inputs[5].value
+                };
+            });
 
-  // Add header
-  if(uploadedLogo) doc.addImage(uploadedLogo, "PNG", 15, 10, 40, 40);
-  doc.setFont(fontName);
-  doc.setFontSize(18); doc.text(company, 65, 20);
-  doc.setFontSize(11); 
-  doc.text(companyAddress, 65, 28);
-  doc.text("Phone: XXX-XXXXXXX | Email: info@company.com", 65, 35);
-  doc.setLineWidth(0.8); doc.setDrawColor(...headerColor);
-  doc.line(15, lineY, 195, lineY);
-  doc.setFontSize(16); doc.setTextColor(...headerColor);
-  doc.text("QUOTATION", 150, lineY-5);
-  doc.setTextColor(0);
+            let totalCost = 0;
+            items.forEach(item => {
+                totalCost += parseFloat(item.amount) || 0;
+            });
 
-  // Add footer
-  const addFooter = (pageNum, pageCount) => {
-    doc.setFontSize(10); doc.setTextColor(100);
-    doc.text("www.companywebsite.com | © 2025 Your Company Name", 105, 290, null, null, "center");
-    doc.text(`Page ${pageNum} of ${pageCount}`, 180, 290);
-  };
+            const transportCharge = 18200.00;
+            const gstAmount = totalCost * 0.18;
+            const grandTotal = totalCost + transportCharge + gstAmount;
 
-  // Add client info
-  doc.setFontSize(12);
-  doc.text("To:", 20, 55);
-  doc.text(client, 30, 60);
-  doc.text(clientAddress, 30, 68);
+            let output = `
+                <div class="quotation-header">
+                    <div><div class="logo-placeholder">LOGO</div></div>
+                    <div class="company-info">
+                        <p><strong>${companyName}</strong></p>
+                        <p>${address}</p>
+                        <p>${gst}</p>
+                    </div>
+                </div>
 
-  // Table rows
-  let table = document.getElementById("itemsTable");
-  let rows = [];
-  let subtotal = 0;
-  for(let i=1;i<table.rows.length;i++){
-    let rowNum = i;
-    let item = table.rows[i].cells[1].children[0].value;
-    let desc = table.rows[i].cells[2].children[0].value;
-    let qty = table.rows[i].cells[3].children[0].value;
-    let price = table.rows[i].cells[4].children[0].value;
-    let discount = table.rows[i].cells[5].children[0].value;
-    let total = (qty*price)-discount;
-    subtotal += total;
-    rows.push([rowNum,item,desc,qty,price,discount,total.toFixed(2)]);
-  }
+                <div class="date-ref">
+                    <span>Date: <u>${date}</u></span>
+                    <span>Ref No.: <u>${refNo}</u></span>
+                </div>
 
-  doc.autoTable({
-    head:[['#','Item','Description','Qty','Price (₹)','Discount (₹)','Total (₹)']],
-    body: rows,
-    startY: 75,
-    styles: { fillColor:[240,240,240] },
-    headStyles: { fillColor: headerColor, textColor: 255, fontStyle:'bold' },
-    alternateRowStyles: { fillColor:[245,245,245] },
-    didDrawPage: function(data){
-      addFooter(doc.internal.getCurrentPageInfo().pageNumber, doc.internal.getNumberOfPages());
-    }
-  });
+                <div class="to-section">
+                    <p>To,</p>
+                    <p>${clientName}</p>
+                    <p>${clientAddress.split(',').join('<br>')}</p>
+                </div>
 
-  let taxAmount = subtotal * taxPercent / 100;
-  let grandTotal = subtotal + taxAmount;
-  let finalY = doc.lastAutoTable.finalY + 10;
+                <div class="quotation-title">QUOTATION</div>
 
-  doc.setFontSize(12);
-  doc.text(`Subtotal: ₹${subtotal.toFixed(2)}`, 140, finalY);
-  doc.text(`${taxType} (${taxPercent}%): ₹${taxAmount.toFixed(2)}`, 140, finalY+7);
-  doc.setFontSize(14);
-  doc.text(`Grand Total: ₹${grandTotal.toFixed(2)}`, 140, finalY+15);
+                <p>${projectTitle}</p>
 
-  doc.setFontSize(11);
-  doc.text("Terms & Conditions:", 20, finalY+30);
-  doc.text("1. Prices valid for 30 days.", 25, finalY+40);
-  doc.text("2. Payment due within 7 days of invoice.", 25, finalY+50
-      
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Sl. No</th>
+                            <th>Description of work</th>
+                            <th>Size</th>
+                            <th>Qty.</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            items.forEach(item => {
+                output += `
+                    <tr>
+                        <td>${item.slNo}</td>
+                        <td>${item.desc}</td>
+                        <td>${item.size}</td>
+                        <td>${item.qty}</td>
+                        <td>${item.rate}</td>
+                        <td>${item.amount}</td>
+                    </tr>
+                `;
+            });
+
+            output += `
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="5">Total Cost</td>
+                            <td>${totalCost.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">Transport charge</td>
+                            <td>${transportCharge.toFixed(2)}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="5">Total Amount inc. 18% GST</td>
+                            <td>${grandTotal.toFixed(2)}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <div class="notes">
+                    <p><strong>Note:</strong></p>
+                    ${notes.split('\n').map(line => line.trim() ? `<p>${line}</p>` : '').join('')}
+                </div>
+
+                <div class="signature">
+                    <p>For ${companyName}</p>
+                    <p>_________________________</p>
+                    <p>(Authorized Signatory)</p>
+                </div>
+
+                <div class="footer">
+                    <span>📞 ${mobile}</span>
+                    <span>✉️ ${email}</span>
+                </div>
+            `;
+
+            document.getElementById('quotationOutput').innerHTML = output;
+        }
+
+        function printQuotation() {
+            if (document.getElementById('quotationOutput').textContent.trim() === 'Fill the form and click "Generate Quotation"') {
+                alert('Please generate a quotation first!');
+                return;
+            }
+            window.print();
+        }
+
+        // Add one default row on load
+        window.onload = () => {
+            addRow();
+        };
+    </script>
+</body>
+</html>
