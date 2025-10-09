@@ -265,7 +265,7 @@
             font-size: 13px;
         }
 
-        /* 🖨️ PRINT STYLES — THIS IS THE MAGIC PART FOR MODERN PDF */
+        /* 🖨️ PRINT STYLES — MODERN & CLEAN FOR PDF */
         @media print {
             body * {
                 visibility: hidden;
@@ -281,7 +281,7 @@
                 height: auto;
                 box-shadow: none;
                 border-radius: 0;
-                padding: 30mm;
+                padding: 25mm;
                 box-sizing: border-box;
                 font-size: 12pt;
                 line-height: 1.5;
@@ -404,6 +404,8 @@
 
         function addRow() {
             const container = document.getElementById('itemsContainer');
+            if (!container) return;
+
             rowCount++;
 
             const row = document.createElement('div');
@@ -420,63 +422,172 @@
             `;
             container.appendChild(row);
 
+            // Auto-calculate amount
             const inputs = row.querySelectorAll('input');
-            const qty = inputs[3];
-            const rate = inputs[4];
-            const amount = inputs[5];
+            const qtyInput = inputs[3];
+            const rateInput = inputs[4];
+            const amountInput = inputs[5];
 
-            [qty, rate].forEach(input => {
+            [qtyInput, rateInput].forEach(input => {
                 input.addEventListener('input', () => {
-                    const q = parseFloat(qty.value) || 0;
-                    const r = parseFloat(rate.value) || 0;
-                    amount.value = (q * r).toFixed(2);
+                    const qty = parseFloat(qtyInput.value) || 0;
+                    const rate = parseFloat(rateInput.value) || 0;
+                    amountInput.value = (qty * rate).toFixed(2);
                 });
             });
         }
 
         function generateQuotation() {
-            const data = {
-                company: document.getElementById('companyName').value || 'Your Company',
-                address: document.getElementById('address').value,
-                gst: document.getElementById('gst').value,
-                client: document.getElementById('clientName').value,
-                clientAddr: document.getElementById('clientAddress').value,
-                date: document.getElementById('date').value,
-                ref: document.getElementById('refNo').value,
-                title: document.getElementById('projectTitle').value,
-                notes: document.getElementById('notes').value,
-                mobile: document.getElementById('mobile').value,
-                email: document.getElementById('email').value
-            };
+            const companyName = document.getElementById('companyName').value || 'Your Company';
+            const address = document.getElementById('address').value;
+            const gst = document.getElementById('gst').value;
+            const clientName = document.getElementById('clientName').value;
+            const clientAddress = document.getElementById('clientAddress').value;
+            const date = document.getElementById('date').value;
+            const refNo = document.getElementById('refNo').value;
+            const projectTitle = document.getElementById('projectTitle').value;
+            const notes = document.getElementById('notes').value;
+            const mobile = document.getElementById('mobile').value;
+            const email = document.getElementById('email').value;
 
             const rows = Array.from(document.querySelectorAll('.item-row'));
             const items = rows.map(row => {
                 const inputs = row.querySelectorAll('input');
                 return {
-                    sl: inputs[0].value,
+                    slNo: inputs[0].value,
                     desc: inputs[1].value,
                     size: inputs[2].value,
                     qty: inputs[3].value,
                     rate: inputs[4].value,
-                    amt: inputs[5].value
+                    amount: inputs[5].value
                 };
             });
 
-            let total = items.reduce((sum, item) => sum + (parseFloat(item.amt) || 0), 0);
-            const transport = 18200;
-            const gstAmt = total * 0.18;
-            const grandTotal = total + transport + gstAmt;
+            let totalCost = 0;
+            items.forEach(item => {
+                totalCost += parseFloat(item.amount) || 0;
+            });
 
-            const notesHtml = data.notes
-                .split('\n')
-                .filter(line => line.trim())
-                .map(line => `<p>${line.trim()}</p>`)
-                .join('');
+            const transportCharge = 18200.00;
+            const gstAmount = totalCost * 0.18;
+            const grandTotal = totalCost + transportCharge + gstAmount;
 
-            const output = `
+            const notesLines = notes.split('\n').filter(line => line.trim()).map(line => `<p>${line.trim()}</p>`).join('');
+
+            let output = `
                 <div class="quotation-header">
                     <div class="logo-placeholder">V</div>
                     <div class="company-info">
-                        <h1>${data.company}</h1>
-                        <p>${data.address}</p>
-                        <p>${data
+                        <h1>${companyName}</h1>
+                        <p>${address}</p>
+                        <p>${gst}</p>
+                    </div>
+                </div>
+
+                <div class="date-ref">
+                    <span><strong>Date:</strong> ${date}</span>
+                    <span><strong>Ref No.:</strong> ${refNo}</span>
+                </div>
+
+                <div class="to-section">
+                    <p><strong>To,</strong></p>
+                    <p>${clientName}</p>
+                    <p>${clientAddress.replace(/,/g, '<br>')}</p>
+                </div>
+
+                <div class="quotation-title">Quotation</div>
+
+                <p style="margin-bottom: 20px;">${projectTitle}</p>
+
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Sl. No</th>
+                            <th>Description</th>
+                            <th>Size</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th>Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            items.forEach(item => {
+                output += `
+                    <tr>
+                        <td>${item.slNo}</td>
+                        <td>${item.desc}</td>
+                        <td>${item.size}</td>
+                        <td>${item.qty}</td>
+                        <td>${item.rate}</td>
+                        <td>${item.amount}</td>
+                    </tr>
+                `;
+            });
+
+            output += `
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="5">Total Cost</td>
+                            <td>${totalCost.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">Transport Charge</td>
+                            <td>${transportCharge.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">GST (18%)</td>
+                            <td>${gstAmount.toFixed(2)}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="5">Grand Total (INR)</td>
+                            <td>${grandTotal.toFixed(2)}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <div class="notes">
+                    <p><strong>Notes:</strong></p>
+                    ${notesLines}
+                </div>
+
+                <div class="signature">
+                    <div>
+                        <p>For ${companyName}</p>
+                        <p style="margin-top: 60px;">_________________________</p>
+                        <p>Authorized Signatory</p>
+                    </div>
+                    <div>
+                        <p>Accepted By Client</p>
+                        <p style="margin-top: 60px;">_________________________</p>
+                        <p>Signature</p>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <span><i class="fas fa-mobile-alt"></i> ${mobile}</span>
+                    <span><i class="fas fa-envelope"></i> ${email}</span>
+                </div>
+            `;
+
+            document.getElementById('quotationOutput').innerHTML = output;
+        }
+
+        function printQuotation() {
+            const outputDiv = document.getElementById('quotationOutput');
+            if (!outputDiv || outputDiv.innerHTML.includes('Fill the form')) {
+                alert('Please generate a quotation first!');
+                return;
+            }
+            window.print();
+        }
+
+        // Add one row on load
+        window.addEventListener('load', () => {
+            addRow();
+        });
+    </script>
+</body>
+</html>
