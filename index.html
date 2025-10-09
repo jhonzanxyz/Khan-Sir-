@@ -1,901 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Khan Sir Player</title>
-    <style>
-        :root {
-            --primary-color: #6a1b9a;
-            --secondary-color: #ad1457;
-            --accent-color: #00b0ff;
-            --light-gray: #f5f5f5;
-            --dark-gray: #424242;
-            --border-radius: 12px;
-            --box-shadow: 0 8px 16px rgba(106, 27, 154, 0.15);
-            --bg-color: #fff;
-            --text-color: #333;
-            --card-bg: #fff;
-            --header-bg: #6a1b9a;
-            --header-text: #fff;
-        }
-        
-        body {
-            font-family: 'Poppins', 'Segoe UI', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: all 0.3s ease;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
-        }
-        
-        body.dark-mode {
-            --bg-color: #121212;
-            --text-color: #e0e0e0;
-            --card-bg: #1e1e1e;
-            --header-bg: #8e24aa;
-            --header-text: #fff;
-            background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
-        }
-        
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
-        header {
-            background: linear-gradient(135deg, var(--header-bg), #8e24aa);
-            color: var(--header-text);
-            padding: 18px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 12px rgba(106, 27, 154, 0.2);
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-        }
-        
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-        
-        .logo {
-            font-size: 1.9rem;
-            font-weight: 700;
-            margin: 0;
-            background: linear-gradient(45deg, #ffeb3b, #ff9800);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .logo-img {
-            height: 44px;
-            width: 44px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 8px rgba(106, 27, 154, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .logo-img:hover {
-            transform: scale(1.05);
-        }
-        
-        .theme-toggle {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--header-text);
-            font-size: 1.3rem;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            width: 46px;
-            height: 46px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .theme-toggle:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 25px auto;
-            padding: 20px;
-        }
-        
-        .mantra-container {
-            text-align: center;
-            margin: 15px 0;
-            padding: 15px;
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(106, 27, 154, 0.1);
-        }
-        
-        .mantra {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #8e24aa;
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            letter-spacing: 0.5px;
-        }
-        
-        .upload-section {
-            background-color: var(--card-bg);
-            padding: 35px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            margin: 25px 0;
-            text-align: center;
-            border: 1px solid rgba(106, 27, 154, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .upload-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(106, 27, 154, 0.2);
-        }
-        
-        .file-input-container {
-            margin: 25px 0;
-        }
-        
-        input[type="file"] {
-            display: none;
-        }
-        
-        .file-label {
-            display: inline-block;
-            padding: 14px 28px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 12px;
-            font-weight: 500;
-            box-shadow: 0 6px 12px rgba(106, 27, 154, 0.2);
-            border: 1px solid rgba(106, 27, 154, 0.2);
-        }
-        
-        .file-label:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(106, 27, 154, 0.3);
-        }
-        
-        button {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 6px;
-            font-weight: 500;
-            font-family: 'Poppins', sans-serif;
-            box-shadow: 0 6px 12px rgba(106, 27, 154, 0.2);
-            border: 1px solid rgba(106, 27, 154, 0.2);
-        }
-        
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(106, 27, 154, 0.3);
-        }
-        
-        .playlist {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            margin: 25px 0;
-            display: none;
-            border: 1px solid rgba(106, 27, 154, 0.1);
-        }
-        
-        .playlist h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-            padding-bottom: 12px;
-            border-bottom: 2px solid #f0f0f0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 600;
-            font-size: 1.3rem;
-        }
-        
-        .search-container {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 8px;
-            border-radius: 50px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(106, 27, 154, 0.1);
-        }
-        
-        #searchInput {
-            flex-grow: 1;
-            padding: 12px 16px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            background-color: var(--light-gray);
-            color: var(--text-color);
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
-        }
-        
-        #searchInput:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.2);
-        }
-        
-        #searchBtn {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border: none;
-            padding: 0 18px;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-        }
-        
-        #searchBtn:hover {
-            transform: scale(1.05);
-        }
-        
-        .playlist-items {
-            max-height: 280px;
-            overflow-y: auto;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .playlist-item {
-            padding: 14px 18px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1rem;
-            border-radius: 8px;
-            margin: 4px 0;
-        }
-        
-        .playlist-item:hover {
-            background-color: rgba(106, 27, 154, 0.08);
-            transform: translateX(6px);
-            border-left: 3px solid var(--primary-color);
-        }
-        
-        .playlist-item.active {
-            background-color: rgba(106, 27, 154, 0.12);
-            font-weight: 600;
-            color: var(--primary-color);
-            border-left: 3px solid var(--primary-color);
-        }
-        
-        .main-content {
-            display: flex;
-            gap: 25px;
-            margin: 25px 0;
-            transition: all 0.3s ease;
-        }
-        
-        .video-section {
-            flex: 1;
-            min-width: 300px;
-            display: none;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-        }
-        
-        .video-container {
-            background-color: #000;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(106, 27, 154, 0.1);
-        }
-        
-        #videoPlayer {
-            width: 100%;
-            height: 340px;
-            background-color: #000;
-            border-radius: var(--border-radius);
-        }
-        
-        .video-controls {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px;
-            background-color: var(--card-bg);
-            border: 1px solid #eee;
-            border-top: none;
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
-            font-size: 0.95rem;
-            box-shadow: 0 -4px 8px rgba(0,0,0,0.05);
-            gap: 10px;
-        }
-        
-        .video-controls-left, .video-controls-right {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .pdf-container {
-            display: none;
-            margin: 25px 0;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-        }
-        
-        #pdfViewer {
-            width: 100%;
-            height: 720px;
-            border: none;
-            border-radius: var(--border-radius);
-        }
-        
-        .status {
-            padding: 12px;
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            border-radius: var(--border-radius);
-            margin: 12px 0;
-            display: none;
-            font-size: 0.95rem;
-            border: 1px solid #c8e6c9;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .error {
-            padding: 12px;
-            background-color: #ffebee;
-            color: #c62828;
-            border-radius: var(--border-radius);
-            margin: 12px 0;
-            display: none;
-            font-size: 0.95rem;
-            border: 1px solid #ef9a9a;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .developer-info {
-            text-align: center;
-            margin: 25px 0;
-            padding: 18px;
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            color: #c62828;
-            font-weight: 600;
-            border-top: 4px solid #c62828;
-            font-family: 'Poppins', sans-serif;
-            border: 1px solid rgba(198, 40, 40, 0.2);
-        }
-        
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: var(--bg-color);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #8e24aa;
-        }
-        
-        @media (max-width: 768px) {
-            .main-content {
-                flex-direction: column;
-            }
-            
-            #videoPlayer {
-                height: 300px;
-            }
-            
-            .video-controls {
-                flex-direction: column;
-                gap: 12px;
-            }
-            
-            .video-controls button {
-                width: 100%;
-                text-align: center;
-            }
-            
-            .logo {
-                font-size: 1.6rem;
-            }
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Quotation Maker</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+  h1 { text-align: center; color: #333; }
+  .container { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+  label { display: block; margin-top: 10px; font-weight: bold; }
+  input, textarea { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+  textarea { resize: vertical; }
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+  table, th, td { border: 1px solid #ccc; }
+  th, td { padding: 8px; text-align: center; }
+  button { margin-top: 10px; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
+  .add-btn { background: #4CAF50; color: #fff; }
+  .pdf-btn { background: #2196F3; color: #fff; }
+  .totals { margin-top: 15px; text-align: right; font-weight: bold; }
+</style>
 </head>
 <body>
-    <header>
-        <div class="logo-container">
-            <img src="https://i.imgur.com/0XbEk5G.png" alt="Khan Sir Logo" class="logo-img">
-            <h1 class="logo">KGS-PLAYER</h1>
-        </div>
-        <button class="theme-toggle" id="themeToggle">
-            <i class="fas fa-moon"></i>
-        </button>
-    </header>
-    
-    <div class="mantra-container">
-        <p class="mantra">"ॐ कृष्णाय वासुदेवाय हरये परमात्मने प्रणत: क्लेशनाशाय गोविंदाय नमो नमः"</p>
-    </div>
-    
-    <div class="container">
-        <div class="status" id="status"></div>
-        <div class="error" id="error"></div>
-        
-        <div class="upload-section" id="uploadSection">
-            <h2 style="margin-top: 0; color: var(--primary-color); font-weight: 600; font-size: 1.8rem; text-shadow: 0 2px 3px rgba(0,0,0,0.1);">Upload Your Course File</h2>
-            <p style="color: var(--dark-gray); font-size: 1.1rem; margin: 15px 0;">Select your .txt file containing video links</p>
-            
-            <div class="file-input-container">
-                <input type="file" id="fileInput" accept=".txt" />
-                <label for="fileInput" class="file-label">
-                    <i class="fas fa-upload"></i> Choose TXT File
-                </label>
-                <p id="fileName" style="margin-top: 12px; color: #666; font-size: 1rem;">No file selected</p>
-            </div>
-            
-            <button id="loadBtn">
-                <i class="fas fa-play"></i> Load Videos
-            </button>
-            
-            <div class="developer-info">
-                Developer by :- Badnaam Hacker & Team Devil ( Your Love :- Mr devil )
-            </div>
-        </div>
-        
-        <div class="playlist" id="playlist">
-            <h3><i class="fas fa-list"></i> Course Playlist</h3>
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search videos...">
-                <button id="searchBtn"><i class="fas fa-search"></i></button>
-            </div>
-            <div class="playlist-items" id="playlistItems"></div>
-        </div>
-        
-        <div class="main-content">
-            <div class="video-section" id="videoSection">
-                <div class="video-container">
-                    <video id="videoPlayer" controls></video>
-                </div>
-                <div class="video-controls">
-                    <div class="video-controls-left">
-                        <button id="prevBtn" style="padding: 12px 18px; min-width: 110px;">
-                            <i class="fas fa-step-backward"></i> Previous
-                        </button>
-                        <button id="playPauseBtn">
-                            <i class="fas fa-play"></i> Play
-                        </button>
-                        <button id="nextBtn">
-                            Next <i class="fas fa-step-forward"></i>
-                        </button>
-                    </div>
-                    <div class="video-controls-right">
-                        <button id="backToListBtn">
-                            <i class="fas fa-list"></i> Playlist
-                        </button>
-                        <button id="viewPdfBtn">
-                            <i class="fas fa-file-pdf"></i> View PDF
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="pdf-container" id="pdfContainer">
-            <div style="display: flex; justify-content: space-between; padding: 14px; background-color: var(--card-bg); border-radius: var(--border-radius); margin-bottom: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <h3 style="margin: 0; color: var(--primary-color); font-size: 1.2rem; font-weight: 600;"><i class="fas fa-file-pdf"></i> PDF Document</h3>
-                <button id="backToVideoBtn">
-                    <i class="fas fa-video"></i> Back to Video
-                </button>
-            </div>
-            <iframe id="pdfViewer" src="about:blank"></iframe>
-        </div>
-    </div>
+<h1>Professional Quotation Maker</h1>
+<div class="container">
+  <label>Upload Company Logo:</label>
+  <input type="file" id="logoUpload" accept="image/*">
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const fileInput = document.getElementById('fileInput');
-            const fileName = document.getElementById('fileName');
-            const loadBtn = document.getElementById('loadBtn');
-            const uploadSection = document.getElementById('uploadSection');
-            const playlist = document.getElementById('playlist');
-            const videoSection = document.getElementById('videoSection');
-            const pdfContainer = document.getElementById('pdfContainer');
-            const videoPlayer = document.getElementById('videoPlayer');
-            const pdfViewer = document.getElementById('pdfViewer');
-            const playlistItems = document.getElementById('playlistItems');
-            const status = document.getElementById('status');
-            const error = document.getElementById('error');
-            const searchInput = document.getElementById('searchInput');
-            const searchBtn = document.getElementById('searchBtn');
-            const viewPdfBtn = document.getElementById('viewPdfBtn');
-            const backToListBtn = document.getElementById('backToListBtn');
-            const backToVideoBtn = document.getElementById('backToVideoBtn');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const playPauseBtn = document.getElementById('playPauseBtn');
-            const themeToggle = document.getElementById('themeToggle');
+  <label>Company Name:</label>
+  <input type="text" id="company" placeholder="Your Company Name">
+  
+  <label>Company Address:</label>
+  <input type="text" id="companyAddress" placeholder="Address Line, City">
 
-            let videos = [];
-            let currentIndex = -1;
-            let isDarkMode = false;
+  <label>Client Name:</label>
+  <input type="text" id="client" placeholder="Client Name">
 
-            // Check for saved theme preference
-            const savedTheme = localStorage.getItem('darkMode');
-            if (savedTheme === 'true') {
-                isDarkMode = true;
-                document.body.classList.add('dark-mode');
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-            }
+  <label>Client Address:</label>
+  <input type="text" id="clientAddress" placeholder="Client Address">
 
-            // Update file name display
-            fileInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    fileName.textContent = this.files[0].name;
-                } else {
-                    fileName.textContent = 'No file selected';
-                }
-            });
+  <label>Tax Type:</label>
+  <input type="text" id="taxType" placeholder="e.g. GST or VAT">
 
-            // Theme toggle functionality
-            themeToggle.addEventListener('click', function() {
-                isDarkMode = !isDarkMode;
-                document.body.classList.toggle('dark-mode', isDarkMode);
-                
-                // Change icon
-                themeToggle.innerHTML = isDarkMode ? 
-                    '<i class="fas fa-sun"></i>' : 
-                    '<i class="fas fa-moon"></i>';
-                
-                // Save preference
-                localStorage.setItem('darkMode', isDarkMode);
-            });
+  <label>Tax Percentage (%):</label>
+  <input type="number" id="tax" value="0" min="0" oninput="updateLiveTotal()">
 
-            // Load videos from text file
-            loadBtn.addEventListener('click', function() {
-                const file = fileInput.files[0];
-                if (!file) {
-                    showError('Please select a file first');
-                    return;
-                }
+  <table id="itemsTable">
+    <tr>
+      <th>#</th>
+      <th>Item</th>
+      <th>Description</th>
+      <th>Qty</th>
+      <th>Price (₹)</th>
+      <th>Discount (₹)</th>
+      <th>Total (₹)</th>
+    </tr>
+  </table>
+  
+  <button class="add-btn" onclick="addItem()">+ Add Item</button>
+  <button class="pdf-btn" onclick="generatePDF()">Generate PDF</button>
 
-                // Show loading state
-                loadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-                loadBtn.disabled = true;
+  <div class="totals" id="liveTotals">
+    Subtotal: ₹0.00 | Tax: ₹0.00 | Grand Total: ₹0.00
+  </div>
+</div>
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const content = e.target.result;
-                    parseVideoLinks(content);
-                    
-                    // Reset button state
-                    loadBtn.innerHTML = '<i class="fas fa-play"></i> Load Videos';
-                    loadBtn.disabled = false;
-                };
-                
-                reader.onerror = function() {
-                    showError('Error reading file');
-                    loadBtn.innerHTML = '<i class="fas fa-play"></i> Load Videos';
-                    loadBtn.disabled = false;
-                };
-                
-                reader.readAsText(file);
-            });
+<script>
+let uploadedLogo = null;
 
-            function showError(message) {
-                error.textContent = message;
-                error.style.display = 'block';
-                setTimeout(() => {
-                    error.style.display = 'none';
-                }, 5000);
-            }
+// Logo upload and preview
+document.getElementById('logoUpload').addEventListener('change', function(e){
+  const reader = new FileReader();
+  reader.onload = function(event){
+    uploadedLogo = event.target.result;
+  }
+  reader.readAsDataURL(e.target.files[0]);
+});
 
-            function showStatus(message) {
-                status.textContent = message;
-                status.style.display = 'block';
-                setTimeout(() => {
-                    status.style.display = 'none';
-                }, 5000);
-            }
+// Add new item row
+function addItem(){
+  let table = document.getElementById("itemsTable");
+  let row = table.insertRow();
+  row.insertCell(0).innerText = table.rows.length - 1;
+  row.insertCell(1).innerHTML = `<input type='text' placeholder='Item Name'>`;
+  row.insertCell(2).innerHTML = `<input type='text' placeholder='Description'>`;
+  row.insertCell(3).innerHTML = `<input type='number' value='1' min='1' onchange='updateRow(this)'>`;
+  row.insertCell(4).innerHTML = `<input type='number' value='0' min='0' onchange='updateRow(this)'>`;
+  row.insertCell(5).innerHTML = `<input type='number' value='0' min='0' onchange='updateRow(this)'>`;
+  row.insertCell(6).innerHTML = `<span>0</span>`;
+  updateLiveTotal();
+}
 
-            function parseVideoLinks(content) {
-                videos = [];
-                const lines = content.split('\n');
-                let currentVideo = null;
-                
-                lines.forEach(line => {
-                    if (line.trim() === '') return;
-                    
-                    // Check if line contains a video (.m3u8) or PDF (.pdf)
-                    const isVideo = line.includes('.m3u8');
-                    const isPDF = line.includes('.pdf');
-                    
-                    if (isVideo) {
-                        // Extract title and URL
-                        const parts = line.split(':http');
-                        const title = parts[0].trim();
-                        const url = 'http' + (parts[1] || '').trim();
-                        
-                        // New video entry
-                        if (currentVideo) {
-                            videos.push(currentVideo);
-                        }
-                        currentVideo = {
-                            title: title,
-                            videoUrl: url,
-                            pdfUrl: null
-                        };
-                    } else if (isPDF) {
-                        // Extract title and URL
-                        const parts = line.split(':http');
-                        const title = parts[0].trim();
-                        const url = 'http' + (parts[1] || '').trim();
-                        
-                        if (currentVideo) {
-                            // Add PDF to current video
-                            currentVideo.pdfUrl = url;
-                        }
-                    }
-                });
-                
-                // Add the last video if exists
-                if (currentVideo) {
-                    videos.push(currentVideo);
-                }
-                
-                if (videos.length > 0) {
-                    // Hide upload section and show playlist
-                    uploadSection.style.display = 'none';
-                    playlist.style.display = 'block';
-                    
-                    displayPlaylist();
-                    showStatus(`Loaded ${videos.length} videos.`);
-                } else {
-                    showError('No valid video links found in the file');
-                }
-            }
+// Update individual row total
+function updateRow(el){
+  let row = el.parentNode.parentNode;
+  let qty = parseFloat(row.cells[3].children[0].value) || 0;
+  let price = parseFloat(row.cells[4].children[0].value) || 0;
+  let discount = parseFloat(row.cells[5].children[0].value) || 0;
+  let total = (qty * price) - discount;
+  row.cells[6].children[0].innerText = total.toFixed(2);
+  updateLiveTotal();
+}
 
-            function displayPlaylist(filteredVideos = null) {
-                const videosToDisplay = filteredVideos || videos;
-                playlistItems.innerHTML = '';
-                videosToDisplay.forEach((video, index) => {
-                    const item = document.createElement('div');
-                    item.className = 'playlist-item';
-                    if (index === currentIndex) {
-                        item.classList.add('active');
-                    }
-                    
-                    // Add icon based on content
-                    const icon = document.createElement('i');
-                    icon.className = 'fas fa-play-circle';
-                    icon.style.marginRight = '8px';
-                    icon.style.color = '#6a1b9a';
-                    
-                    item.appendChild(icon);
-                    item.appendChild(document.createTextNode(video.title));
-                    
-                    item.addEventListener('click', () => {
-                        playVideo(index);
-                    });
-                    playlistItems.appendChild(item);
-                });
-            }
+// Live total preview
+function updateLiveTotal(){
+  let table = document.getElementById("itemsTable");
+  let subtotal = 0;
+  for(let i=1;i<table.rows.length;i++){
+    subtotal += parseFloat(table.rows[i].cells[6].children[0].innerText) || 0;
+  }
+  let taxPercent = parseFloat(document.getElementById("tax").value) || 0;
+  let taxAmount = subtotal * taxPercent / 100;
+  let grandTotal = subtotal + taxAmount;
+  document.getElementById("liveTotals").innerText =
+    `Subtotal: ₹${subtotal.toFixed(2)} | Tax: ₹${taxAmount.toFixed(2)} | Grand Total: ₹${grandTotal.toFixed(2)}`;
+}
 
-            function playVideo(index) {
-                if (index < 0 || index >= videos.length) return;
-                
-                currentIndex = index;
-                const video = videos[currentIndex];
-                
-                // Hide playlist and show video player
-                playlist.style.display = 'none';
-                videoSection.style.display = 'block';
-                
-                // Play video
-                if (video.videoUrl) {
-                    videoPlayer.src = `https://pro-ultra-hd-stream-player.woodmirror.workers.dev/?start=${encodeURIComponent(video.videoUrl)}`;
-                    videoPlayer.load();
-                    videoPlayer.play().catch(e => {
-                        console.log('Autoplay prevented:', e);
-                        showError('Click the play button to start video');
-                    });
-                }
-                
-                // Load PDF if available
-                if (video.pdfUrl) {
-                    pdfViewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(video.pdfUrl)}&embedded=true`;
-                }
-                
-                // Update playlist highlighting
-                updatePlaylistHighlight();
-                
-                // Update button states
-                updateNavigationButtons();
-            }
+// PDF Generation with letterhead
+function generatePDF(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p','mm','a4');
 
-            function updatePlaylistHighlight() {
-                const items = playlistItems.querySelectorAll('.playlist-item');
-                items.forEach((item, i) => {
-                    if (i === currentIndex) {
-                        item.classList.add('active');
-                    } else {
-                        item.classList.remove('active');
-                    }
-                });
-            }
+  let company = document.getElementById("company").value;
+  let companyAddress = document.getElementById("companyAddress").value;
+  let client = document.getElementById("client").value;
+  let clientAddress = document.getElementById("clientAddress").value;
+  let taxType = document.getElementById("taxType").value || "Tax";
+  let taxPercent = parseFloat(document.getElementById("tax").value) || 0;
 
-            function updateNavigationButtons() {
-                prevBtn.disabled = currentIndex === 0;
-                nextBtn.disabled = currentIndex === videos.length - 1;
-                
-                // Style disabled buttons
-                if (currentIndex === 0) {
-                    prevBtn.style.opacity = '0.5';
-                    prevBtn.style.cursor = 'not-allowed';
-                } else {
-                    prevBtn.style.opacity = '1';
-                    prevBtn.style.cursor = 'pointer';
-                }
-                
-                if (currentIndex === videos.length - 1) {
-                    nextBtn.style.opacity = '0.5';
-                    nextBtn.style.cursor = 'not-allowed';
-                } else {
-                    nextBtn.style.opacity = '1';
-                    nextBtn.style.cursor = 'pointer';
-                }
-            }
+  const addHeader = () => {
+    if(uploadedLogo) doc.addImage(uploadedLogo, "PNG", 15, 10, 40, 40);
+    doc.setFontSize(18); doc.text(company, 65, 20);
+    doc.setFontSize(11); 
+    doc.text(companyAddress, 65, 28);
+    doc.text("Phone: XXX-XXXXXXX | Email: info@company.com", 65, 35);
+    doc.setLineWidth(0.8);
+    doc.line(15, 50, 195, 50);
+    doc.setFontSize(16);
+    doc.text("QUOTATION", 150, 45);
+  };
 
-            // Search functionality
-            searchBtn.addEventListener('click', searchVideos);
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    searchVideos();
-                }
-            });
+  const addFooter = (pageNum, pageCount) => {
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text("www.companywebsite.com | © 2025 Your Company Name", 105, 290, null, null, "center");
+    doc.text(`Page ${pageNum} of ${pageCount}`, 180, 290);
+  };
 
-            function searchVideos() {
-                const searchTerm = searchInput.value.toLowerCase();
-                if (!searchTerm) {
-                    displayPlaylist();
-                    return;
-                }
-                
-                const filteredVideos = videos.filter(video => 
-                    video.title.toLowerCase().includes(searchTerm)
-                );
-                
-                if (filteredVideos.length === 0) {
-                    playlistItems.innerHTML = '<div class="playlist-item">No videos found</div>';
-                } else {
-                    displayPlaylist(filteredVideos);
-                }
-            }
+  addHeader();
+  doc.setFontSize(12);
+  doc.text("To:", 20, 55);
+  doc.text(client, 30, 60);
+  doc.text(clientAddress, 30, 68);
 
-            // Play/Pause functionality
-            playPauseBtn.addEventListener('click', () => {
-                if (videoPlayer.paused) {
-                    videoPlayer.play();
-                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
-                } else {
-                    videoPlayer.pause();
-                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i> Play';
-                }
-            });
+  let table = document.getElementById("itemsTable");
+  let rows = [];
+  let subtotal = 0;
+  for(let i=1;i<table.rows.length;i++){
+    let rowNum = i;
+    let item = table.rows[i].cells[1].children[0].value;
+    let desc = table.rows[i].cells[2].children[0].value;
+    let qty = table.rows[i].cells[3].children[0].value;
+    let price = table.rows[i].cells[4].children[0].value;
+    let discount = table.rows[i].cells[5].children[0].value;
+    let total = (qty * price) - discount;
+    subtotal += total;
+    rows.push([rowNum, item, desc, qty, price, discount, total.toFixed(2)]);
+  }
 
-            // Listen to video player events to update play/pause button
-            videoPlayer.addEventListener('play', () => {
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
-            });
+  doc.autoTable({
+    head:[['#','Item','Description','Qty','Price (₹)','Discount (₹)','Total (₹)']],
+    body: rows,
+    startY: 75,
+    styles: { fillColor: [240,240,240] },
+    headStyles: { fillColor: [100,149,237], textColor: 255, fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [245,245,245] },
+    didDrawPage: function(data){
+      addHeader();
+      addFooter(doc.internal.getCurrentPageInfo().pageNumber, doc.internal.getNumberOfPages());
+    }
+  });
 
-            videoPlayer.addEventListener('pause', () => {
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i> Play';
-            });
+  let taxAmount = subtotal * taxPercent / 100;
+  let grandTotal = subtotal + taxAmount;
+  let finalY = doc.lastAutoTable.finalY + 10;
 
-            // Previous video
-            prevBtn.addEventListener('click', () => {
-                if (currentIndex > 0) {
-                    playVideo(currentIndex - 1);
-                }
-            });
+  doc.setFontSize(12);
+  doc.text(`Subtotal: ₹${subtotal.toFixed(2)}`, 140, finalY);
+  doc.text(`${taxType} (${taxPercent}%): ₹${taxAmount.toFixed(2)}`, 140, finalY + 7);
+  doc.setFontSize(14);
+  doc.text(`Grand Total: ₹${grandTotal.toFixed(2)}`, 140, finalY + 15);
 
-            // Next video
-            nextBtn.addEventListener('click', () => {
-                if (currentIndex < videos.length - 1) {
-                    playVideo(currentIndex + 1);
-                }
-            });
+  doc.setFontSize(11);
+  doc.text("Terms & Conditions:", 20, finalY + 30);
+  doc.text("1. Prices valid for 30 days.", 25, finalY + 40);
+  doc.text("2. Payment due within 7 days of invoice.", 25, finalY + 50);
+  doc.text("3. Delivery within 10 working days.", 25, finalY + 60);
 
-            // View PDF button
-            viewPdfBtn.addEventListener('click', () => {
-                if (currentIndex === -1 || !videos[currentIndex].pdfUrl) {
-                    showError('No PDF available for this video');
-                    return;
-                }
-                
-                // Hide video and show PDF
-                videoSection.style.display = 'none';
-                pdfContainer.style.display = 'block';
-                
-                // Load PDF
-                if (videos[currentIndex].pdfUrl) {
-                    pdfViewer.src = `https://docs.google.com/gview?url=${encodeURIComponent(videos[currentIndex].pdfUrl)}&embedded=true`;
-                }
-            });
-
-            // Back to playlist button
-            backToListBtn.addEventListener('click', () => {
-                videoSection.style.display = 'none';
-                playlist.style.display = 'block';
-            });
-
-            // Back to video button
-            backToVideoBtn.addEventListener('click', () => {
-                pdfContainer.style.display = 'none';
-                videoSection.style.display = 'block';
-            });
-
-            // Handle video errors
-            videoPlayer.addEventListener('error', () => {
-                showError('Error loading video. Trying with direct URL...');
-                // Try playing directly without proxy
-                const video = videos[currentIndex];
-                if (video && video.videoUrl) {
-                    videoPlayer.src = video.videoUrl;
-                    videoPlayer.load();
-                    videoPlayer.play().catch(e => {
-                        console.log('Direct play failed:', e);
-                        showError('Video playback failed. The video may be unavailable.');
-                    });
-                }
-            });
-
-            // Keyboard shortcuts
-            document.addEventListener('keydown', (e) => {
-                // Space bar for play/pause
-                if (e.code === 'Space' && videoSection.style.display === 'block') {
-                    e.preventDefault();
-                    playPauseBtn.click();
-                }
-                // Left arrow for previous
-                else if (e.key === 'ArrowLeft' && !prevBtn.disabled) {
-                    prevBtn.click();
-                }
-                // Right arrow for next
-                else if (e.key === 'ArrowRight' && !nextBtn.disabled) {
-                    nextBtn.click();
-                }
-            });
-        });
-    </script>
+  doc.save("professional_quotation.pdf");
+}
+</script>
 </body>
 </html>
