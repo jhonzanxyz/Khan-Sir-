@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Professional Quotation Maker</title>
+<title>Multi-Template Quotation Maker</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 <style>
@@ -11,7 +11,7 @@
   h1 { text-align: center; color: #333; }
   .container { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
   label { display: block; margin-top: 10px; font-weight: bold; }
-  input, textarea { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+  input, textarea, select { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
   textarea { resize: vertical; }
   table { width: 100%; border-collapse: collapse; margin-top: 15px; }
   table, th, td { border: 1px solid #ccc; }
@@ -23,7 +23,7 @@
 </style>
 </head>
 <body>
-<h1>Professional Quotation Maker</h1>
+<h1>Multi-Template Quotation Maker</h1>
 <div class="container">
   <label>Upload Company Logo:</label>
   <input type="file" id="logoUpload" accept="image/*">
@@ -45,6 +45,13 @@
 
   <label>Tax Percentage (%):</label>
   <input type="number" id="tax" value="0" min="0" oninput="updateLiveTotal()">
+
+  <label>Select Template Style:</label>
+  <select id="templateSelect">
+    <option value="classic">Classic</option>
+    <option value="modern">Modern</option>
+    <option value="minimal">Minimal</option>
+  </select>
 
   <table id="itemsTable">
     <tr>
@@ -69,16 +76,14 @@
 <script>
 let uploadedLogo = null;
 
-// Logo upload and preview
+// Logo upload
 document.getElementById('logoUpload').addEventListener('change', function(e){
   const reader = new FileReader();
-  reader.onload = function(event){
-    uploadedLogo = event.target.result;
-  }
+  reader.onload = function(event){ uploadedLogo = event.target.result; }
   reader.readAsDataURL(e.target.files[0]);
 });
 
-// Add new item row
+// Add item row
 function addItem(){
   let table = document.getElementById("itemsTable");
   let row = table.insertRow();
@@ -92,7 +97,7 @@ function addItem(){
   updateLiveTotal();
 }
 
-// Update individual row total
+// Update row total
 function updateRow(el){
   let row = el.parentNode.parentNode;
   let qty = parseFloat(row.cells[3].children[0].value) || 0;
@@ -103,7 +108,7 @@ function updateRow(el){
   updateLiveTotal();
 }
 
-// Live total preview
+// Live totals
 function updateLiveTotal(){
   let table = document.getElementById("itemsTable");
   let subtotal = 0;
@@ -117,7 +122,7 @@ function updateLiveTotal(){
     `Subtotal: ₹${subtotal.toFixed(2)} | Tax: ₹${taxAmount.toFixed(2)} | Grand Total: ₹${grandTotal.toFixed(2)}`;
 }
 
-// PDF Generation with letterhead
+// PDF generation
 function generatePDF(){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('p','mm','a4');
@@ -128,32 +133,42 @@ function generatePDF(){
   let clientAddress = document.getElementById("clientAddress").value;
   let taxType = document.getElementById("taxType").value || "Tax";
   let taxPercent = parseFloat(document.getElementById("tax").value) || 0;
+  let template = document.getElementById("templateSelect").value;
 
-  const addHeader = () => {
-    if(uploadedLogo) doc.addImage(uploadedLogo, "PNG", 15, 10, 40, 40);
-    doc.setFontSize(18); doc.text(company, 65, 20);
-    doc.setFontSize(11); 
-    doc.text(companyAddress, 65, 28);
-    doc.text("Phone: XXX-XXXXXXX | Email: info@company.com", 65, 35);
-    doc.setLineWidth(0.8);
-    doc.line(15, 50, 195, 50);
-    doc.setFontSize(16);
-    doc.text("QUOTATION", 150, 45);
-  };
+  // Template styles
+  let headerColor = [100,149,237];
+  let fontName = "helvetica";
+  let lineY = 50;
+  if(template === "modern"){ headerColor=[0,128,128]; fontName="times"; lineY=52; }
+  else if(template === "minimal"){ headerColor=[80,80,80]; fontName="courier"; lineY=48; }
 
+  // Add header
+  if(uploadedLogo) doc.addImage(uploadedLogo, "PNG", 15, 10, 40, 40);
+  doc.setFont(fontName);
+  doc.setFontSize(18); doc.text(company, 65, 20);
+  doc.setFontSize(11); 
+  doc.text(companyAddress, 65, 28);
+  doc.text("Phone: XXX-XXXXXXX | Email: info@company.com", 65, 35);
+  doc.setLineWidth(0.8); doc.setDrawColor(...headerColor);
+  doc.line(15, lineY, 195, lineY);
+  doc.setFontSize(16); doc.setTextColor(...headerColor);
+  doc.text("QUOTATION", 150, lineY-5);
+  doc.setTextColor(0);
+
+  // Add footer
   const addFooter = (pageNum, pageCount) => {
-    doc.setFontSize(10);
-    doc.setTextColor(100);
+    doc.setFontSize(10); doc.setTextColor(100);
     doc.text("www.companywebsite.com | © 2025 Your Company Name", 105, 290, null, null, "center");
     doc.text(`Page ${pageNum} of ${pageCount}`, 180, 290);
   };
 
-  addHeader();
+  // Add client info
   doc.setFontSize(12);
   doc.text("To:", 20, 55);
   doc.text(client, 30, 60);
   doc.text(clientAddress, 30, 68);
 
+  // Table rows
   let table = document.getElementById("itemsTable");
   let rows = [];
   let subtotal = 0;
@@ -164,20 +179,19 @@ function generatePDF(){
     let qty = table.rows[i].cells[3].children[0].value;
     let price = table.rows[i].cells[4].children[0].value;
     let discount = table.rows[i].cells[5].children[0].value;
-    let total = (qty * price) - discount;
+    let total = (qty*price)-discount;
     subtotal += total;
-    rows.push([rowNum, item, desc, qty, price, discount, total.toFixed(2)]);
+    rows.push([rowNum,item,desc,qty,price,discount,total.toFixed(2)]);
   }
 
   doc.autoTable({
     head:[['#','Item','Description','Qty','Price (₹)','Discount (₹)','Total (₹)']],
     body: rows,
     startY: 75,
-    styles: { fillColor: [240,240,240] },
-    headStyles: { fillColor: [100,149,237], textColor: 255, fontStyle: 'bold' },
-    alternateRowStyles: { fillColor: [245,245,245] },
+    styles: { fillColor:[240,240,240] },
+    headStyles: { fillColor: headerColor, textColor: 255, fontStyle:'bold' },
+    alternateRowStyles: { fillColor:[245,245,245] },
     didDrawPage: function(data){
-      addHeader();
       addFooter(doc.internal.getCurrentPageInfo().pageNumber, doc.internal.getNumberOfPages());
     }
   });
@@ -188,18 +202,12 @@ function generatePDF(){
 
   doc.setFontSize(12);
   doc.text(`Subtotal: ₹${subtotal.toFixed(2)}`, 140, finalY);
-  doc.text(`${taxType} (${taxPercent}%): ₹${taxAmount.toFixed(2)}`, 140, finalY + 7);
+  doc.text(`${taxType} (${taxPercent}%): ₹${taxAmount.toFixed(2)}`, 140, finalY+7);
   doc.setFontSize(14);
-  doc.text(`Grand Total: ₹${grandTotal.toFixed(2)}`, 140, finalY + 15);
+  doc.text(`Grand Total: ₹${grandTotal.toFixed(2)}`, 140, finalY+15);
 
   doc.setFontSize(11);
-  doc.text("Terms & Conditions:", 20, finalY + 30);
-  doc.text("1. Prices valid for 30 days.", 25, finalY + 40);
-  doc.text("2. Payment due within 7 days of invoice.", 25, finalY + 50);
-  doc.text("3. Delivery within 10 working days.", 25, finalY + 60);
-
-  doc.save("professional_quotation.pdf");
-}
-</script>
-</body>
-</html>
+  doc.text("Terms & Conditions:", 20, finalY+30);
+  doc.text("1. Prices valid for 30 days.", 25, finalY+40);
+  doc.text("2. Payment due within 7 days of invoice.", 25, finalY+50
+      
