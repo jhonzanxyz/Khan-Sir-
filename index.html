@@ -4,18 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Modern Quotation Maker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto+Slab:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
-      background: #f5f7fa;
-      padding: 20px;
+      font-family: 'Poppins', sans-serif;
+      background: #f9fbfd;
       color: #333;
+      padding: 20px;
+      line-height: 1.6;
     }
 
     .container {
@@ -29,162 +31,253 @@
     }
 
     h1 {
-      color: #2c3e50;
-      margin-bottom: 10px;
+      font-weight: 700;
+      color: #1a3a6c;
     }
 
     .card {
       background: white;
       border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
       padding: 25px;
       margin-bottom: 25px;
     }
 
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 16px;
     }
 
     label {
       display: block;
       margin-bottom: 6px;
       font-weight: 600;
-      color: #2c3e50;
+      color: #2d3748;
     }
 
     input, textarea {
       width: 100%;
       padding: 10px 12px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
       font-size: 15px;
+      font-family: inherit;
     }
 
     .items-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
     .items-table th,
     .items-table td {
-      padding: 12px;
+      padding: 12px 10px;
       text-align: left;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #edf2f7;
     }
 
     .items-table th {
-      background: #f8f9fa;
-      color: #2c3e50;
+      font-weight: 600;
+      color: #2d3748;
+      background: #f8fafc;
     }
 
     .btn {
-      padding: 10px 16px;
-      background: #3498db;
+      padding: 10px 18px;
+      background: #3182ce;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-size: 15px;
-      margin-right: 8px;
-      transition: background 0.3s;
+      font-weight: 500;
+      margin-right: 10px;
+      transition: all 0.2s;
     }
 
     .btn:hover {
-      background: #2980b9;
+      background: #2c5282;
     }
 
     .btn-danger {
-      background: #e74c3c;
+      background: #e53e3e;
     }
 
     .btn-danger:hover {
-      background: #c0392b;
+      background: #c53030;
     }
 
     .btn-print {
-      background: #2ecc71;
+      background: #38a169;
     }
 
     .btn-print:hover {
-      background: #27ae60;
+      background: #2f855a;
     }
 
-    .totals {
-      text-align: right;
-      margin-top: 20px;
-    }
-
-    .total-row {
-      font-size: 18px;
-      font-weight: 600;
-      margin: 8px 0;
-    }
-
-    .grand-total {
-      color: #2c3e50;
-      font-size: 22px;
-    }
-
+    /* =============== PRINT QUOTATION STYLING =============== */
     .quotation-output {
       display: none;
+      font-family: 'Roboto Slab', serif;
       background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 40px;
+      border-radius: 8px;
     }
 
     .quotation-header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .company-name {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 6px;
+    }
+
+    .company-address {
+      font-size: 14px;
+      color: #4a5568;
+      line-height: 1.5;
     }
 
     .quotation-title {
       font-size: 24px;
-      font-weight: bold;
-      margin: 10px 0;
+      font-weight: 700;
+      margin: 20px 0;
+      color: #2d3748;
+      text-decoration: underline;
+      text-underline-offset: 6px;
     }
 
-    .quotation-to {
-      margin: 20px 0;
+    .quotation-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      font-size: 15px;
+    }
+
+    .to-section {
+      margin-bottom: 25px;
+    }
+
+    .to-section p {
+      margin: 4px 0;
     }
 
     .quotation-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
+      margin: 20px 0 25px;
     }
 
     .quotation-table th,
     .quotation-table td {
-      padding: 10px;
-      border: 1px solid #ddd;
+      padding: 12px 10px;
       text-align: left;
+      border: 1px solid #cbd5e0;
     }
 
     .quotation-table th {
-      background: #f1f1f1;
+      background-color: #f7fafc;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .totals-section {
+      text-align: right;
+      margin-bottom: 25px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: flex-end;
+      margin: 6px 0;
+    }
+
+    .total-label {
+      width: 180px;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .total-value {
+      width: 120px;
+      text-align: right;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .grand-total-row {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a3a6c;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 2px solid #cbd5e0;
+    }
+
+    .amount-words-box {
+      background: #f8fafc;
+      padding: 14px;
+      border-left: 4px solid #3182ce;
+      margin: 20px 0;
+      font-size: 15px;
+      font-family: 'Poppins', sans-serif;
     }
 
     .terms {
-      margin-top: 20px;
+      margin-top: 25px;
       font-size: 14px;
+      line-height: 1.7;
     }
 
+    .signature {
+      margin-top: 40px;
+      text-align: right;
+      font-style: italic;
+      color: #4a5568;
+    }
+
+    /* =============== PRINT MEDIA =============== */
     @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .container, .card {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .quotation-output {
+        padding: 30px !important;
+        display: block !important;
+        box-shadow: none !important;
+      }
+
+      .btn {
+        display: none !important;
+      }
+
       body * {
         visibility: hidden;
       }
-      .quotation-output, .quotation-output * {
+
+      .quotation-output,
+      .quotation-output * {
         visibility: visible;
       }
+
       .quotation-output {
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
-        padding: 20px;
-        box-shadow: none;
       }
     }
   </style>
@@ -193,7 +286,7 @@
   <div class="container">
     <header>
       <h1>Modern Quotation Maker</h1>
-      <p>Create professional quotations in seconds</p>
+      <p>Create & print professional quotations instantly</p>
     </header>
 
     <!-- Input Form -->
@@ -251,24 +344,31 @@
       <button class="btn btn-print" onclick="generateQuotation()" style="margin-top:15px;">Generate Quotation</button>
     </div>
 
-    <!-- Output Quotation -->
+    <!-- Output Quotation (Print View) -->
     <div class="card quotation-output" id="quotationOutput">
+      <!-- Company Info -->
       <div class="quotation-header">
-        <h2>DURGA ENGINEERING WORKS</h2>
-        <p>Noor Sarai, Nalanda, Bihar<br>
-        GSTIN: 10AHCPK1560G1Z1 | Contact: 9XXXXXXXXX</p>
+        <div class="company-name">DURGA ENGINEERING WORKS</div>
+        <div class="company-address">
+          Noor Sarai, Nalanda, Bihar<br>
+          GSTIN: 10AHCPK1560G1Z1 | Contact: 9XXXXXXXXX
+        </div>
         <div class="quotation-title">QUOTATION</div>
-        <p>Quotation No: <span id="outQuoteNo">001</span> | Date: <span id="outDate">09-Oct-2025</span></p>
+        <div class="quotation-meta">
+          <span>Quotation No: <strong id="outQuoteNo">001</strong></span>
+          <span>Date: <strong id="outDate">09-Oct-2025</strong></span>
+        </div>
       </div>
 
-      <div class="quotation-to">
-        <p><strong>To,</strong><br>
-        <span id="outClientName">PRAVAH</span><br>
-        <span id="outClientAddress">Deoghar, Jharkhand</span><br>
-        GSTIN: <span id="outClientGstin">20AAAAP0521E1ZJ</span>
-        </p>
+      <!-- Client Info -->
+      <div class="to-section">
+        <p><strong>To,</strong></p>
+        <p id="outClientName">PRAVAH</p>
+        <p id="outClientAddress">Deoghar, Jharkhand</p>
+        <p>GSTIN: <span id="outClientGstin">20AAAAP0521E1ZJ</span></p>
       </div>
 
+      <!-- Items Table -->
       <table class="quotation-table">
         <thead>
           <tr>
@@ -282,86 +382,96 @@
         <tbody id="outItemsBody">
           <!-- Filled by JS -->
         </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="4" style="text-align: right;"><strong>Subtotal:</strong></td>
-            <td id="outSubtotal">57,200</td>
-          </tr>
-          <tr>
-            <td colspan="4" style="text-align: right;"><strong>GST @18%:</strong></td>
-            <td id="outGst">10,296</td>
-          </tr>
-          <tr>
-            <td colspan="4" style="text-align: right;"><strong>Grand Total:</strong></td>
-            <td id="outGrandTotal">₹67,496</td>
-          </tr>
-        </tfoot>
       </table>
 
-      <p><strong>Amount in Words:</strong> <span id="outAmountWords">Sixty Seven Thousand Four Hundred Ninety Six Only</span></p>
+      <!-- Totals -->
+      <div class="totals-section">
+        <div class="total-row">
+          <div class="total-label">Subtotal:</div>
+          <div class="total-value" id="outSubtotal">57,200.00</div>
+        </div>
+        <div class="total-row">
+          <div class="total-label">GST @18%:</div>
+          <div class="total-value" id="outGst">10,296.00</div>
+        </div>
+        <div class="total-row grand-total-row">
+          <div class="total-label">Grand Total:</div>
+          <div class="total-value" id="outGrandTotal">₹67,496.00</div>
+        </div>
+      </div>
 
+      <!-- Amount in Words -->
+      <div class="amount-words-box">
+        <strong>Amount in Words:</strong> <span id="outAmountWords">Sixty Seven Thousand Four Hundred Ninety Six Only</span>
+      </div>
+
+      <!-- Terms -->
       <div class="terms">
         <p><strong>Terms & Conditions:</strong></p>
         <ol>
-          <li>Quotation valid for 30 days.</li>
-          <li>Payment within 7 days from date of delivery.</li>
-          <li>Any extra work will be charged separately.</li>
+          <li>Quotation valid for 30 days from the date of issue.</li>
+          <li>Payment to be made within 7 days from the date of delivery/completion.</li>
+          <li>Any additional work or modifications will be billed separately.</li>
         </ol>
       </div>
 
-      <p style="margin-top: 30px; text-align: right;">
-        <strong>Authorised Signatory</strong><br>
-        (Sign & Stamp)
-      </p>
+      <!-- Signature -->
+      <div class="signature">
+        <p>Authorised Signatory</p>
+        <p>(Sign & Stamp)</p>
+      </div>
 
-      <button class="btn btn-print" onclick="window.print()" style="margin-top:20px;">🖨️ Print Quotation</button>
+      <button class="btn btn-print" onclick="window.print()" style="margin-top:20px; width: auto;">🖨️ Print Quotation</button>
     </div>
   </div>
 
   <script>
-    // Set today's date as default
-    document.getElementById('quoteDate').valueAsDate = new Date();
+    // Set today as default
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('quoteDate').value = today;
 
     function addRow() {
       const tbody = document.getElementById('itemsBody');
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td><input type="text" class="desc" placeholder="Description" /></td>
+        <td><input type="text" class="desc" placeholder="Description of work" /></td>
         <td><input type="number" class="qty" value="1" min="0" step="1" /></td>
         <td><input type="number" class="rate" value="0" min="0" step="0.01" /></td>
-        <td class="amount">0</td>
+        <td class="amount">0.00</td>
         <td><button class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
       `;
       tbody.appendChild(row);
       attachInputListeners(row);
     }
 
-    function removeRow(button) {
-      button.closest('tr').remove();
+    function removeRow(btn) {
+      btn.closest('tr').remove();
     }
 
     function attachInputListeners(row) {
       const qty = row.querySelector('.qty');
       const rate = row.querySelector('.rate');
-      const amount = row.querySelector('.amount');
+      const amountEl = row.querySelector('.amount');
 
-      const updateAmount = () => {
+      const update = () => {
         const q = parseFloat(qty.value) || 0;
         const r = parseFloat(rate.value) || 0;
-        const amt = (q * r).toFixed(2);
-        amount.textContent = new Intl.NumberFormat('en-IN').format(amt);
+        const amt = q * r;
+        amountEl.textContent = new Intl.NumberFormat('en-IN', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(amt);
       };
 
-      qty.addEventListener('input', updateAmount);
-      rate.addEventListener('input', updateAmount);
+      qty.addEventListener('input', update);
+      rate.addEventListener('input', update);
+      update();
     }
 
-    // Attach listeners to initial row
     document.querySelectorAll('#itemsBody tr').forEach(attachInputListeners);
 
     function numberToWords(num) {
       if (num === 0) return "Zero";
-
       const belowTwenty = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
         "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
       const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
@@ -379,35 +489,32 @@
     }
 
     function generateQuotation() {
-      // Get inputs
+      // Get form values
       const quoteNo = document.getElementById('quoteNo').value || '001';
       const quoteDate = document.getElementById('quoteDate').value;
       const clientName = document.getElementById('clientName').value || 'Client Name';
       const clientAddress = document.getElementById('clientAddress').value || 'Address';
       const clientGstin = document.getElementById('clientGstin').value || 'GSTIN';
 
-      // Format date
-      const dateObj = quoteDate ? new Date(quoteDate) : new Date();
-      const formattedDate = dateObj.toLocaleDateString('en-IN', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric'
-      }).replace(/ /g, '-');
+      // Format date for display (e.g., 09-Oct-2025)
+      const d = new Date(quoteDate);
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const formattedDate = `${String(d.getDate()).padStart(2, '0')}-${months[d.getMonth()]}-${d.getFullYear()}`;
 
-      // Update header
+      // Update output header
       document.getElementById('outQuoteNo').textContent = quoteNo;
       document.getElementById('outDate').textContent = formattedDate;
       document.getElementById('outClientName').textContent = clientName;
       document.getElementById('outClientAddress').textContent = clientAddress;
       document.getElementById('outClientGstin').textContent = clientGstin;
 
-      // Process items
+      // Process line items
       const rows = document.querySelectorAll('#itemsBody tr');
       const outBody = document.getElementById('outItemsBody');
       outBody.innerHTML = '';
 
       let subtotal = 0;
-      rows.forEach((row, index) => {
+      rows.forEach((row, i) => {
         const desc = row.querySelector('.desc').value || 'N/A';
         const qty = parseFloat(row.querySelector('.qty').value) || 0;
         const rate = parseFloat(row.querySelector('.rate').value) || 0;
@@ -416,11 +523,11 @@
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${index + 1}</td>
+          <td>${i + 1}</td>
           <td>${desc}</td>
           <td>${qty}</td>
           <td>${rate.toFixed(2)}</td>
-          <td>${new Intl.NumberFormat('en-IN').format(amount.toFixed(2))}</td>
+          <td>${new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2 }).format(amount)}</td>
         `;
         outBody.appendChild(tr);
       });
@@ -428,12 +535,15 @@
       const gst = subtotal * 0.18;
       const grandTotal = subtotal + gst;
 
-      document.getElementById('outSubtotal').textContent = new Intl.NumberFormat('en-IN').format(subtotal.toFixed(2));
-      document.getElementById('outGst').textContent = new Intl.NumberFormat('en-IN').format(gst.toFixed(2));
-      document.getElementById('outGrandTotal').textContent = '₹' + new Intl.NumberFormat('en-IN').format(grandTotal.toFixed(2));
+      // Format numbers
+      const formatter = new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2 });
+      document.getElementById('outSubtotal').textContent = formatter.format(subtotal);
+      document.getElementById('outGst').textContent = formatter.format(gst);
+      document.getElementById('outGrandTotal').textContent = '₹' + formatter.format(grandTotal);
 
-      const amountInWords = numberToWords(Math.floor(grandTotal));
-      document.getElementById('outAmountWords').textContent = amountInWords;
+      // Amount in words (only whole number)
+      const words = numberToWords(Math.floor(grandTotal));
+      document.getElementById('outAmountWords').textContent = words;
 
       // Show output
       document.getElementById('quotationOutput').style.display = 'block';
