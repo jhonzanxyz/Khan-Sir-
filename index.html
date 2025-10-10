@@ -3,105 +3,382 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Modern Quotation Maker</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto+Slab:wght@400;600&display=swap" rel="stylesheet">
+  <title>Professional Quotation Generator</title>
   <style>
-    * {
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
       margin: 0;
       padding: 0;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 25px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .form-container input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
       box-sizing: border-box;
     }
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #f9fbfd;
-      color: #333;
-      padding: 20px;
-      line-height: 1.6;
+    .form-container button {
+      background: #0056b3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
     }
+    .form-container button:hover { background: #003d82; }
 
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    h1 {
-      font-weight: 700;
-      color: #1a3a6c;
-    }
-
-    .card {
+    /* === QUOTATION PDF SECTION === */
+    .quotation {
+      width: 210mm; /* A4 width */
+      min-height: 297mm; /* A4 height */
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-      padding: 25px;
+      margin: 30px auto;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    /* 🎨 HEADER */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      background: linear-gradient(135deg, #0056b3 0%, #00a8ff 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
       margin-bottom: 25px;
     }
 
-    .form-group {
-      margin-bottom: 16px;
+    .logo-section h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.5px;
     }
 
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-      color: #2d3748;
+    .tagline {
+      margin-top: 5px;
+      font-size: 14px;
+      opacity: 0.9;
     }
 
-    input, textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #cbd5e0;
-      border-radius: 8px;
-      font-size: 15px;
-      font-family: inherit;
+    .contact-info {
+      text-align: right;
+      font-size: 13px;
+      line-height: 1.5;
     }
 
-    .items-table {
+    /* QUOTATION BODY */
+    .quotation-body h2 {
+      text-align: center;
+      color: #0056b3;
+      margin: 20px 0;
+      font-size: 24px;
+      text-decoration: underline;
+    }
+
+    .client-info {
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f0f8ff;
+      border-left: 4px solid #00a8ff;
+    }
+
+    table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 12px;
+      margin: 20px 0;
     }
 
-    .items-table th,
-    .items-table td {
-      padding: 12px 10px;
-      text-align: left;
-      border-bottom: 1px solid #edf2f7;
+    th, td {
+      border: 1px solid #999;
+      padding: 10px;
+      text-align: center;
     }
 
-    .items-table th {
-      font-weight: 600;
-      color: #2d3748;
-      background: #f8fafc;
+    th {
+      background: #e6f0fa;
+      color: #0056b3;
     }
 
-    .btn {
-      padding: 10px 18px;
-      background: #3182ce;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 500;
-      margin-right: 10px;
-      transition: all 0.2s;
+    .summary {
+      margin-top: 20px;
+      text-align: right;
+      font-weight: bold;
+      font-size: 16px;
     }
 
-    .btn:hover {
-      background: #2c5282;
+    .grand-total {
+      font-size: 18px;
+      color: #d32f2f;
+      margin-top: 10px;
     }
 
-    .btn-danger {
-      background: #e53e3e;
+    .amount-words {
+      margin-top: 10px;
+      font-style: italic;
+      color: #555;
     }
+
+    .terms {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f9f9f9;
+      border: 1px dashed #ccc;
+      font-size: 13px;
+    }
+
+    .terms ul {
+      margin: 10px 0 0 20px;
+    }
+
+    /* 📌 FOOTER */
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 2px solid #0056b3;
+      text-align: center;
+      color: #555;
+      font-size: 14px;
+    }
+
+    .signature {
+      margin: 20px 0;
+    }
+
+    .signature p {
+      margin: 5px 0;
+    }
+
+    .footer-note {
+      font-size: 12px;
+      color: #888;
+      margin-top: 15px;
+    }
+
+    @media print {
+      body { background: white; }
+      .form-container { display: none; }
+      .quotation { box-shadow: none; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Input Form -->
+  <div class="form-container">
+    <h2>Enter Quotation Details</h2>
+    <input type="text" id="clientName" placeholder="Client Name / Company" />
+    <input type="text" id="itemName" placeholder="Item / Service Name" />
+    <input type="number" id="quantity" placeholder="Quantity" min="1" value="1" />
+    <input type="number" id="price" placeholder="Price per Unit (₹)" step="0.01" />
+    <button onclick="addRow()">+ Add Item</button>
+    <button onclick="generatePDF()">📥 Download as PDF</button>
+  </div>
+
+  <!-- Quotation Preview (for PDF) -->
+  <div id="quotation" class="quotation">
+    
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-section">
+        <h1>TECH SOLUTIONS</h1>
+        <p class="tagline">Innovating Your Business</p>
+      </div>
+      <div class="contact-info">
+        <p>📍 123 Tech Park, Mumbai, India</p>
+        <p>📞 +91 98765 43210 | ✉️ info@techsolutions.com</p>
+        <p>🌐 www.techsolutions.com | 🏷️ GSTIN: 27AABCCDDEEFF</p>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="quotation-body">
+      <h2>QUOTATION</h2>
+      <div class="client-info">
+        <strong>To:</strong><br />
+        <span id="client-display">[Client Name]</span>
+      </div>
+
+      <table id="item-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>Unit Price (₹)</th>
+            <th>Total (₹)</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+
+      <div class="summary">
+        <div class="subtotal">Subtotal: ₹<span id="subtotal">0.00</span></div>
+        <div class="gst">CGST @9%: ₹<span id="cgst">0.00</span></div>
+        <div class="gst">SGST @9%: ₹<span id="sgst">0.00</span></div>
+        <div class="grand-total">Grand Total: ₹<span id="total-amount">0.00</span></div>
+        <div class="amount-words">Amount in Words: <span id="amount-words">Zero Only</span></div>
+      </div>
+
+      <div class="terms">
+        <h3>Terms & Conditions:</h3>
+        <ul>
+          <li>50% advance payment required to initiate work.</li>
+          <li>Delivery within 15 working days after advance.</li>
+          <li>This quotation is valid for 30 days from the date of issue.</li>
+          <li>All prices are inclusive of applicable taxes unless stated.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Thank you for your business! We look forward to serving you.</p>
+      <div class="signature">
+        <p>_________________________</p>
+        <p><strong>Rahul Sharma</strong><br />Director, Tech Solutions Pvt. Ltd.</p>
+      </div>
+      <p class="footer-note">This is a computer-generated quotation. No signature required.</p>
+    </div>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <script>
+    let items = [];
+
+    function addRow() {
+      const name = document.getElementById("itemName").value.trim();
+      const qty = parseFloat(document.getElementById("quantity").value);
+      const price = parseFloat(document.getElementById("price").value);
+
+      if (!name || isNaN(qty) || isNaN(price) || qty <= 0 || price <= 0) {
+        alert("Please enter valid item details.");
+        return;
+      }
+
+      items.push({ name, qty, price, total: qty * price });
+      renderTable();
+      updateSummary();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("table-body");
+      tbody.innerHTML = "";
+      items.forEach((item, index) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${item.name}</td>
+            <td>${item.qty}</td>
+            <td>₹${item.price.toFixed(2)}</td>
+            <td>₹${item.total.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function numberToWords(num) {
+      if (num === 0) return "Zero";
+      const units = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
+      const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+      const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+      
+      function convertBelowThousand(n) {
+        let str = "";
+        if (n >= 100) {
+          str += units[Math.floor(n / 100)] + " Hundred ";
+          n %= 100;
+        }
+        if (n >= 20) {
+          str += tens[Math.floor(n / 10)] + " ";
+          n %= 10;
+        } else if (n >= 10) {
+          str += teens[n - 10] + " ";
+          n = 0;
+        }
+        if (n > 0) str += units[n] + " ";
+        return str;
+      }
+
+      if (num >= 10000000) return "Amount too large";
+
+      let crore = Math.floor(num / 10000000);
+      num %= 10000000;
+      let lakh = Math.floor(num / 100000);
+      num %= 100000;
+      let thousand = Math.floor(num / 1000);
+      num %= 1000;
+
+      let result = "";
+      if (crore > 0) result += convertBelowThousand(crore) + "Crore ";
+      if (lakh > 0) result += convertBelowThousand(lakh) + "Lakh ";
+      if (thousand > 0) result += convertBelowThousand(thousand) + "Thousand ";
+      if (num > 0) result += convertBelowThousand(num);
+
+      return result.trim() || "Zero";
+    }
+
+    function updateSummary() {
+      const subtotal = items.reduce((sum, item) => sum + item.total, 0);
+      const cgst = subtotal * 0.09;
+      const sgst = subtotal * 0.09;
+      const total = subtotal + cgst + sgst;
+
+      document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+      document.getElementById("cgst").textContent = cgst.toFixed(2);
+      document.getElementById("sgst").textContent = sgst.toFixed(2);
+      document.getElementById("total-amount").textContent = total.toFixed(2);
+      document.getElementById("amount-words").textContent = 
+        numberToWords(Math.round(total)) + " Only";
+
+      document.getElementById("client-display").textContent = 
+        document.getElementById("clientName").value || "[Client Name]";
+    }
+
+    async function generatePDF() {
+      if (items.length === 0) {
+        alert("Please add at least one item.");
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const element = document.getElementById("quotation");
+
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const width = pdf.internal.pageSize.getWidth();
+      const height = (canvas.height * width) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, width, height);
+      pdf.save(`Quotation_${new Date().getTime()}.pdf`);
+    }
+  </script>
+</body>
+</html>    }
 
     .btn-danger:hover {
       background: #c53030;
