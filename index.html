@@ -1,829 +1,247 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Professional Quotation Generator</title>
+  <title>20+ मिनिमल लेटरहेड मेकर</title>
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f7fa;
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
-    .form-container {
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 25px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .form-container input {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-
-    .form-container button {
-      background: #0056b3;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      margin: 5px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .form-container button:hover { background: #003d82; }
-
-    /* === QUOTATION PDF SECTION === */
-    .quotation {
-      width: 210mm; /* A4 width */
-      min-height: 297mm; /* A4 height */
-      background: white;
-      margin: 30px auto;
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8f9fa;
       padding: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      position: relative;
+      color: #333;
     }
-
-    /* 🎨 HEADER */
-    .header {
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
       display: flex;
-      justify-content: space-between;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+    .form-section {
+      flex: 1;
+      min-width: 320px;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    .preview-section {
+      flex: 1;
+      min-width: 320px;
+      display: flex;
+      justify-content: center;
       align-items: flex-start;
-      background: linear-gradient(135deg, #0056b3 0%, #00a8ff 100%);
-      color: white;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 25px;
     }
-
-    .logo-section h1 {
-      margin: 0;
-      font-size: 28px;
-      letter-spacing: -0.5px;
-    }
-
-    .tagline {
-      margin-top: 5px;
-      font-size: 14px;
-      opacity: 0.9;
-    }
-
-    .contact-info {
-      text-align: right;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    /* QUOTATION BODY */
-    .quotation-body h2 {
-      text-align: center;
-      color: #0056b3;
-      margin: 20px 0;
-      font-size: 24px;
-      text-decoration: underline;
-    }
-
-    .client-info {
+    h2 {
       margin-bottom: 20px;
-      padding: 10px;
-      background: #f0f8ff;
-      border-left: 4px solid #00a8ff;
+      color: #2c3e50;
+      font-size: 22px;
     }
-
-    table {
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 600;
+      color: #444;
+    }
+    input, select, button {
       width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-    }
-
-    th, td {
-      border: 1px solid #999;
-      padding: 10px;
-      text-align: center;
-    }
-
-    th {
-      background: #e6f0fa;
-      color: #0056b3;
-    }
-
-    .summary {
-      margin-top: 20px;
-      text-align: right;
-      font-weight: bold;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
       font-size: 16px;
     }
-
-    .grand-total {
-      font-size: 18px;
-      color: #d32f2f;
-      margin-top: 10px;
+    button {
+      background: #27ae60;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
     }
-
-    .amount-words {
-      margin-top: 10px;
-      font-style: italic;
-      color: #555;
+    button:hover {
+      background: #219653;
     }
-
-    .terms {
-      margin-top: 25px;
-      padding: 15px;
-      background: #f9f9f9;
-      border: 1px dashed #ccc;
-      font-size: 13px;
-    }
-
-    .terms ul {
-      margin: 10px 0 0 20px;
-    }
-
-    /* 📌 FOOTER */
-    .footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 2px solid #0056b3;
-      text-align: center;
-      color: #555;
-      font-size: 14px;
-    }
-
-    .signature {
-      margin: 20px 0;
-    }
-
-    .signature p {
-      margin: 5px 0;
-    }
-
-    .footer-note {
-      font-size: 12px;
-      color: #888;
-      margin-top: 15px;
-    }
-
-    @media print {
-      body { background: white; }
-      .form-container { display: none; }
-      .quotation { box-shadow: none; margin: 0; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Input Form -->
-  <div class="form-container">
-    <h2>Enter Quotation Details</h2>
-    <input type="text" id="clientName" placeholder="Client Name / Company" />
-    <input type="text" id="itemName" placeholder="Item / Service Name" />
-    <input type="number" id="quantity" placeholder="Quantity" min="1" value="1" />
-    <input type="number" id="price" placeholder="Price per Unit (₹)" step="0.01" />
-    <button onclick="addRow()">+ Add Item</button>
-    <button onclick="generatePDF()">📥 Download as PDF</button>
-  </div>
-
-  <!-- Quotation Preview (for PDF) -->
-  <div id="quotation" class="quotation">
-    
-    <!-- Header -->
-    <div class="header">
-      <div class="logo-section">
-        <h1>TECH SOLUTIONS</h1>
-        <p class="tagline">Innovating Your Business</p>
-      </div>
-      <div class="contact-info">
-        <p>📍 123 Tech Park, Mumbai, India</p>
-        <p>📞 +91 98765 43210 | ✉️ info@techsolutions.com</p>
-        <p>🌐 www.techsolutions.com | 🏷️ GSTIN: 27AABCCDDEEFF</p>
-      </div>
-    </div>
-
-    <!-- Body -->
-    <div class="quotation-body">
-      <h2>QUOTATION</h2>
-      <div class="client-info">
-        <strong>To:</strong><br />
-        <span id="client-display">[Client Name]</span>
-      </div>
-
-      <table id="item-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Description</th>
-            <th>Qty</th>
-            <th>Unit Price (₹)</th>
-            <th>Total (₹)</th>
-          </tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-      </table>
-
-      <div class="summary">
-        <div class="subtotal">Subtotal: ₹<span id="subtotal">0.00</span></div>
-        <div class="gst">CGST @9%: ₹<span id="cgst">0.00</span></div>
-        <div class="gst">SGST @9%: ₹<span id="sgst">0.00</span></div>
-        <div class="grand-total">Grand Total: ₹<span id="total-amount">0.00</span></div>
-        <div class="amount-words">Amount in Words: <span id="amount-words">Zero Only</span></div>
-      </div>
-
-      <div class="terms">
-        <h3>Terms & Conditions:</h3>
-        <ul>
-          <li>50% advance payment required to initiate work.</li>
-          <li>Delivery within 15 working days after advance.</li>
-          <li>This quotation is valid for 30 days from the date of issue.</li>
-          <li>All prices are inclusive of applicable taxes unless stated.</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-      <p>Thank you for your business! We look forward to serving you.</p>
-      <div class="signature">
-        <p>_________________________</p>
-        <p><strong>Rahul Sharma</strong><br />Director, Tech Solutions Pvt. Ltd.</p>
-      </div>
-      <p class="footer-note">This is a computer-generated quotation. No signature required.</p>
-    </div>
-  </div>
-
-  <!-- Libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-  <script>
-    let items = [];
-
-    function addRow() {
-      const name = document.getElementById("itemName").value.trim();
-      const qty = parseFloat(document.getElementById("quantity").value);
-      const price = parseFloat(document.getElementById("price").value);
-
-      if (!name || isNaN(qty) || isNaN(price) || qty <= 0 || price <= 0) {
-        alert("Please enter valid item details.");
-        return;
-      }
-
-      items.push({ name, qty, price, total: qty * price });
-      renderTable();
-      updateSummary();
-    }
-
-    function renderTable() {
-      const tbody = document.getElementById("table-body");
-      tbody.innerHTML = "";
-      items.forEach((item, index) => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${item.name}</td>
-            <td>${item.qty}</td>
-            <td>₹${item.price.toFixed(2)}</td>
-            <td>₹${item.total.toFixed(2)}</td>
-          </tr>
-        `;
-      });
-    }
-
-    function numberToWords(num) {
-      if (num === 0) return "Zero";
-      const units = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
-      const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-      const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-      
-      function convertBelowThousand(n) {
-        let str = "";
-        if (n >= 100) {
-          str += units[Math.floor(n / 100)] + " Hundred ";
-          n %= 100;
-        }
-        if (n >= 20) {
-          str += tens[Math.floor(n / 10)] + " ";
-          n %= 10;
-        } else if (n >= 10) {
-          str += teens[n - 10] + " ";
-          n = 0;
-        }
-        if (n > 0) str += units[n] + " ";
-        return str;
-      }
-
-      if (num >= 10000000) return "Amount too large";
-
-      let crore = Math.floor(num / 10000000);
-      num %= 10000000;
-      let lakh = Math.floor(num / 100000);
-      num %= 100000;
-      let thousand = Math.floor(num / 1000);
-      num %= 1000;
-
-      let result = "";
-      if (crore > 0) result += convertBelowThousand(crore) + "Crore ";
-      if (lakh > 0) result += convertBelowThousand(lakh) + "Lakh ";
-      if (thousand > 0) result += convertBelowThousand(thousand) + "Thousand ";
-      if (num > 0) result += convertBelowThousand(num);
-
-      return result.trim() || "Zero";
-    }
-
-    function updateSummary() {
-      const subtotal = items.reduce((sum, item) => sum + item.total, 0);
-      const cgst = subtotal * 0.09;
-      const sgst = subtotal * 0.09;
-      const total = subtotal + cgst + sgst;
-
-      document.getElementById("subtotal").textContent = subtotal.toFixed(2);
-      document.getElementById("cgst").textContent = cgst.toFixed(2);
-      document.getElementById("sgst").textContent = sgst.toFixed(2);
-      document.getElementById("total-amount").textContent = total.toFixed(2);
-      document.getElementById("amount-words").textContent = 
-        numberToWords(Math.round(total)) + " Only";
-
-      document.getElementById("client-display").textContent = 
-        document.getElementById("clientName").value || "[Client Name]";
-    }
-
-    async function generatePDF() {
-      if (items.length === 0) {
-        alert("Please add at least one item.");
-        return;
-      }
-
-      const { jsPDF } = window.jspdf;
-      const element = document.getElementById("quotation");
-
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false
-      });
-
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const width = pdf.internal.pageSize.getWidth();
-      const height = (canvas.height * width) / canvas.width;
-
-      pdf.addImage(imgData, "PNG", 0, 0, width, height);
-      pdf.save(`Quotation_${new Date().getTime()}.pdf`);
-    }
-  </script>
-</body>
-</html>    }
-
-    .btn-danger:hover {
-      background: #c53030;
-    }
-
-    .btn-print {
-      background: #38a169;
-    }
-
-    .btn-print:hover {
-      background: #2f855a;
-    }
-
-    /* =============== PRINT QUOTATION STYLING =============== */
-    .quotation-output {
-      display: none;
-      font-family: 'Roboto Slab', serif;
-      background: white;
+    .letterhead {
+      width: 210mm;
+      min-height: 297mm;
       padding: 40px;
-      border-radius: 8px;
-    }
-
-    .quotation-header {
-      text-align: center;
-      margin-bottom: 30px;
+      background: white;
+      border: 1px solid #eee;
+      box-shadow: 0 2px 25px rgba(0,0,0,0.1);
       position: relative;
+      font-family: Arial, sans-serif;
     }
-
-    .company-name {
-      font-size: 28px;
-      font-weight: 700;
-      color: #1a202c;
-      margin-bottom: 6px;
+    .logo-preview {
+      max-height: 60px;
+      max-width: 150px;
+      margin-bottom: 15px;
     }
-
-    .company-address {
-      font-size: 14px;
-      color: #4a5568;
-      line-height: 1.5;
-    }
-
-    .quotation-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin: 20px 0;
-      color: #2d3748;
-      text-decoration: underline;
-      text-underline-offset: 6px;
-    }
-
-    .quotation-meta {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 25px;
-      font-size: 15px;
-    }
-
-    .to-section {
-      margin-bottom: 25px;
-    }
-
-    .to-section p {
-      margin: 4px 0;
-    }
-
-    .quotation-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0 25px;
-    }
-
-    .quotation-table th,
-    .quotation-table td {
-      padding: 12px 10px;
-      text-align: left;
-      border: 1px solid #cbd5e0;
-    }
-
-    .quotation-table th {
-      background-color: #f7fafc;
-      font-weight: 600;
-      color: #2d3748;
-    }
-
-    .totals-section {
-      text-align: right;
-      margin-bottom: 25px;
-    }
-
-    .total-row {
-      display: flex;
-      justify-content: flex-end;
-      margin: 6px 0;
-    }
-
-    .total-label {
-      width: 180px;
-      font-weight: 600;
-      color: #2d3748;
-    }
-
-    .total-value {
-      width: 120px;
-      text-align: right;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    .grand-total-row {
-      font-size: 18px;
-      font-weight: 700;
-      color: #1a3a6c;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 2px solid #cbd5e0;
-    }
-
-    .amount-words-box {
-      background: #f8fafc;
-      padding: 14px;
-      border-left: 4px solid #3182ce;
-      margin: 20px 0;
-      font-size: 15px;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    .terms {
-      margin-top: 25px;
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    .signature {
-      margin-top: 40px;
-      text-align: right;
-      font-style: italic;
-      color: #4a5568;
-    }
-
-    /* =============== PRINT MEDIA =============== */
-    @media print {
-      body {
-        background: white;
-        padding: 0;
-      }
-
-      .container, .card {
-        box-shadow: none !important;
-        border: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-      }
-
-      .quotation-output {
-        padding: 30px !important;
-        display: block !important;
-        box-shadow: none !important;
-      }
-
-      .btn {
-        display: none !important;
-      }
-
-      body * {
-        visibility: hidden;
-      }
-
-      .quotation-output,
-      .quotation-output * {
-        visibility: visible;
-      }
-
-      .quotation-output {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-      }
-    }
+    /* === 20+ Template Styles === */
+    .template-1 { border-top: 5px solid #3498db; }
+    .template-2 { border-left: 8px solid #e74c3c; padding-left: 30px; }
+    .template-3 { background: linear-gradient(to bottom, #f5f7fa 0%, #ffffff 15%); }
+    .template-4 { text-align: center; }
+    .template-5 { border-bottom: 3px solid #2ecc71; }
+    .template-6 { background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f9f9f9"/><path d="M0 0L100 100M100 0L0 100" stroke="%23eee" stroke-width="1"/></svg>'); }
+    .template-7 { font-family: 'Georgia', serif; }
+    .template-8 { color: #2c3e50; background-color: #fdfdfd; }
+    .template-9 { border: 2px dashed #bdc3c7; padding: 35px; }
+    .template-10 { box-shadow: inset 0 0 0 2px #3498db; }
+    .template-11 { background: #f8f9fa; }
+    .template-12 { border-top: 10px solid #9b59b6; }
+    .template-13 { text-align: right; }
+    .template-14 { font-family: 'Courier New', monospace; }
+    .template-15 { background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%); }
+    .template-16 { border-radius: 15px; overflow: hidden; }
+    .template-17 { border: 1px solid #34495e; }
+    .template-18 { background: #2c3e50; color: white; }
+    .template-18 h1, .template-18 p { color: white; }
+    .template-19 { padding: 60px 40px; }
+    .template-20 { border-top: 3px double #7f8c8d; }
+    .template-21 { background: #fffaf0; }
+    .template-22 { border-left: 12px solid #1abc9c; padding-left: 25px; }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>Modern Quotation Maker</h1>
-      <p>Create & print professional quotations instantly</p>
-    </header>
+    <!-- Form Section -->
+    <div class="form-section">
+      <h2>लेटरहेड बनाएं</h2>
+      
+      <label>टेम्पलेट चुनें</label>
+      <select id="templateSelect">
+        <option value="1">1. ब्लू टॉप बार</option>
+        <option value="2">2. रेड लेफ्ट बार</option>
+        <option value="3">3. सॉफ्ट ग्रेडिएंट</option>
+        <option value="4">4. सेंटर्ड टेक्स्ट</option>
+        <option value="5">5. ग्रीन बॉटम बार</option>
+        <option value="6">6. लाइट चेकरबोर्ड</option>
+        <option value="7">7. सेरिफ फॉन्ट</option>
+        <option value="8">8. क्लासिक व्हाइट</option>
+        <option value="9">9. डैश्ड बॉर्डर</option>
+        <option value="10">10. इनसेट ब्लू बॉर्डर</option>
+        <option value="11">11. लाइट ग्रे बैकग्राउंड</option>
+        <option value="12">12. पर्पल टॉप बार</option>
+        <option value="13">13. राइट अलाइन्ड</option>
+        <option value="14">14. मोनोस्पेस फॉन्ट</option>
+        <option value="15">15. ब्लू-ग्रे ग्रेडिएंट</option>
+        <option value="16">16. राउंडेड कॉर्नर्स</option>
+        <option value="17">17. डार्क बॉर्डर</option>
+        <option value="18">18. डार्क थीम</option>
+        <option value="19">19. एक्स्ट्रा पैडिंग</option>
+        <option value="20">20. डबल लाइन टॉप</option>
+        <option value="21">21. क्रीम बैकग्राउंड</option>
+        <option value="22">22. टील ग्रीन बार</option>
+      </select>
 
-    <!-- Input Form -->
-    <div class="card" id="inputForm">
-      <h2>Quotation Details</h2>
+      <label>कंपनी/व्यक्ति का नाम</label>
+      <input type="text" id="companyName" placeholder="उदा. शांति ट्रेडर्स" value="शांति ट्रेडर्स" />
 
-      <div class="form-group">
-        <label>Quotation No.</label>
-        <input type="text" id="quoteNo" value="001" />
-      </div>
+      <label>लोगो (वैकल्पिक)</label>
+      <input type="file" id="logoUpload" accept="image/*" />
 
-      <div class="form-group">
-        <label>Date</label>
-        <input type="date" id="quoteDate" />
-      </div>
+      <label>पता</label>
+      <input type="text" id="address" placeholder="123, मुख्य बाज़ार, दिल्ली" value="123, मुख्य बाज़ार, दिल्ली" />
 
-      <div class="form-group">
-        <label>To (Client Name)</label>
-        <input type="text" id="clientName" placeholder="e.g., PRAVAH" />
-      </div>
+      <label>फ़ोन</label>
+      <input type="text" id="phone" placeholder="+91 98765 43210" value="+91 98765 43210" />
 
-      <div class="form-group">
-        <label>Client Address</label>
-        <textarea id="clientAddress" placeholder="Deoghar, Jharkhand"></textarea>
-      </div>
+      <label>ईमेल</label>
+      <input type="email" id="email" placeholder="info@shanti.com" value="info@shanti.com" />
 
-      <div class="form-group">
-        <label>Client GSTIN</label>
-        <input type="text" id="clientGstin" placeholder="20AAAAP0521E1ZJ" />
-      </div>
-
-      <h3>Line Items</h3>
-      <table class="items-table">
-        <thead>
-          <tr>
-            <th>Description</th>
-            <th>Qty</th>
-            <th>Rate (₹)</th>
-            <th>Amount (₹)</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="itemsBody">
-          <tr>
-            <td><input type="text" class="desc" placeholder="Grill Installation Work" /></td>
-            <td><input type="number" class="qty" value="400" min="0" step="1" /></td>
-            <td><input type="number" class="rate" value="120" min="0" step="0.01" /></td>
-            <td class="amount">48,000</td>
-            <td><button class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <button class="btn" onclick="addRow()">+ Add Item</button>
-      <button class="btn btn-print" onclick="generateQuotation()" style="margin-top:15px;">Generate Quotation</button>
+      <button onclick="downloadPDF()">PDF डाउनलोड करें</button>
     </div>
 
-    <!-- Output Quotation (Print View) -->
-    <div class="card quotation-output" id="quotationOutput">
-      <!-- Company Info -->
-      <div class="quotation-header">
-        <div class="company-name">DURGA ENGINEERING WORKS</div>
-        <div class="company-address">
-          Noor Sarai, Nalanda, Bihar<br>
-          GSTIN: 10AHCPK1560G1Z1 | Contact: 9XXXXXXXXX
-        </div>
-        <div class="quotation-title">QUOTATION</div>
-        <div class="quotation-meta">
-          <span>Quotation No: <strong id="outQuoteNo">001</strong></span>
-          <span>Date: <strong id="outDate">09-Oct-2025</strong></span>
-        </div>
+    <!-- Preview Section -->
+    <div class="preview-section">
+      <div id="letterhead" class="letterhead template-1">
+        <img id="logoPreview" class="logo-preview" style="display:none;" />
+        <h1 id="previewName">शांति ट्रेडर्स</h1>
+        <p id="previewAddress">123, मुख्य बाज़ार, दिल्ली</p>
+        <p id="previewPhone">फ़ोन: +91 98765 43210</p>
+        <p id="previewEmail">ईमेल: info@shanti.com</p>
       </div>
-
-      <!-- Client Info -->
-      <div class="to-section">
-        <p><strong>To,</strong></p>
-        <p id="outClientName">PRAVAH</p>
-        <p id="outClientAddress">Deoghar, Jharkhand</p>
-        <p>GSTIN: <span id="outClientGstin">20AAAAP0521E1ZJ</span></p>
-      </div>
-
-      <!-- Items Table -->
-      <table class="quotation-table">
-        <thead>
-          <tr>
-            <th>Sl.</th>
-            <th>Description of Work</th>
-            <th>Qty</th>
-            <th>Rate (₹)</th>
-            <th>Amount (₹)</th>
-          </tr>
-        </thead>
-        <tbody id="outItemsBody">
-          <!-- Filled by JS -->
-        </tbody>
-      </table>
-
-      <!-- Totals -->
-      <div class="totals-section">
-        <div class="total-row">
-          <div class="total-label">Subtotal:</div>
-          <div class="total-value" id="outSubtotal">57,200.00</div>
-        </div>
-        <div class="total-row">
-          <div class="total-label">GST @18%:</div>
-          <div class="total-value" id="outGst">10,296.00</div>
-        </div>
-        <div class="total-row grand-total-row">
-          <div class="total-label">Grand Total:</div>
-          <div class="total-value" id="outGrandTotal">₹67,496.00</div>
-        </div>
-      </div>
-
-      <!-- Amount in Words -->
-      <div class="amount-words-box">
-        <strong>Amount in Words:</strong> <span id="outAmountWords">Sixty Seven Thousand Four Hundred Ninety Six Only</span>
-      </div>
-
-      <!-- Terms -->
-      <div class="terms">
-        <p><strong>Terms & Conditions:</strong></p>
-        <ol>
-          <li>Quotation valid for 30 days from the date of issue.</li>
-          <li>Payment to be made within 7 days from the date of delivery/completion.</li>
-          <li>Any additional work or modifications will be billed separately.</li>
-        </ol>
-      </div>
-
-      <!-- Signature -->
-      <div class="signature">
-        <p>Authorised Signatory</p>
-        <p>(Sign & Stamp)</p>
-      </div>
-
-      <button class="btn btn-print" onclick="window.print()" style="margin-top:20px; width: auto;">🖨️ Print Quotation</button>
     </div>
   </div>
 
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <script>
-    // Set today as default
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('quoteDate').value = today;
+    const templates = [
+      'template-1', 'template-2', 'template-3', 'template-4', 'template-5',
+      'template-6', 'template-7', 'template-8', 'template-9', 'template-10',
+      'template-11', 'template-12', 'template-13', 'template-14', 'template-15',
+      'template-16', 'template-17', 'template-18', 'template-19', 'template-20',
+      'template-21', 'template-22'
+    ];
 
-    function addRow() {
-      const tbody = document.getElementById('itemsBody');
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><input type="text" class="desc" placeholder="Description of work" /></td>
-        <td><input type="number" class="qty" value="1" min="0" step="1" /></td>
-        <td><input type="number" class="rate" value="0" min="0" step="0.01" /></td>
-        <td class="amount">0.00</td>
-        <td><button class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
-      `;
-      tbody.appendChild(row);
-      attachInputListeners(row);
-    }
+    // Update preview on input change
+    document.getElementById('companyName').addEventListener('input', e => {
+      document.getElementById('previewName').innerText = e.target.value || 'कंपनी का नाम';
+    });
+    document.getElementById('address').addEventListener('input', e => {
+      document.getElementById('previewAddress').innerText = e.target.value || 'पता';
+    });
+    document.getElementById('phone').addEventListener('input', e => {
+      document.getElementById('previewPhone').innerText = 'फ़ोन: ' + (e.target.value || '');
+    });
+    document.getElementById('email').addEventListener('input', e => {
+      document.getElementById('previewEmail').innerText = 'ईमेल: ' + (e.target.value || '');
+    });
 
-    function removeRow(btn) {
-      btn.closest('tr').remove();
-    }
-
-    function attachInputListeners(row) {
-      const qty = row.querySelector('.qty');
-      const rate = row.querySelector('.rate');
-      const amountEl = row.querySelector('.amount');
-
-      const update = () => {
-        const q = parseFloat(qty.value) || 0;
-        const r = parseFloat(rate.value) || 0;
-        const amt = q * r;
-        amountEl.textContent = new Intl.NumberFormat('en-IN', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        }).format(amt);
-      };
-
-      qty.addEventListener('input', update);
-      rate.addEventListener('input', update);
-      update();
-    }
-
-    document.querySelectorAll('#itemsBody tr').forEach(attachInputListeners);
-
-    function numberToWords(num) {
-      if (num === 0) return "Zero";
-      const belowTwenty = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-      const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-
-      function convert(n) {
-        if (n < 20) return belowTwenty[n];
-        if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? " " + belowTwenty[n % 10] : "");
-        if (n < 1000) return belowTwenty[Math.floor(n / 100)] + " Hundred" + (n % 100 ? " " + convert(n % 100) : "");
-        if (n < 100000) return convert(Math.floor(n / 1000)) + " Thousand" + (n % 1000 ? " " + convert(n % 1000) : "");
-        if (n < 10000000) return convert(Math.floor(n / 100000)) + " Lakh" + (n % 100000 ? " " + convert(n % 100000) : "");
-        return convert(Math.floor(n / 10000000)) + " Crore" + (n % 10000000 ? " " + convert(n % 10000000) : "");
+    // Logo upload
+    document.getElementById('logoUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      const img = document.getElementById('logoPreview');
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          img.src = ev.target.result;
+          img.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        img.style.display = 'none';
       }
+    });
 
-      return convert(num) + " Only";
-    }
+    // Template switch
+    document.getElementById('templateSelect').addEventListener('change', function(e) {
+      const letterhead = document.getElementById('letterhead');
+      // Remove all template classes
+      templates.forEach(cls => letterhead.classList.remove(cls));
+      // Add selected
+      const selected = e.target.value;
+      letterhead.classList.add(`template-${selected}`);
+    });
 
-    function generateQuotation() {
-      // Get form values
-      const quoteNo = document.getElementById('quoteNo').value || '001';
-      const quoteDate = document.getElementById('quoteDate').value;
-      const clientName = document.getElementById('clientName').value || 'Client Name';
-      const clientAddress = document.getElementById('clientAddress').value || 'Address';
-      const clientGstin = document.getElementById('clientGstin').value || 'GSTIN';
+    // Download PDF
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const el = document.getElementById('letterhead');
 
-      // Format date for display (e.g., 09-Oct-2025)
-      const d = new Date(quoteDate);
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const formattedDate = `${String(d.getDate()).padStart(2, '0')}-${months[d.getMonth()]}-${d.getFullYear()}`;
-
-      // Update output header
-      document.getElementById('outQuoteNo').textContent = quoteNo;
-      document.getElementById('outDate').textContent = formattedDate;
-      document.getElementById('outClientName').textContent = clientName;
-      document.getElementById('outClientAddress').textContent = clientAddress;
-      document.getElementById('outClientGstin').textContent = clientGstin;
-
-      // Process line items
-      const rows = document.querySelectorAll('#itemsBody tr');
-      const outBody = document.getElementById('outItemsBody');
-      outBody.innerHTML = '';
-
-      let subtotal = 0;
-      rows.forEach((row, i) => {
-        const desc = row.querySelector('.desc').value || 'N/A';
-        const qty = parseFloat(row.querySelector('.qty').value) || 0;
-        const rate = parseFloat(row.querySelector('.rate').value) || 0;
-        const amount = qty * rate;
-        subtotal += amount;
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${i + 1}</td>
-          <td>${desc}</td>
-          <td>${qty}</td>
-          <td>${rate.toFixed(2)}</td>
-          <td>${new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2 }).format(amount)}</td>
-        `;
-        outBody.appendChild(tr);
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null
       });
 
-      const gst = subtotal * 0.18;
-      const grandTotal = subtotal + gst;
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const width = 210;
+      const height = (canvas.height * width) / canvas.width;
 
-      // Format numbers
-      const formatter = new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2 });
-      document.getElementById('outSubtotal').textContent = formatter.format(subtotal);
-      document.getElementById('outGst').textContent = formatter.format(gst);
-      document.getElementById('outGrandTotal').textContent = '₹' + formatter.format(grandTotal);
-
-      // Amount in words (only whole number)
-      const words = numberToWords(Math.floor(grandTotal));
-      document.getElementById('outAmountWords').textContent = words;
-
-      // Show output
-      document.getElementById('quotationOutput').style.display = 'block';
+      pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+      pdf.save('letterhead.pdf');
     }
   </script>
 </body>
