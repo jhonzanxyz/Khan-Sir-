@@ -1,956 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProInvoice - A4 Optimized Invoice Generator</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary: #7209b7;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --success: #4cc9f0;
-            --danger: #f72585;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
-            --border: #dee2e6;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --radius: 8px;
-            /* A4 dimensions in mm */
-            --a4-width: 210mm;
-            --a4-height: 297mm;
-        }
-
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
-            color: var(--dark);
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: var(--primary);
-            font-weight: 700;
-        }
-
-        header p {
-            color: var(--gray);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .app-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
-        @media (max-width: 900px) {
-            .app-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card {
-            background: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 25px;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-title {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .card-title i {
-            background: var(--primary);
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-        }
-
-        .card-title h2 {
-            font-size: 1.5rem;
-            color: var(--dark);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-        }
-
-        .row {
-            display: flex;
-            gap: 15px;
-        }
-
-        .col {
-            flex: 1;
-        }
-
-        @media (max-width: 600px) {
-            .row {
-                flex-direction: column;
-                gap: 0;
-            }
-        }
-
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn i {
-            margin-right: 8px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-secondary {
-            background: var(--light-gray);
-            color: var(--dark);
-        }
-
-        .btn-secondary:hover {
-            background: #d1d5db;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            opacity: 0.9;
-        }
-
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        .items-table th {
-            background: var(--light-gray);
-            padding: 12px 15px;
-            text-align: left;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .items-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .items-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .items-table input {
-            padding: 8px 10px;
-        }
-
-        .add-item-btn {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 15px;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .add-item-btn i {
-            margin-right: 8px;
-        }
-
-        /* A4 Print Styles */
-        @media print {
-            body, .container {
-                background: white;
-                padding: 0;
-                margin: 0;
-            }
-            
-            .app-container {
-                display: block;
-            }
-            
-            .card {
-                box-shadow: none;
-                border: none;
-                padding: 0;
-                margin: 0;
-                transform: none;
-            }
-            
-            .no-print {
-                display: none !important;
-            }
-            
-            .invoice-preview {
-                width: var(--a4-width);
-                height: var(--a4-height);
-                padding: 15mm;
-                margin: 0 auto;
-                box-sizing: border-box;
-                position: relative;
-            }
-            
-            .invoice-header {
-                margin-bottom: 20mm;
-            }
-            
-            .invoice-logo {
-                font-size: 24pt;
-            }
-            
-            .invoice-info {
-                text-align: right;
-            }
-            
-            .invoice-info p {
-                font-size: 10pt;
-                margin: 3pt 0;
-            }
-            
-            .invoice-details {
-                grid-template-columns: 1fr 1fr;
-                gap: 10mm;
-                margin-bottom: 15mm;
-            }
-            
-            .invoice-details h4 {
-                font-size: 11pt;
-                margin-bottom: 5pt;
-            }
-            
-            .invoice-details p {
-                font-size: 10pt;
-                line-height: 1.4;
-            }
-            
-            .invoice-section h3 {
-                font-size: 14pt;
-                margin-bottom: 8pt;
-                padding-bottom: 5pt;
-            }
-            
-            .invoice-items {
-                width: 100%;
-                font-size: 10pt;
-            }
-            
-            .invoice-items th, .invoice-items td {
-                padding: 6pt 8pt;
-            }
-            
-            .invoice-total {
-                margin-top: 10mm;
-            }
-            
-            .total-row {
-                margin-bottom: 5pt;
-            }
-            
-            .total-label, .total-value {
-                padding: 4pt 8pt;
-                font-size: 10pt;
-            }
-            
-            .grand-total {
-                font-size: 14pt;
-            }
-            
-            .invoice-footer {
-                margin-top: 15mm;
-                font-size: 9pt;
-            }
-        }
-
-        .invoice-preview {
-            position: relative;
-            /* A4 dimensions with padding */
-            width: calc(var(--a4-width) - 30mm);
-            min-height: calc(var(--a4-height) - 30mm);
-            margin: 0 auto;
-            padding: 15mm;
-            background: white;
-            box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
-        }
-
-        .invoice-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 25px;
-        }
-
-        .invoice-logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .invoice-info {
-            text-align: right;
-        }
-
-        .invoice-info p {
-            margin: 5px 0;
-        }
-
-        .invoice-section {
-            margin-bottom: 25px;
-        }
-
-        .invoice-section h3 {
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
-            color: var(--dark);
-        }
-
-        .invoice-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .invoice-details div {
-            margin-bottom: 10px;
-        }
-
-        .invoice-items {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .invoice-items th, .invoice-items td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .invoice-items th {
-            background: var(--light-gray);
-            font-weight: 600;
-        }
-
-        .invoice-total {
-            text-align: right;
-            margin-top: 20px;
-        }
-
-        .total-row {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 10px;
-        }
-
-        .total-label {
-            width: 120px;
-            padding: 8px 15px;
-            font-weight: 600;
-        }
-
-        .total-value {
-            width: 150px;
-            padding: 8px 15px;
-            text-align: right;
-            font-weight: 600;
-        }
-
-        .grand-total {
-            font-size: 1.4rem;
-            color: var(--primary);
-            font-weight: 700;
-        }
-
-        .invoice-footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-            flex-wrap: wrap;
-        }
-
-        .preview-actions {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .preview-actions .btn {
-            padding: 10px 20px;
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: var(--radius);
-            color: white;
-            font-weight: 600;
-            box-shadow: var(--shadow);
-            transform: translateX(200%);
-            transition: transform 0.4s ease;
-            z-index: 1000;
-        }
-
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        .notification.success {
-            background: #4ade80;
-        }
-
-        .notification.error {
-            background: var(--danger);
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-            .invoice-preview {
-                width: 100%;
-                padding: 15px;
-                min-height: auto;
-            }
-            
-            .invoice-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            
-            .invoice-info {
-                text-align: left;
-            }
-            
-            .invoice-details {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .invoice-total {
-                text-align: left;
-            }
-            
-            .total-row {
-                justify-content: space-between;
-            }
-            
-            .total-label, .total-value {
-                width: auto;
-            }
-            
-            .grand-total {
-                font-size: 1.2rem;
-            }
-            
-            header h1 {
-                font-size: 2rem;
-            }
-            
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .action-buttons, .preview-actions {
-                flex-direction: column;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Editable Invoice</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 10px;
+      background: #f9f9f9;
+    }
+    .invoice {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    .header input {
+      width: 100%;
+      font-weight: bold;
+      font-size: 16px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      padding: 2px;
+      margin: 2px 0;
+      box-sizing: border-box;
+    }
+    .meta-line {
+      text-align: center;
+      margin: 10px 0;
+    }
+    .meta-line input {
+      width: 120px;
+      text-align: center;
+      padding: 2px;
+      font-size: 14px;
+      border: 1px solid #999;
+    }
+    .parties {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+    }
+    .party {
+      width: 48%;
+    }
+    .party input, .party textarea {
+      width: 100%;
+      padding: 3px;
+      font-size: 14px;
+      border: 1px solid #aaa;
+      box-sizing: border-box;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 6px;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #f1f1f1;
+    }
+    .totals {
+      text-align: right;
+      font-size: 14px;
+    }
+    .words {
+      margin: 15px 0;
+      font-weight: bold;
+    }
+    .bank, .footer-note {
+      margin-top: 20px;
+      font-size: 13px;
+    }
+    .no-print {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 8px 16px;
+      margin: 5px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-print {
+      background: #28a745;
+    }
+    @media print {
+      .no-print { display: none !important; }
+      input, textarea {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-file-invoice-dollar"></i> ProInvoice</h1>
-            <p>Professional A4-Optimized Invoice Generator - Perfect for printing and digital use</p>
-        </header>
 
-        <div class="app-container">
-            <div class="card">
-                <div class="card-title">
-                    <i class="fas fa-edit"></i>
-                    <h2>Invoice Details</h2>
-                </div>
+<div class="invoice" id="invoice">
+  <!-- ✅ EDITABLE HEADER -->
+  <div class="header">
+    <input type="text" id="company-name" value="DURGA ENGINEERING WORKS INVOICE">
+    <input type="text" id="address" value="NOOR SARAI, NALANDA, BIHAR">
+    <input type="text" id="gstin-line" value="GSTIN/UIN: 10AHCPK1560G1Z1 | STATE: BIHAR, CODE: 10">
+  </div>
 
-                <div class="form-group">
-                    <label for="companyName">Your Company Name</label>
-                    <input type="text" id="companyName" placeholder="Enter your company name" value="Creative Solutions Ltd">
-                </div>
+  <!-- Date & Invoice No -->
+  <div class="meta-line">
+    DATE: <input type="date" id="inv-date"> |
+    INVOICE NO: <input type="text" id="inv-no" placeholder="e.g. INV-001">
+  </div>
 
-                <div class="form-group">
-                    <label for="companyAddress">Company Address</label>
-                    <textarea id="companyAddress" rows="2" placeholder="Enter your company address">123 Business Avenue, Suite 100
-New York, NY 10001</textarea>
-                </div>
-
-                <div class="row">
-                    <div class="col">
-                        <div class="form-group">
-                            <label for="invoiceNumber">Invoice Number</label>
-                            <input type="text" id="invoiceNumber" value="INV-2023-001" readonly>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-group">
-                            <label for="invoiceDate">Invoice Date</label>
-                            <input type="date" id="invoiceDate">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="clientName">Client Name</label>
-                    <input type="text" id="clientName" placeholder="Enter client name" value="Tech Innovations Inc">
-                </div>
-
-                <div class="form-group">
-                    <label for="clientEmail">Client Email</label>
-                    <input type="email" id="clientEmail" placeholder="Enter client email" value="billing@techinnovations.com">
-                </div>
-
-                <div class="form-group">
-                    <label for="clientAddress">Client Address</label>
-                    <textarea id="clientAddress" rows="2" placeholder="Enter client address">456 Corporate Plaza
-San Francisco, CA 94107</textarea>
-                </div>
-
-                <div class="card-title">
-                    <i class="fas fa-list"></i>
-                    <h2>Invoice Items</h2>
-                </div>
-
-                <table class="items-table">
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Total</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="itemsContainer">
-                        <tr>
-                            <td><input type="text" placeholder="Item description" value="Website Design & Development"></td>
-                            <td><input type="number" min="1" value="1"></td>
-                            <td><input type="number" min="0" step="0.01" value="1200.00"></td>
-                            <td class="item-total">1200.00</td>
-                            <td><button class="btn btn-danger remove-item"><i class="fas fa-trash"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td><input type="text" placeholder="Item description" value="SEO Optimization Package"></td>
-                            <td><input type="number" min="1" value="1"></td>
-                            <td><input type="number" min="0" step="0.01" value="450.00"></td>
-                            <td class="item-total">450.00</td>
-                            <td><button class="btn btn-danger remove-item"><i class="fas fa-trash"></i></button></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <button class="add-item-btn" id="addItemBtn">
-                    <i class="fas fa-plus"></i> Add Item
-                </button>
-
-                <div class="form-group">
-                    <label for="notes">Notes/Terms</label>
-                    <textarea id="notes" rows="3" placeholder="Enter any additional notes or payment terms">Payment due within 30 days. Late payments subject to 1.5% monthly interest. Thank you for your business!</textarea>
-                </div>
-
-                <div class="action-buttons no-print">
-                    <button class="btn btn-primary" id="generateBtn">
-                        <i class="fas fa-sync-alt"></i> Generate Invoice
-                    </button>
-                    <button class="btn btn-secondary" id="resetBtn">
-                        <i class="fas fa-redo"></i> Reset Form
-                    </button>
-                </div>
-            </div>
-
-            <div class="card invoice-preview">
-                <div class="card-title no-print">
-                    <i class="fas fa-eye"></i>
-                    <h2>Invoice Preview (A4 Optimized)</h2>
-                </div>
-
-                <div id="invoiceContent">
-                    <div class="invoice-header">
-                        <div class="invoice-logo">CREATIVE SOLUTIONS</div>
-                        <div class="invoice-info">
-                            <p><strong>Invoice #:</strong> INV-2023-001</p>
-                            <p><strong>Date:</strong> <span id="previewDate">October 15, 2023</span></p>
-                        </div>
-                    </div>
-
-                    <div class="invoice-details">
-                        <div>
-                            <h4>From:</h4>
-                            <p id="previewCompany">Creative Solutions Ltd</p>
-                            <p id="previewCompanyAddress">123 Business Avenue, Suite 100<br>New York, NY 10001</p>
-                        </div>
-                        <div>
-                            <h4>Bill To:</h4>
-                            <p id="previewClient">Tech Innovations Inc</p>
-                            <p id="previewClientAddress">456 Corporate Plaza<br>San Francisco, CA 94107</p>
-                        </div>
-                    </div>
-
-                    <div class="invoice-section">
-                        <h3>Invoice Items</h3>
-                        <table class="invoice-items">
-                            <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th>Qty</th>
-                                    <th>Price</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="previewItems">
-                                <tr>
-                                    <td>Website Design & Development</td>
-                                    <td>1</td>
-                                    <td>$1,200.00</td>
-                                    <td>$1,200.00</td>
-                                </tr>
-                                <tr>
-                                    <td>SEO Optimization Package</td>
-                                    <td>1</td>
-                                    <td>$450.00</td>
-                                    <td>$450.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="invoice-total">
-                        <div class="total-row">
-                            <div class="total-label">Subtotal:</div>
-                            <div class="total-value" id="previewSubtotal">$1,650.00</div>
-                        </div>
-                        <div class="total-row">
-                            <div class="total-label">Tax (8.5%):</div>
-                            <div class="total-value" id="previewTax">$140.25</div>
-                        </div>
-                        <div class="total-row">
-                            <div class="total-label grand-total">Total:</div>
-                            <div class="total-value grand-total" id="previewTotal">$1,790.25</div>
-                        </div>
-                    </div>
-
-                    <div class="invoice-section">
-                        <h3>Notes</h3>
-                        <p id="previewNotes">Payment due within 30 days. Late payments subject to 1.5% monthly interest. Thank you for your business!</p>
-                    </div>
-
-                    <div class="invoice-footer">
-                        <p>Thank you for your business!</p>
-                        <p>This is a computer-generated invoice and does not require a signature.</p>
-                    </div>
-                </div>
-
-                <div class="preview-actions no-print">
-                    <button class="btn btn-primary" id="downloadBtn">
-                        <i class="fas fa-download"></i> Download PDF
-                    </button>
-                    <button class="btn btn-secondary" id="printBtn">
-                        <i class="fas fa-print"></i> Print Invoice
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <footer class="no-print">
-            <p>ProInvoice &copy; 2023 | Professional A4-Optimized Invoice Generator</p>
-        </footer>
+  <!-- Bill To & Ship To -->
+  <div class="parties">
+    <div class="party">
+      <strong>BILL TO</strong><br/>
+      <textarea id="bill-to" placeholder="Name and Address">PARBHA\nDEOGHAR</textarea><br/>
+      GSTIN/UIN: <input type="text" id="bill-gstin" value="20AAAAP0521E1ZJ"><br/>
+      STATE NAME: <input type="text" id="bill-state" value="JHARKHAND" style="width:100px;display:inline">,
+      CODE: <input type="text" id="bill-code" value="20" style="width:40px;display:inline">
     </div>
+    <div class="party">
+      <strong>SHIP TO</strong><br/>
+      <textarea id="ship-to" placeholder="Name and Address">PARBHA\nDEOGHAR</textarea><br/>
+      GSTIN/UIN: <input type="text" id="ship-gstin" value="20AAAAP0521E1ZJ"><br/>
+      STATE NAME: <input type="text" id="ship-state" value="JHARKHAND" style="width:100px;display:inline">,
+      CODE: <input type="text" id="ship-code" value="20" style="width:40px;display:inline">
+    </div>
+  </div>
 
-    <div class="notification" id="notification">Invoice generated successfully!</div>
+  <!-- Items Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>SL NO</th>
+        <th>DESCRIPTION OF GOODS</th>
+        <th>HSN/SAC</th>
+        <th>QUANTITY/KGS</th>
+        <th>RATE</th>
+        <th>AMOUNT</th>
+      </tr>
+    </thead>
+    <tbody id="item-body">
+    </tbody>
+  </table>
 
-    <script>
-        // Set today's date as default
-        const today = new Date();
-        document.getElementById('invoiceDate').valueAsDate = today;
-        
-        // Update preview date
-        document.getElementById('previewDate').textContent = today.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+  <div class="no-print">
+    <button class="btn" onclick="addItem()">+ Add Item</button>
+    <button class="btn" onclick="removeItem()">– Remove Last</button>
+  </div>
 
-        // Add item functionality
-        document.getElementById('addItemBtn').addEventListener('click', function() {
-            const container = document.getElementById('itemsContainer');
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td><input type="text" placeholder="Item description"></td>
-                <td><input type="number" min="1" value="1"></td>
-                <td><input type="number" min="0" step="0.01" value="0.00"></td>
-                <td class="item-total">0.00</td>
-                <td><button class="btn btn-danger remove-item"><i class="fas fa-trash"></i></button></td>
-            `;
-            container.appendChild(newRow);
-            
-            // Add event listeners to new inputs
-            attachItemEventListeners(newRow);
-            calculateTotals();
-        });
+  <!-- Totals -->
+  <div class="totals">
+    <div>SUB TOTAL: ₹<span id="subtotal">0.00</span></div>
+    <div>TAX RATE 18%</div>
+    <div>TAXABLE: ₹<span id="tax">0.00</span></div>
+    <div>OTHER: ₹0</div>
+    <div>TOTAL: ₹<span id="total">0.00</span></div>
+  </div>
 
-        // Remove item functionality
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.remove-item')) {
-                const row = e.target.closest('tr');
-                if (document.querySelectorAll('#itemsContainer tr').length > 1) {
-                    row.remove();
-                    calculateTotals();
-                } else {
-                    showNotification('At least one item is required', 'error');
-                }
-            }
-        });
+  <!-- Amount in Words -->
+  <div class="words">
+    AMOUNT CHARGEABLE (IN WORDS):<br/>
+    INR <span id="words">Zero Rupees Only</span>
+  </div>
 
-        // Attach event listeners to existing items
-        function attachItemEventListeners(row) {
-            const inputs = row.querySelectorAll('input');
-            inputs.forEach(input => {
-                input.addEventListener('input', calculateTotals);
-            });
-        }
+  <!-- Bank Details -->
+  <div class="bank">
+    <strong>COMPANY'S BANK Details</strong><br/>
+    A/c Holder Name: <input type="text" value="DURGA ENGINEERING WORKS" style="width:250px;border:none;background:transparent;"><br/>
+    Bank Name: <input type="text" value="Punjab National Bank" style="width:200px;border:none;background:transparent;"><br/>
+    A/c no: <input type="text" value="0814008700004037" style="width:200px;border:none;background:transparent;"><br/>
+    IFSC Code: <input type="text" value="PUNB0081400" style="width:150px;border:none;background:transparent;">
+  </div>
 
-        // Attach to initial rows
-        document.querySelectorAll('#itemsContainer tr').forEach(row => {
-            attachItemEventListeners(row);
-        });
+  <!-- Footer -->
+  <div class="footer-note">
+    If you have any questions about this invoice, please contact<br/>
+    Thank You For Your Business!<br/>
+    {<input type="text" id="contact" value="Piyush Bharti.6200658161" style="width:200px;text-align:center;border:none;background:transparent;">}
+  </div>
+</div>
 
-        // Calculate totals
-        function calculateTotals() {
-            let subtotal = 0;
-            const rows = document.querySelectorAll('#itemsContainer tr');
-            
-            rows.forEach(row => {
-                const qty = parseFloat(row.querySelectorAll('input')[1].value) || 0;
-                const price = parseFloat(row.querySelectorAll('input')[2].value) || 0;
-                const total = qty * price;
-                row.querySelector('.item-total').textContent = total.toFixed(2);
-                subtotal += total;
-            });
-            
-            const taxRate = 0.085; // 8.5% tax
-            const tax = subtotal * taxRate;
-            const total = subtotal + tax;
-            
-            // Update preview totals
-            document.getElementById('previewSubtotal').textContent = '$' + subtotal.toFixed(2);
-            document.getElementById('previewTax').textContent = '$' + tax.toFixed(2);
-            document.getElementById('previewTotal').textContent = '$' + total.toFixed(2);
-        }
+<div class="no-print">
+  <button class="btn btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
 
-        // Generate invoice
-        document.getElementById('generateBtn').addEventListener('click', function() {
-            // Get form values
-            const companyName = document.getElementById('companyName').value || 'Your Company Name';
-            const companyAddress = document.getElementById('companyAddress').value || 'Your Company Address';
-            const clientName = document.getElementById('clientName').value || 'Client Name';
-            const clientAddress = document.getElementById('clientAddress').value || 'Client Address';
-            const notes = document.getElementById('notes').value || 'Payment due within 30 days. Thank you for your business!';
-            
-            // Update preview
-            document.getElementById('previewCompany').textContent = companyName;
-            document.getElementById('previewCompanyAddress').innerHTML = companyAddress.replace(/\n/g, '<br>');
-            document.getElementById('previewClient').textContent = clientName;
-            document.getElementById('previewClientAddress').innerHTML = clientAddress.replace(/\n/g, '<br>');
-            document.getElementById('previewNotes').textContent = notes;
-            
-            // Update items preview
-            const previewItems = document.getElementById('previewItems');
-            previewItems.innerHTML = '';
-            
-            const rows = document.querySelectorAll('#itemsContainer tr');
-            rows.forEach(row => {
-                const desc = row.querySelectorAll('input')[0].value || 'Item description';
-                const qty = row.querySelectorAll('input')[1].value;
-                const price = parseFloat(row.querySelectorAll('input')[2].value).toFixed(2);
-                const total = row.querySelector('.item-total').textContent;
-                
-                const previewRow = document.createElement('tr');
-                previewRow.innerHTML = `
-                    <td>${desc}</td>
-                    <td>${qty}</td>
-                    <td>$${price}</td>
-                    <td>$${total}</td>
-                `;
-                previewItems.appendChild(previewRow);
-            });
-            
-            // Recalculate totals
-            calculateTotals();
-            
-            // Show notification
-            showNotification('Invoice generated successfully!', 'success');
-        });
+<script>
+  let rowId = 0;
 
-        // Reset form
-        document.getElementById('resetBtn').addEventListener('click', function() {
-            if (confirm('Are you sure you want to reset the form? All data will be lost.')) {
-                document.getElementById('companyName').value = 'Creative Solutions Ltd';
-                document.getElementById('companyAddress').value = '123 Business Avenue, Suite 100\nNew York, NY 10001';
-                document.getElementById('clientName').value = 'Tech Innovations Inc';
-                document.getElementById('clientEmail').value = 'billing@techinnovations.com';
-                document.getElementById('clientAddress').value = '456 Corporate Plaza\nSan Francisco, CA 94107';
-                document.getElementById('notes').value = 'Payment due within 30 days. Late payments subject to 1.5% monthly interest. Thank you for your business!';
-                
-                // Reset items to initial state
-                const container = document.getElementById('itemsContainer');
-                container.innerHTML = `
-                    <tr>
-                        <td><input type="text" placeholder="Item description" value="Website Design & Development"></td>
-                        <td><input type="number" min="1" value="1"></td>
-                        <td><input type="number" min="0" step="0.01" value="1200.00"></td>
-                        <td class="item-total">1200.00</td>
-                        <td><button class="btn btn-danger remove-item"><i class="fas fa-trash"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" placeholder="Item description" value="SEO Optimization Package"></td>
-                        <td><input type="number" min="1" value="1"></td>
-                        <td><input type="number" min="0" step="0.01" value="450.00"></td>
-                        <td class="item-total">450.00</td>
-                        <td><button class="btn btn-danger remove-item"><i class="fas fa-trash"></i></button></td>
-                    </tr>
-                `;
-                document.querySelectorAll('#itemsContainer tr').forEach(row => {
-                    attachItemEventListeners(row);
-                });
-                calculateTotals();
-                
-                showNotification('Form reset successfully!', 'success');
-            }
-        });
+  function addItem() {
+    rowId++;
+    const tbody = document.getElementById('item-body');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${rowId}</td>
+      <td><textarea oninput="calc()" rows="2" placeholder="e.g. GRILL INSTALLATION WORKS..."></textarea></td>
+      <td><input type="text" oninput="calc()" placeholder="7201"></td>
+      <td><input type="number" step="0.01" oninput="calc()" placeholder="Qty"></td>
+      <td><input type="number" step="0.01" oninput="calc()" placeholder="Rate"></td>
+      <td class="amt">0.00</td>
+    `;
+    tbody.appendChild(tr);
+  }
 
-        // Download PDF (simulated)
-        document.getElementById('downloadBtn').addEventListener('click', function() {
-            showNotification('PDF download would be implemented in a real application', 'success');
-            // In a real implementation, you would use a library like jsPDF here
-        });
+  function removeItem() {
+    const tbody = document.getElementById('item-body');
+    if (tbody.children.length > 0) {
+      tbody.removeChild(tbody.lastChild);
+      rowId--;
+      calc();
+    }
+  }
 
-        // Print invoice
-        document.getElementById('printBtn').addEventListener('click', function() {
-            window.print();
-        });
+  function calc() {
+    let sub = 0;
+    document.querySelectorAll('#item-body tr').forEach(row => {
+      const qty = parseFloat(row.cells[3].querySelector('input').value) || 0;
+      const rate = parseFloat(row.cells[4].querySelector('input').value) || 0;
+      const amt = qty * rate;
+      row.cells[5].textContent = amt.toFixed(2);
+      sub += amt;
+    });
+    const tax = sub * 0.18;
+    const total = sub + tax;
+    document.getElementById('subtotal').textContent = sub.toFixed(2);
+    document.getElementById('tax').textContent = tax.toFixed(2);
+    document.getElementById('total').textContent = total.toFixed(2);
+    document.getElementById('words').textContent = numberToWords(Math.round(total)) + " RUPEES ONLY";
+  }
 
-        // Notification system
-        function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = 'notification ' + type + ' show';
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
+  function numberToWords(num) {
+    if (num === 0) return "ZERO";
+    const u = ["","ONE","TWO","THREE","FOUR","FIVE","SIX","SEVEN","EIGHT","NINE","TEN","ELEVEN","TWELVE","THIRTEEN","FOURTEEN","FIFTEEN","SIXTEEN","SEVENTEEN","EIGHTEEN","NINETEEN"];
+    const t = ["","", "TWENTY","THIRTY","FORTY","FIFTY","SIXTY","SEVENTY","EIGHTY","NINETY"];
+    function w(n) {
+      if (n < 20) return u[n];
+      if (n < 100) return t[Math.floor(n/10)] + (n%10 ? " " + u[n%10] : "");
+      if (n < 1000) return u[Math.floor(n/100)] + " HUNDRED" + (n%100 ? " " + w(n%100) : "");
+      if (n < 100000) return w(Math.floor(n/1000)) + " THOUSAND" + (n%1000 ? " " + w(n%1000) : "");
+      if (n < 10000000) return w(Math.floor(n/100000)) + " LAKH" + (n%100000 ? " " + w(n%100000) : "");
+      return w(Math.floor(n/10000000)) + " CRORE" + (n%10000000 ? " " + w(n%10000000) : "");
+    }
+    return w(num);
+  }
 
-        // Initialize calculations
-        calculateTotals();
-    </script>
+  window.onload = () => {
+    document.getElementById('inv-date').valueAsDate = new Date();
+    addItem(); // Add first item row
+  };
+</script>
+
 </body>
 </html>
