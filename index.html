@@ -3,105 +3,376 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Editable Invoice</title>
+  <title>Durga Engineering Works - Modern Invoice</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 10px;
-      background: #f9f9f9;
+    @media screen {
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f5f5;
+        padding: 20px;
+        margin: 0;
+      }
+      .invoice {
+        max-width: 900px;
+        margin: auto;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        padding: 20px;
+      }
     }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+        margin: 0;
+      }
+      .invoice {
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+      }
+      .no-print { display: none !important; }
+      input, textarea {
+        border: none;
+        background: transparent;
+        outline: none;
+        font-weight: normal;
+        padding: 0;
+      }
+      table, th, td {
+        border: 1px solid black !important;
+      }
+      .blue-header {
+        background: #003366 !important;
+        color: white !important;
+        font-weight: bold;
+      }
+    }
+
     .invoice {
-      max-width: 900px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    }
-    .header input {
-      width: 100%;
-      font-weight: bold;
-      font-size: 16px;
-      text-align: center;
-      border: none;
-      background: transparent;
-      padding: 2px;
-      margin: 2px 0;
-      box-sizing: border-box;
-    }
-    .meta-line {
-      text-align: center;
-      margin: 10px 0;
-    }
-    .meta-line input {
-      width: 120px;
-      text-align: center;
-      padding: 2px;
+      border: 2px solid #000;
+      padding: 15px;
       font-size: 14px;
-      border: 1px solid #999;
     }
-    .parties {
+
+    .header {
       display: flex;
       justify-content: space-between;
+      border-bottom: 2px solid #000;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .company-info {
+      width: 50%;
+    }
+
+    .invoice-info {
+      width: 50%;
+      text-align: right;
+    }
+
+    .company-info h2 {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .section {
       margin: 15px 0;
     }
-    .party {
-      width: 48%;
+
+    .parties {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
     }
-    .party input, .party textarea {
-      width: 100%;
-      padding: 3px;
+
+    .party-box {
+      width: 50%;
+      border: 1px solid #000;
+      padding: 10px;
+    }
+
+    .party-box h3 {
+      margin: 0 0 5px 0;
+      background: #003366;
+      color: white;
+      padding: 5px;
       font-size: 14px;
-      border: 1px solid #aaa;
-      box-sizing: border-box;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin: 15px 0;
+      border: 1px solid #000;
     }
+
     th, td {
       border: 1px solid #000;
       padding: 6px;
       text-align: left;
-      font-size: 14px;
+      font-size: 13px;
     }
+
     th {
-      background: #f1f1f1;
-    }
-    .totals {
-      text-align: right;
-      font-size: 14px;
-    }
-    .words {
-      margin: 15px 0;
+      background: #003366;
+      color: white;
       font-weight: bold;
     }
-    .bank, .footer-note {
+
+    .total-section {
+      border: 1px solid #000;
+      padding: 10px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
+
+    .amount-box {
+      border: 1px solid #000;
+      padding: 10px;
+      margin-top: 15px;
+    }
+
+    .bank-box {
+      border: 1px solid #000;
+      padding: 10px;
+      margin-top: 15px;
+      font-size: 13px;
+    }
+
+    .footer {
+      text-align: center;
       margin-top: 20px;
       font-size: 13px;
     }
-    .no-print {
-      text-align: center;
-      margin-top: 20px;
-    }
+
     .btn {
       padding: 8px 16px;
-      margin: 5px;
       background: #007bff;
       color: white;
       border: none;
       cursor: pointer;
+      margin: 5px;
     }
+
     .btn-print {
       background: #28a745;
     }
-    @media print {
-      .no-print { display: none !important; }
-      input, textarea {
-        border: none !important;
-        background: transparent !important;
-        box-shadow: none !important;
+
+    /* Editable fields */
+    input, textarea {
+      width: 100%;
+      padding: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .blue-header {
+      background: #003366;
+      color: white;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="invoice" id="invoice">
+
+  <!-- Header Section -->
+  <div class="header">
+    <div class="company-info">
+      <h2><input type="text" id="company-name" value="DURGA ENGINEERING WORKS"></h2>
+      <div><input type="text" id="address" value="NOOR SARAI NALANDA"></div>
+      <div>BIHAR</div>
+      <div>GSTIN/UIN: <input type="text" id="gstin" value="10AHCPK1560G1Z1"></div>
+      <div>STATE: <input type="text" id="state" value="BIHAR">, CODE:<input type="text" id="code" value="10"></div>
+    </div>
+    <div class="invoice-info">
+      <h3>INVOICE</h3>
+      DATE:- <input type="date" id="inv-date"><br/>
+      INVOICE NO <input type="text" id="inv-no" value="INV-001">
+    </div>
+  </div>
+
+  <!-- Bill To & Ship To -->
+  <div class="parties">
+    <div class="party-box">
+      <h3>BILL TO</h3>
+      <div><input type="text" id="bill-name" value="PARBHA"></div>
+      <div><input type="text" id="bill-address" value="DEOGHAR"></div>
+      <div>GSTIN/UIN: <input type="text" id="bill-gstin" value="20AAAAP0521E1ZJ"></div>
+      <div>STATE NAME: <input type="text" id="bill-state" value="JHARKHAND">,CODE:<input type="text" id="bill-code" value="20"></div>
+    </div>
+    <div class="party-box">
+      <h3>SHIP TO</h3>
+      <div><input type="text" id="ship-name" value="PARBHA"></div>
+      <div><input type="text" id="ship-address" value="DEOGHAR"></div>
+      <div>GSTIN/UIN: <input type="text" id="ship-gstin" value="20AAAAP0521E1ZJ"></div>
+      <div>STATE NAME: <input type="text" id="ship-state" value="JHARKHAND">,CODE:<input type="text" id="ship-code" value="20"></div>
+    </div>
+  </div>
+
+  <!-- Items Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>SL NO</th>
+        <th>DESCRIPATION OF GOODS</th>
+        <th>HSN/SAC</th>
+        <th>QUANTITY/KGS</th>
+        <th>RATE</th>
+        <th>AMOUNT</th>
+      </tr>
+    </thead>
+    <tbody id="item-body">
+      <!-- Rows added dynamically -->
+    </tbody>
+  </table>
+
+  <!-- Add/Remove Buttons -->
+  <div class="no-print">
+    <button class="btn" onclick="addItem()">+ Add Item</button>
+    <button class="btn" onclick="removeItem()">– Remove Last</button>
+  </div>
+
+  <!-- Totals Section -->
+  <div class="total-section">
+    <div class="total-row">
+      <span>SUB TOTAL</span>
+      <span>₹<span id="subtotal">0</span></span>
+    </div>
+    <div class="total-row">
+      <span>TAX RATE</span>
+      <span>18%</span>
+    </div>
+    <div class="total-row">
+      <span>TAXABLE</span>
+      <span>₹<span id="tax">0</span></span>
+    </div>
+    <div class="total-row">
+      <span>OTHER</span>
+      <span>₹0</span>
+    </div>
+    <div class="total-row" style="font-weight:bold;">
+      <span>TOTAL</span>
+      <span>₹<span id="total">0</span></span>
+    </div>
+  </div>
+
+  <!-- Amount in Words -->
+  <div class="amount-box">
+    <strong>AMOUNT CHARGEABLE (IN WORDS):-</strong><br/>
+    <span id="words">INR ZERO</span>
+  </div>
+
+  <!-- Make Checks Payable To -->
+  <div style="text-align:center; margin:20px 0; font-weight:bold;">
+    Make all checks payable to<br/>
+    [<input type="text" id="payable-to" value="DURGA ENGINEERING WORKS" style="width:200px;border:none;background:transparent;text-align:center;">]
+  </div>
+
+  <!-- Bank Details -->
+  <div class="bank-box">
+    <strong>COMPANY'S BANK Details</strong><br/>
+    A/c Holder Name :- <input type="text" id="bank-holder" value="DURGA ENGINEERING WORKS"><br/>
+    Bank Name :- <input type="text" id="bank-name" value="Punjab National Bank"><br/>
+    A/c no :- <input type="text" id="bank-ac" value="0814008700004037"><br/>
+    IFSC Code :- <input type="text" id="bank-ifsc" value="PUNB0081400">
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    If you have any questions about this invoice, please contact<br/>
+    {<input type="text" id="contact" value="Piyush Bharti.6200658161" style="border:none;background:transparent;width:200px;text-align:center;">}<br/>
+    <strong>Thank You For Your Business!</strong>
+  </div>
+
+</div>
+
+<!-- Print Button -->
+<div class="no-print" style="text-align:center; margin-top:20px;">
+  <button class="btn btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<script>
+  let rowId = 0;
+
+  function addItem() {
+    rowId++;
+    const tbody = document.getElementById('item-body');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${rowId}</td>
+      <td><textarea oninput="calc()" rows="3" placeholder="Description..."></textarea></td>
+      <td><input type="text" oninput="calc()" placeholder="HSN/SAC"></td>
+      <td><input type="number" step="0.01" oninput="calc()" placeholder="Qty"></td>
+      <td><input type="number" step="0.01" oninput="calc()" placeholder="Rate"></td>
+      <td class="amt">0</td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  function removeItem() {
+    const tbody = document.getElementById('item-body');
+    if (tbody.children.length > 0) {
+      tbody.removeChild(tbody.lastChild);
+      rowId--;
+      calc();
+    }
+  }
+
+  function calc() {
+    let sub = 0;
+    document.querySelectorAll('#item-body tr').forEach(row => {
+      const qty = parseFloat(row.cells[3].querySelector('input').value) || 0;
+      const rate = parseFloat(row.cells[4].querySelector('input').value) || 0;
+      const amt = qty * rate;
+      row.cells[5].textContent = Math.round(amt); // Integer only as per your sample
+      sub += amt;
+    });
+
+    const tax = sub * 0.18;
+    const total = sub + tax;
+
+    document.getElementById('subtotal').textContent = Math.round(sub);
+    document.getElementById('tax').textContent = Math.round(tax);
+    document.getElementById('total').textContent = Math.round(total);
+    document.getElementById('words').textContent = "INR " + numberToWords(Math.round(total)).toUpperCase();
+  }
+
+  function numberToWords(num) {
+    if (num === 0) return "ZERO";
+    const units = ["","ONE","TWO","THREE","FOUR","FIVE","SIX","SEVEN","EIGHT","NINE","TEN","ELEVEN","TWELVE","THIRTEEN","FOURTEEN","FIFTEEN","SIXTEEN","SEVENTEEN","EIGHTEEN","NINETEEN"];
+    const tens = ["","", "TWENTY","THIRTY","FORTY","FIFTY","SIXTY","SEVENTY","EIGHTY","NINETY"];
+
+    function convert(n) {
+      if (n < 20) return units[n];
+      if (n < 100) return tens[Math.floor(n/10)] + (n%10 ? " " + units[n%10] : "");
+      if (n < 1000) return units[Math.floor(n/100)] + " HUNDRED" + (n%100 ? " " + convert(n%100) : "");
+      if (n < 100000) return convert(Math.floor(n/1000)) + " THOUSAND" + (n%1000 ? " " + convert(n%1000) : "");
+      if (n < 10000000) return convert(Math.floor(n/100000)) + " LAKH" + (n%100000 ? " " + convert(n%100000) : "");
+      return convert(Math.floor(n/10000000)) + " CRORE" + (n%10000000 ? " " + convert(n%10000000) : "");
+    }
+    return convert(num);
+  }
+
+  window.onload = () => {
+    document.getElementById('inv-date').valueAsDate = new Date();
+    addItem(); // Add first row by default
+  };
+</script>
+
+</body>
+</html>        box-shadow: none !important;
         outline: none !important;
       }
     }
