@@ -1,40 +1,224 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Durga Engineering Works - Modern Invoice</title>
+  <title>स्वच्छ भारत क्विज़ – ग्रामीण</title>
   <style>
-    @media screen {
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #f5f5f5;
-        padding: 20px;
-        margin: 0;
-      }
-      .invoice {
-        max-width: 900px;
-        margin: auto;
-        background: white;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        padding: 20px;
-      }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #f9f3e6, #e0f7fa, #fff3e0);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      color: #2e2e2e;
+    }
+    header {
+      text-align: center;
+      margin: 15px 0;
+      width: 100%;
+    }
+    .logo {
+      width: 120px;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      color: #e65100;
+      margin: 10px 0;
+    }
+    .subtitle {
+      font-size: 1rem;
+      color: #555;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      padding: 30px;
+      width: 95%;
+      max-width: 600px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .question {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 20px 0;
+      color: #1b5e20;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 25px 0;
+    }
+    .option {
+      background: #f5f5f5;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+    }
+    .option:hover {
+      background: #fff8e1;
+      border-color: #ff9800;
+    }
+    .option.selected {
+      background: #ffe0b2;
+      border-color: #f57c00;
+      font-weight: bold;
+    }
+    .btn {
+      background: #1976d2;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #0d47a1;
+    }
+    .btn:disabled {
+      background: #bdbdbd;
+      cursor: not-allowed;
+    }
+    .result {
+      display: none;
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 16px;
+      font-size: 1.2rem;
+    }
+    .correct {
+      background: #e8f5e9;
+      border: 2px solid #4caf50;
+      color: #2e7d32;
+    }
+    .incorrect {
+      background: #ffebee;
+      border: 2px solid #f44336;
+      color: #c62828;
+    }
+    .share-btn {
+      background: #4caf50;
+      margin-top: 15px;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 0.85rem;
+      color: #666;
+      text-align: center;
+      max-width: 600px;
+    }
+    @media (max-width: 480px) {
+      .container { padding: 20px 15px; }
+      h1 { font-size: 1.5rem; }
+      .question { font-size: 1.1rem; }
+      .option { padding: 12px; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>🇮🇳</div>
+    <h1>स्वच्छ भारत मिशन – ग्रामीण</h1>
+    <p class="subtitle">क्विज़ चैलेंज – जागरूकता फैलाएँ, स्वच्छता बढ़ाएँ!</p>
+  </header>
+
+  <div class="container">
+    <div class="question">
+      स्वच्छ भारत मिशन-ग्रामीण में इस समय चलने वाले अभियान का नाम क्या है?
+    </div>
+
+    <div class="options" id="options">
+      <div class="option" onclick="selectOption(this, 'a')">a) हमारा भवन शौचालय भविष्य हमारा</div>
+      <div class="option" onclick="selectOption(this, 'b')">b) शौचालय हमारा भविष्य हमारा</div>
+      <div class="option" onclick="selectOption(this, 'c')">c) हमारा शौचालय हमारा भविष्य</div>
+      <div class="option" onclick="selectOption(this, 'd')">d) शौच हमारा भविष्यालय हमारा</div>
+    </div>
+
+    <button class="btn" id="submitBtn" onclick="submitQuiz()" disabled>उत्तर जमा करें</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="footer">
+    <p>© 2025 स्वच्छ भारत मिशन-ग्रामीण | जल शक्ति मंत्रालय, भारत सरकार</p>
+    <p>2025 — International Year of Cooperatives 🌱</p>
+  </div>
+
+  <script>
+    let selectedAnswer = null;
+
+    function selectOption(el, value) {
+      // Remove previous selection
+      document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+      // Add selection
+      el.classList.add('selected');
+      selectedAnswer = value;
+      document.getElementById('submitBtn').disabled = false;
     }
 
-    @media print {
-      body {
-        background: white;
-        padding: 0;
-        margin: 0;
+    function submitQuiz() {
+      if (!selectedAnswer) return;
+      
+      const resultDiv = document.getElementById('result');
+      const optionsDiv = document.getElementById('options');
+      const submitBtn = document.getElementById('submitBtn');
+
+      // Disable interaction
+      optionsDiv.style.pointerEvents = 'none';
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'जमा किया गया!';
+
+      // Show result
+      if (selectedAnswer === 'c') {
+        resultDiv.innerHTML = `
+          <div class="correct">
+            ✅ <b>सही उत्तर!</b><br><br>
+            <strong>"हमारा शौचालय हमारा भविष्य"</strong> — यह अभियान ग्रामीण क्षेत्रों में शौचालयों के निर्माण और उपयोग को बढ़ावा देता है।<br><br>
+            🌟 आपने स्वच्छता के प्रति अपनी जागरूकता दिखाई — बधाई!
+          </div>
+          <button class="btn share-btn" onclick="shareQuiz()">दोस्तों के साथ शेयर करें!</button>
+        `;
+      } else {
+        resultDiv.innerHTML = `
+          <div class="incorrect">
+            ❌ <b>गलत उत्तर।</b><br><br>
+            सही उत्तर: <strong>c) हमारा शौचालय हमारा भविष्य</strong><br><br>
+            📌 यह अभियान स्वच्छ भारत मिशन-ग्रामीण के तहत चल रहा है।<br>
+            आगे जागरूक रहें!
+          </div>
+          <button class="btn share-btn" onclick="shareQuiz()">क्विज़ शेयर करें</button>
+        `;
       }
-      .invoice {
-        box-shadow: none;
-        padding: 0;
-        margin: 0;
-        width: 100%;
-      }
-      .no-print { display: none !important; }
-      input, textarea {
+      resultDiv.style.display = 'block';
+    }
+
+    function shareQuiz() {
+      const text = "मैंने स्वच्छ भारत मिशन-ग्रामीण का क्विज़ पूरा किया! ✅ क्या आप जानते हैं — 'हमारा शौचालय हमारा भविष्य' कौन-सा अभियान है?";
+      const url = window.location.href;
+      const shareUrl = `https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`;
+      window.open(shareUrl, '_blank');
+    }
+  </script>
+</body>
+</html>      input, textarea {
         border: none;
         background: transparent;
         outline: none;
