@@ -63,6 +63,38 @@
       line-height: 1.5;
     }
 
+    /* Name Input Screen */
+    .name-screen {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 40px 30px;
+      width: 95%;
+      max-width: 500px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .name-screen h2 {
+      font-size: 1.6rem;
+      margin-bottom: 25px;
+      color: #1565c0;
+    }
+    .name-input {
+      width: 100%;
+      padding: 16px 20px;
+      font-size: 1.2rem;
+      border: 2px solid #c8e6c9;
+      border-radius: 16px;
+      outline: none;
+      margin: 20px 0;
+      background: #f8fafc;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+    }
+    .name-input:focus {
+      border-color: #4caf50;
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+    }
+
     /* Quiz Container */
     .container {
       background: white;
@@ -252,22 +284,31 @@
 
     /* Responsive */
     @media (max-width: 480px) {
-      .container { padding: 22px 18px; }
+      .name-screen, .container { padding: 25px 20px; }
       h1 { font-size: 1.6rem; }
       .question { font-size: 1.2rem; }
       .option { padding: 14px 16px; font-size: 1.05rem; }
       .btn { padding: 14px 28px; font-size: 1.05rem; }
+      .name-input { padding: 14px 16px; font-size: 1.1rem; }
     }
   </style>
 </head>
 <body>
+  <!-- 🔹 Name Input Screen (Initially Visible) -->
   <div class="header">
     <div class="logo">स्वच्छ<span>भारत</span> <sup>मिशन</sup></div>
     <h1>जागरूकता क्विज़ चुनौती</h1>
-    <p class="subtitle">20 प्रश्नों के माध्यम से स्वच्छता के प्रति अपनी जानकारी का आकलन करें</p>
+    <p class="subtitle">अपना नाम दर्ज करें और क्विज़ शुरू करें</p>
   </div>
 
-  <div class="container" id="quizContainer">
+  <div class="name-screen" id="nameScreen">
+    <h2>आपका नाम क्या है?</h2>
+    <input type="text" id="userName" class="name-input" placeholder="जैसे: राहुल शर्मा" maxlength="30">
+    <button class="btn" onclick="startQuiz()">क्विज़ शुरू करें</button>
+  </div>
+
+  <!-- 🔹 Quiz Container (Initially Hidden) -->
+  <div class="container" id="quizContainer" style="display:none;">
     <div class="progress">
       <div class="progress-bar" id="progressBar"></div>
     </div>
@@ -279,9 +320,10 @@
     <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>अगला प्रश्न</button>
   </div>
 
+  <!-- 🔹 Result Container -->
   <div class="container" id="resultContainer" style="display:none;">
     <h2>क्विज़ समाप्त! 🎉</h2>
-    <div class="score-final">आपका स्कोर: <span id="finalScore">0</span>/20</div>
+    <div class="score-final"><span id="userNameDisplay">राहुल</span> ने <span id="finalScore">0</span>/20 स्कोर किया!</div>
     <div id="resultMessage"></div>
     <div class="badge" id="badgeText">जागरूक नागरिक</div>
     <button class="btn share-btn" onclick="shareWithImage()">WhatsApp पर शेयर करें</button>
@@ -318,14 +360,18 @@
       {q: "गाँव में ठोस कचरा प्रबंधन के लिए क्या उपयोग होता है?", options: ["मोबाइल टॉवर","खदान","कम्पोस्ट पिट / कचरा संग्रहण केंद्र","बस स्टॉप"], ans: 2}
     ];
 
-    // Shuffle
-    const shuffledQuestions = [...quizData].sort(() => Math.random() - 0.5);
+    // Global variables
+    let userName = "";
+    let shuffledQuestions = [];
     let currentQuestion = 0;
     let score = 0;
 
-    // DOM
+    // DOM Elements
+    const nameScreen = document.getElementById("nameScreen");
     const quizContainer = document.getElementById("quizContainer");
     const resultContainer = document.getElementById("resultContainer");
+    const userNameInput = document.getElementById("userName");
+    const userNameDisplay = document.getElementById("userNameDisplay");
     const questionText = document.getElementById("questionText");
     const optionsDiv = document.getElementById("options");
     const nextBtn = document.getElementById("nextBtn");
@@ -334,6 +380,21 @@
     const finalScore = document.getElementById("finalScore");
     const resultMessage = document.getElementById("resultMessage");
     const badgeText = document.getElementById("badgeText");
+
+    // Start Quiz
+    function startQuiz() {
+      userName = userNameInput.value.trim() || "एक जागरूक नागरिक";
+      userNameDisplay.textContent = userName.split(' ')[0]; // First name only for display
+
+      // Shuffle questions
+      shuffledQuestions = [...quizData].sort(() => Math.random() - 0.5);
+      currentQuestion = 0;
+      score = 0;
+
+      nameScreen.style.display = "none";
+      quizContainer.style.display = "block";
+      loadQuestion();
+    }
 
     // Load question
     function loadQuestion() {
@@ -360,19 +421,16 @@
     }
 
     function selectOption(el, idx, correctAns) {
-      // Clear previous
       document.querySelectorAll('.option').forEach(opt => {
         opt.classList.remove('selected', 'correct', 'incorrect');
       });
 
       el.classList.add('selected');
 
-      // Immediate visual feedback
       if (idx === correctAns) {
         el.classList.add('correct');
       } else {
         el.classList.add('incorrect');
-        // Highlight correct answer
         document.querySelectorAll('.option')[correctAns].classList.add('correct');
       }
 
@@ -418,16 +476,14 @@
     }
 
     function restartQuiz() {
-      currentQuestion = 0;
-      score = 0;
       resultContainer.style.display = "none";
-      quizContainer.style.display = "block";
-      loadQuestion();
+      nameScreen.style.display = "block";
+      userNameInput.value = "";
+      userNameInput.focus();
     }
 
-    // 🖼️ Generate Score Card Image & Share
+    // 🖼️ Generate Score Card with Name
     async function shareWithImage() {
-      // Create canvas
       const canvas = document.createElement('canvas');
       canvas.width = 600;
       canvas.height = 800;
@@ -452,33 +508,57 @@
       ctx.font = '32px Poppins, sans-serif';
       ctx.fillText('क्विज़ परिणाम', 300, 160);
 
-      // Score
+      // Name
       ctx.fillStyle = '#0d47a1';
+      ctx.font = 'bold 36px Poppins, sans-serif';
+      const displayName = userName === "एक जागरूक नागरिक" ? "जागरूक नागरिक" : userName;
+      wrapText(ctx, displayName, 300, 250, 500, 40);
+
+      // Score
       ctx.font = 'bold 72px Poppins, sans-serif';
-      ctx.fillText(`${score}/20`, 300, 300);
+      ctx.fillText(`${score}/20`, 300, 360);
 
       // Badge
       ctx.fillStyle = '#4caf50';
       ctx.font = 'bold 36px Poppins, sans-serif';
-      ctx.fillText(badgeText.textContent, 300, 400);
+      ctx.fillText(badgeText.textContent, 300, 460);
 
       // Message
       ctx.fillStyle = '#555';
       ctx.font = '24px Poppins, sans-serif';
-      ctx.fillText('मैंने स्वच्छता के प्रति अपनी', 300, 500);
-      ctx.fillText('जागरूकता का परीक्षण किया!', 300, 540);
+      ctx.fillText('मैंने स्वच्छता के प्रति अपनी', 300, 560);
+      ctx.fillText('जागरूकता का परीक्षण किया!', 300, 600);
 
       // Footer
       ctx.font = '20px Poppins, sans-serif';
-      ctx.fillText('क्या आप इस चुनौती को पार कर सकते हैं?', 300, 650);
-      ctx.fillText('🚽 स्वच्छता हमारा कर्तव्य 🌱', 300, 720);
+      ctx.fillText('क्या आप इस चुनौती को पार कर सकते हैं?', 300, 700);
+      ctx.fillText('🚽 स्वच्छता हमारा कर्तव्य 🌱', 300, 770);
 
-      // Convert to blob
+      // Helper for text wrapping
+      function wrapText(context, text, x, y, maxWidth, lineHeight) {
+        const words = text.split(' ');
+        let line = '';
+        let yLine = y;
+
+        for (let n = 0; n < words.length; n++) {
+          const testLine = line + words[n] + ' ';
+          const metrics = context.measureText(testLine);
+          if (metrics.width > maxWidth && n > 0) {
+            context.fillText(line, x, yLine);
+            line = words[n] + ' ';
+            yLine += lineHeight;
+          } else {
+            line = testLine;
+          }
+        }
+        context.fillText(line, x, yLine);
+      }
+
+      // Convert & Share
       canvas.toBlob(async (blob) => {
         if (!blob) return;
 
-        // Create share data
-        const text = `मैंने स्वच्छ भारत क्विज़ में ${score}/20 स्कोर किया!\nक्या आप इस चुनौती को पार कर सकते हैं?\n`;
+        const text = `${userName} ने स्वच्छ भारत क्विज़ में ${score}/20 स्कोर किया!\nक्या आप इस चुनौती को पार कर सकते हैं?\n`;
         const url = window.location.href;
 
         // Try Web Share API (modern browsers)
@@ -488,7 +568,7 @@
               text: text,
               url: url,
               files: [
-                new File([blob], "swachh-bharat-score.png", { type: "image/png" })
+                new File([blob], `${userName.replace(/\s+/g, '_')}_score.png`, { type: "image/png" })
               ]
             });
             return;
@@ -498,19 +578,18 @@
         }
 
         // Fallback: WhatsApp
-        const reader = new FileReader();
-        reader.onload = () => {
-          const base64 = reader.result.split(',')[1];
-          // Note: WhatsApp web doesn't allow image upload via URL, so we share text + link
-          const shareUrl = `https://wa.me/?text=${encodeURIComponent(text + url)}`;
-          window.open(shareUrl, '_blank');
-        };
-        reader.readAsDataURL(blob);
+        const shareUrl = `https://wa.me/?text=${encodeURIComponent(text + url)}`;
+        window.open(shareUrl, '_blank');
       }, 'image/png');
     }
 
-    // Start
-    window.onload = () => loadQuestion();
+    // Focus name input on load
+    window.onload = () => {
+      userNameInput.focus();
+      userNameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') startQuiz();
+      });
+    };
   </script>
 </body>
 </html>
