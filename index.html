@@ -2,96 +2,170 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Online Test Demo</title>
+<title>Exam Interface</title>
 
 <style>
-*{
-  margin:0;padding:0;box-sizing:border-box;
-  font-family:Segoe UI,sans-serif;
+:root{
+  --primary:#2563eb;
+  --secondary:#22c55e;
+  --danger:#ef4444;
+  --review:#f59e0b;
+  --bg:#f1f5f9;
+  --card:#ffffffcc;
 }
-body{background:#f2f4f8}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Segoe UI,sans-serif}
+body{background:var(--bg);min-height:100vh}
 
 /* HEADER */
 header{
-  background:#1e40af;color:#fff;
-  padding:14px 20px;
-  display:flex;justify-content:space-between;align-items:center;
+  background:linear-gradient(135deg,#1e3a8a,#2563eb);
+  color:#fff;
+  padding:18px 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
-.timer{background:#dc2626;padding:6px 12px;border-radius:6px}
+header h2{font-weight:600}
+.timer{
+  background:rgba(255,255,255,.15);
+  padding:8px 14px;
+  border-radius:30px;
+  font-weight:600;
+}
 
 /* LAYOUT */
 .main{
-  display:flex;gap:20px;
-  max-width:1100px;margin:20px auto;padding:10px;
+  max-width:1200px;
+  margin:25px auto;
+  display:grid;
+  grid-template-columns:3fr 1fr;
+  gap:25px;
+  padding:10px;
 }
-.card{
-  background:#fff;padding:20px;border-radius:10px;
-  box-shadow:0 10px 20px rgba(0,0,0,0.1);
-  flex:3;
-}
-.palette{
-  flex:1;background:#fff;padding:15px;border-radius:10px;
-  box-shadow:0 10px 20px rgba(0,0,0,0.1);
-}
-.palette h4{margin-bottom:10px}
 
-/* QUESTION */
-.options label{
-  display:block;padding:10px;margin-bottom:10px;
-  border:1px solid #cbd5e1;border-radius:8px;
-  cursor:pointer;
+/* CARD */
+.card{
+  background:var(--card);
+  backdrop-filter:blur(8px);
+  border-radius:16px;
+  padding:25px;
+  box-shadow:0 20px 40px rgba(0,0,0,.1);
 }
-.options input{margin-right:8px}
+.qno{
+  color:var(--primary);
+  font-weight:600;
+  margin-bottom:10px;
+}
+.question{
+  font-size:18px;
+  margin-bottom:20px;
+}
+
+/* OPTIONS */
+.options label{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  margin-bottom:12px;
+  border-radius:12px;
+  border:1px solid #e2e8f0;
+  cursor:pointer;
+  transition:.25s;
+  background:#fff;
+}
+.options label:hover{
+  transform:scale(1.01);
+  border-color:var(--primary);
+}
+.options input{accent-color:var(--primary)}
+.options label.active{
+  background:#eff6ff;
+  border-color:var(--primary);
+}
 
 /* BUTTONS */
 .buttons{
-  display:flex;justify-content:space-between;margin-top:15px
+  display:flex;
+  justify-content:space-between;
+  margin-top:25px;
 }
 button{
-  padding:8px 15px;border:none;border-radius:6px;
-  cursor:pointer;font-size:14px
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
 }
-.next{background:#2563eb;color:#fff}
-.review{background:#f59e0b;color:#fff}
+.prev{background:#e5e7eb}
+.next{background:var(--primary);color:#fff}
+.review{background:var(--review);color:#fff}
 
 /* PALETTE */
-.pbtn{
-  width:35px;height:35px;margin:5px;
-  border:none;border-radius:50%;cursor:pointer;
+.palette{
+  background:#fff;
+  border-radius:16px;
+  padding:18px;
+  box-shadow:0 20px 40px rgba(0,0,0,.1);
 }
-.not-attempted{background:#e5e7eb}
-.attempted{background:#22c55e;color:#fff}
-.marked{background:#facc15}
+.palette h4{margin-bottom:10px}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+}
+.pbtn{
+  height:38px;
+  border-radius:50%;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+}
+.na{background:#e5e7eb}
+.at{background:var(--secondary);color:#fff}
+.rv{background:var(--review);color:#fff}
+.activeQ{outline:3px solid var(--primary)}
 
 /* RESULT */
 #result{
   display:none;
-  max-width:600px;margin:40px auto;
-  background:#fff;padding:25px;border-radius:12px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+  max-width:520px;
+  margin:50px auto;
+  background:#fff;
+  padding:30px;
+  border-radius:18px;
   text-align:center;
+  box-shadow:0 30px 60px rgba(0,0,0,.15);
 }
-.stat{margin:8px 0;font-size:16px}
+.stat{margin:10px 0;font-size:16px}
+
+/* MOBILE */
+@media(max-width:900px){
+  .main{grid-template-columns:1fr}
+}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h3>Lucent GK Test</h3>
+  <h2>Lucent GK – Mock Test</h2>
   <div class="timer" id="timer">10:00</div>
 </header>
 
-<div class="main" id="testArea">
+<div class="main" id="exam">
 
   <!-- QUESTION -->
   <div class="card">
-    <h3 id="question"></h3>
+    <div class="qno" id="qno"></div>
+    <div class="question" id="question"></div>
+
     <div class="options" id="options"></div>
 
     <div class="buttons">
-      <button onclick="prevQ()">Previous</button>
-      <button class="review" onclick="markReview()">Mark for Review ⭐</button>
+      <button class="prev" onclick="prevQ()">Previous</button>
+      <button class="review" onclick="markReview()">Mark Review ⭐</button>
       <button class="next" onclick="nextQ()">Next</button>
     </div>
   </div>
@@ -99,99 +173,78 @@ button{
   <!-- PALETTE -->
   <div class="palette">
     <h4>Questions</h4>
-    <div id="palette"></div>
-    <button style="margin-top:10px;width:100%" onclick="submitTest()">Submit Test</button>
+    <div class="grid" id="palette"></div>
+    <button class="next" style="width:100%;margin-top:15px" onclick="submit()">Submit Test</button>
   </div>
 
 </div>
 
-<!-- RESULT -->
 <div id="result">
   <h2>Test Result</h2>
-  <p class="stat" id="score"></p>
-  <p class="stat" id="correct"></p>
-  <p class="stat" id="wrong"></p>
-  <p class="stat" id="skipped"></p>
-  <p class="stat" id="accuracy"></p>
+  <p class="stat" id="r1"></p>
+  <p class="stat" id="r2"></p>
+  <p class="stat" id="r3"></p>
+  <p class="stat" id="r4"></p>
 </div>
 
 <script>
-/* QUESTIONS */
-const questions=[
+const Q=[
  {q:"भारत की राजधानी क्या है?",o:["दिल्ली","मुंबई","कोलकाता","चेन्नई"],a:0},
  {q:"राष्ट्रीय पशु?",o:["शेर","बाघ","हाथी","घोड़ा"],a:1},
- {q:"राष्ट्रीय पक्षी?",o:["तोता","मोर","कबूतर","कौवा"],a:1}
+ {q:"राष्ट्रीय पक्षी?",o:["तोता","मोर","कबूतर","कौवा"],a:1},
+ {q:"गांधी जी का जन्म?",o:["1869","1872","1880","1890"],a:0}
 ];
 
-let index=0;
-let answers=new Array(questions.length).fill(null);
-let review=new Array(questions.length).fill(false);
+let i=0;
+let ans=new Array(Q.length).fill(null);
+let rev=new Array(Q.length).fill(false);
 
-/* LOAD */
-function loadQ(){
-  document.getElementById("question").innerText=`Q${index+1}. ${questions[index].q}`;
-  let html="";
-  questions[index].o.forEach((op,i)=>{
-    html+=`<label>
-      <input type="radio" name="opt" ${answers[index]==i?"checked":""}
-      onclick="answers[${index}]=${i}">
+function load(){
+  qno.innerText=`Question ${i+1}/${Q.length}`;
+  question.innerText=Q[i].q;
+  options.innerHTML=Q[i].o.map((op,idx)=>`
+    <label class="${ans[i]==idx?'active':''}">
+      <input type="radio" name="opt"
+        ${ans[i]==idx?'checked':''}
+        onclick="ans[${i}]=${idx};load()">
       ${op}
-    </label>`;
-  });
-  document.getElementById("options").innerHTML=html;
-  updatePalette();
+    </label>`).join("");
+  palette.innerHTML=Q.map((_,x)=>{
+    let c="na";
+    if(rev[x]) c="rv";
+    else if(ans[x]!=null) c="at";
+    return `<button class="pbtn ${c} ${x==i?'activeQ':''}"
+      onclick="i=${x};load()">${x+1}</button>`;
+  }).join("");
 }
+function nextQ(){if(i<Q.length-1){i++;load()}}
+function prevQ(){if(i>0){i--;load()}}
+function markReview(){rev[i]=true;load()}
 
-/* NAV */
-function nextQ(){if(index<questions.length-1){index++;loadQ();}}
-function prevQ(){if(index>0){index--;loadQ();}}
-function markReview(){review[index]=true;updatePalette();}
-
-/* PALETTE */
-function updatePalette(){
-  let html="";
-  questions.forEach((_,i)=>{
-    let cls="not-attempted";
-    if(review[i]) cls="marked";
-    else if(answers[i]!=null) cls="attempted";
-    html+=`<button class="pbtn ${cls}" onclick="jump(${i})">${i+1}</button>`;
+function submit(){
+  exam.style.display="none";
+  result.style.display="block";
+  let c=0,w=0,s=0;
+  ans.forEach((v,x)=>{
+    if(v==null)s++;
+    else if(v==Q[x].a)c++;
+    else w++;
   });
-  document.getElementById("palette").innerHTML=html;
+  r1.innerText=`Score : ${c}/${Q.length}`;
+  r2.innerText=`Correct : ${c}`;
+  r3.innerText=`Wrong : ${w}`;
+  r4.innerText=`Skipped : ${s}`;
 }
-function jump(i){index=i;loadQ();}
-
-/* SUBMIT */
-function submitTest(){
-  document.getElementById("testArea").style.display="none";
-  document.getElementById("result").style.display="block";
-
-  let correct=0,wrong=0,skipped=0;
-  answers.forEach((a,i)=>{
-    if(a==null) skipped++;
-    else if(a==questions[i].a) correct++;
-    else wrong++;
-  });
-
-  let score=correct;
-  let acc=((correct/questions.length)*100).toFixed(2);
-
-  scoreEl("score","Score : "+score);
-  scoreEl("correct","Correct : "+correct);
-  scoreEl("wrong","Wrong : "+wrong);
-  scoreEl("skipped","Skipped : "+skipped);
-  scoreEl("accuracy","Accuracy : "+acc+"%");
-}
-function scoreEl(id,text){document.getElementById(id).innerText=text;}
 
 /* TIMER */
 let t=600;
 setInterval(()=>{
- let m=Math.floor(t/60),s=t%60;
- timer.innerText=`${m}:${s<10?"0"+s:s}`;
- t--; if(t<0) submitTest();
+  let m=Math.floor(t/60),s=t%60;
+  timer.innerText=`${m}:${s<10?"0"+s:s}`;
+  if(--t<0) submit();
 },1000);
 
-loadQ();
+load();
 </script>
 
 </body>
