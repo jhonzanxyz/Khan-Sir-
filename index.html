@@ -205,16 +205,6 @@
         Area: Dumka District • Masaliya Block
       </p>
 
-      <!-- Entry Type -->
-      <div class="form-group">
-        <label for="entryType">Entry Type *</label>
-        <select id="entryType">
-          <option value="">-- Select Type --</option>
-          <option value="Household">Household</option>
-          <option value="School/AWSC">School / AWSC</option>
-        </select>
-      </div>
-
       <div class="form-group">
         <label for="district">District (Fixed)</label>
         <input type="text" id="district" value="Dumka" disabled>
@@ -238,6 +228,16 @@
       <div class="form-group">
         <label for="beneficiary">Beneficiary Name *</label>
         <input type="text" id="beneficiary" placeholder="Enter Full Name">
+      </div>
+
+      <!-- ✅ Entry Type added RIGHT AFTER Beneficiary Name -->
+      <div class="form-group">
+        <label for="entryType">Entry Type *</label>
+        <select id="entryType">
+          <option value="">-- Select Type --</option>
+          <option value="Household">Household</option>
+          <option value="School/AWSC">School / AWSC</option>
+        </select>
       </div>
 
       <button class="btn btn-location" onclick="getLocation()">
@@ -287,12 +287,13 @@
     }
 
     function submitForm() {
+      const beneficiary = document.getElementById("beneficiary").value.trim();
       const entryType = document.getElementById("entryType").value.trim();
       const panchayat = document.getElementById("panchayat").value.trim();
       const village = document.getElementById("village").value.trim();
-      const beneficiary = document.getElementById("beneficiary").value.trim();
 
-      if (!entryType || !panchayat || !village || !beneficiary) {
+      // Validate all required fields (including new order)
+      if (!panchayat || !village || !beneficiary || !entryType) {
         alert("Please fill in all required fields.");
         return;
       }
@@ -307,12 +308,12 @@
 
       // Final data object
       const formData = {
-        entryType,
         district: "Dumka",
         block: "Masaliya",
         panchayat,
         village,
         beneficiary,
+        entryType, // ✅ Now included
         latitude: geoLocation.latitude,
         longitude: geoLocation.longitude,
         submittedAt: new Date().toLocaleString()
