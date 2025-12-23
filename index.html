@@ -64,7 +64,7 @@
       font-size: 14px;
     }
 
-    input {
+    input, select {
       width: 100%;
       padding: 12px 14px;
       border: 1px solid #ced4da;
@@ -73,7 +73,7 @@
       transition: border 0.3s, box-shadow 0.3s;
     }
 
-    input:focus {
+    input:focus, select:focus {
       outline: none;
       border-color: #0d6efd;
       box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
@@ -205,6 +205,16 @@
         Area: Dumka District • Masaliya Block
       </p>
 
+      <!-- Entry Type -->
+      <div class="form-group">
+        <label for="entryType">Entry Type *</label>
+        <select id="entryType">
+          <option value="">-- Select Type --</option>
+          <option value="Household">Household</option>
+          <option value="School/AWSC">School / AWSC</option>
+        </select>
+      </div>
+
       <div class="form-group">
         <label for="district">District (Fixed)</label>
         <input type="text" id="district" value="Dumka" disabled>
@@ -277,11 +287,12 @@
     }
 
     function submitForm() {
+      const entryType = document.getElementById("entryType").value.trim();
       const panchayat = document.getElementById("panchayat").value.trim();
       const village = document.getElementById("village").value.trim();
       const beneficiary = document.getElementById("beneficiary").value.trim();
 
-      if (!panchayat || !village || !beneficiary) {
+      if (!entryType || !panchayat || !village || !beneficiary) {
         alert("Please fill in all required fields.");
         return;
       }
@@ -294,8 +305,9 @@
       // Show success modal
       document.getElementById("successModal").classList.add("show");
 
-      // Optional: Log to console (for future backend integration)
+      // Final data object
       const formData = {
+        entryType,
         district: "Dumka",
         block: "Masaliya",
         panchayat,
@@ -305,7 +317,8 @@
         longitude: geoLocation.longitude,
         submittedAt: new Date().toLocaleString()
       };
-      console.log("Submitted Record:", formData);
+
+      console.log("✅ Submitted Record:", formData);
     }
 
     function closeModal() {
