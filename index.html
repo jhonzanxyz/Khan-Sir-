@@ -230,7 +230,6 @@
         <input type="text" id="beneficiary" placeholder="Enter Full Name">
       </div>
 
-      <!-- ✅ Entry Type added RIGHT AFTER Beneficiary Name -->
       <div class="form-group">
         <label for="entryType">Entry Type *</label>
         <select id="entryType">
@@ -252,7 +251,26 @@
     </div>
   </div>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
   <script>
+    // 🔥 Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAkLZnHOp2-jXMiNzhIwZE-Fgs6OEb89rw",
+      authDomain: "quiz-app-64a74.firebaseapp.com",
+      projectId: "quiz-app-64a74",
+      storageBucket: "quiz-app-64a74.firebasestorage.app",
+      messagingSenderId: "665162938804",
+      appId: "1:665162938804:web:2066494d51f97ec2561ae1",
+      measurementId: "G-D66V4R39QP"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     let geoLocation = null;
 
     function getLocation() {
@@ -292,7 +310,6 @@
       const panchayat = document.getElementById("panchayat").value.trim();
       const village = document.getElementById("village").value.trim();
 
-      // Validate all required fields (including new order)
       if (!panchayat || !village || !beneficiary || !entryType) {
         alert("Please fill in all required fields.");
         return;
@@ -303,23 +320,32 @@
         return;
       }
 
-      // Show success modal
-      document.getElementById("successModal").classList.add("show");
-
-      // Final data object
-      const formData = {
+      // ✅ Save to Firestore
+      db.collection("records").add({
         district: "Dumka",
         block: "Masaliya",
         panchayat,
         village,
         beneficiary,
-        entryType, // ✅ Now included
+        entryType,
         latitude: geoLocation.latitude,
         longitude: geoLocation.longitude,
-        submittedAt: new Date().toLocaleString()
-      };
-
-      console.log("✅ Submitted Record:", formData);
+        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+        document.getElementById("successModal").classList.add("show");
+        // Optional: Clear form
+        document.getElementById("panchayat").value = "";
+        document.getElementById("village").value = "";
+        document.getElementById("beneficiary").value = "";
+        document.getElementById("entryType").value = "";
+        geoLocation = null;
+        document.getElementById("location-info").style.display = "none";
+      })
+      .catch((error) => {
+        console.error("Error saving to Firebase:", error);
+        alert("कुछ गड़बड़ हुई। कृपया दोबारा कोशिश करें।");
+      });
     }
 
     function closeModal() {
