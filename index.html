@@ -3,103 +3,243 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Location & Beneficiary Form</title>
+  <title>Dumka - Masaliya Record Form</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f9fc;
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      min-height: 100vh;
       padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+
     .container {
+      width: 100%;
       max-width: 600px;
-      margin: 0 auto;
       background: white;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 14px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      overflow: hidden;
     }
-    h1 {
+
+    .form-header {
+      background: #495057;
+      color: white;
+      padding: 18px;
       text-align: center;
-      color: #2c3e50;
+      font-weight: 600;
+      font-size: 20px;
     }
+
+    .form-body {
+      padding: 25px;
+    }
+
+    .location-context {
+      text-align: center;
+      color: #6c757d;
+      font-size: 14px;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
     .form-group {
-      margin-bottom: 15px;
-      text-align: left;
+      margin-bottom: 20px;
     }
+
     label {
       display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #34495e;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #343a40;
+      font-size: 14px;
     }
-    input, select {
+
+    input {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      padding: 12px 14px;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
       font-size: 16px;
-      box-sizing: border-box;
+      transition: border 0.3s, box-shadow 0.3s;
     }
-    button {
+
+    input:focus {
+      outline: none;
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+    }
+
+    input[disabled] {
+      background-color: #f8f9fa;
+      color: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .btn {
       width: 100%;
-      padding: 12px;
-      background: #2ecc71;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-location {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-location:hover {
+      background: #5a6268;
+    }
+
+    .btn-submit {
+      background: #28a745;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      background: #218838;
+    }
+
+    #location-info {
+      margin-top: 20px;
+      padding: 14px;
+      background: #e9f7ef;
+      border-radius: 8px;
+      display: none;
+      font-size: 15px;
+      color: #155724;
+    }
+
+    .success-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+
+    .success-modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transform: scale(0.9);
+      animation: popIn 0.4s forwards;
+    }
+
+    @keyframes popIn {
+      to { transform: scale(1); }
+    }
+
+    .modal-content i {
+      font-size: 60px;
+      color: #28a745;
+      margin-bottom: 15px;
+    }
+
+    .modal-content h2 {
+      color: #212529;
+      margin-bottom: 12px;
+    }
+
+    .modal-btn {
+      background: #28a745;
       color: white;
       border: none;
-      border-radius: 5px;
-      font-size: 18px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
       cursor: pointer;
       margin-top: 10px;
     }
-    button:hover {
-      background: #27ae60;
-    }
-    #location-info {
-      margin-top: 20px;
-      padding: 15px;
-      background: #e8f4f8;
-      border-radius: 5px;
-      display: none;
-    }
-    .error { color: red; }
-    .success { color: green; }
   </style>
 </head>
 <body>
+  <!-- Success Modal -->
+  <div class="success-modal" id="successModal">
+    <div class="modal-content">
+      <i class="fas fa-check-circle"></i>
+      <h2>सफलतापूर्वक जमा!</h2>
+      <p>आपका रिकॉर्ड सफलतापूर्वक जमा कर दिया गया है।</p>
+      <button class="modal-btn" onclick="closeModal()">ठीक है</button>
+    </div>
+  </div>
+
+  <!-- Form Container -->
   <div class="container">
-    <h1>Beneficiary & Location Form</h1>
+    <div class="form-header">
+      Beneficiary & Location Record
+    </div>
+    <div class="form-body">
+      <p class="location-context">
+        Area: Dumka District • Masaliya Block
+      </p>
 
-    <!-- Form Fields -->
-    <div class="form-group">
-      <label for="district">District *</label>
-      <input type="text" id="district" placeholder="Enter District" required>
-    </div>
-    <div class="form-group">
-      <label for="block">Block *</label>
-      <input type="text" id="block" placeholder="Enter Block" required>
-    </div>
-    <div class="form-group">
-      <label for="panchayat">Panchayat *</label>
-      <input type="text" id="panchayat" placeholder="Enter Panchayat" required>
-    </div>
-    <div class="form-group">
-      <label for="village">Village *</label>
-      <input type="text" id="village" placeholder="Enter Village" required>
-    </div>
-    <div class="form-group">
-      <label for="beneficiary">Beneficiary Name *</label>
-      <input type="text" id="beneficiary" placeholder="Enter Full Name" required>
-    </div>
+      <div class="form-group">
+        <label for="district">District (Fixed)</label>
+        <input type="text" id="district" value="Dumka" disabled>
+      </div>
 
-    <!-- Fetch Location Button -->
-    <button type="button" onclick="getLocation()">Get Current Location</button>
+      <div class="form-group">
+        <label for="block">Block (Fixed)</label>
+        <input type="text" id="block" value="Masaliya" disabled>
+      </div>
 
-    <!-- Display Location -->
-    <div id="location-info"></div>
+      <div class="form-group">
+        <label for="panchayat">Panchayat *</label>
+        <input type="text" id="panchayat" placeholder="Enter Panchayat Name">
+      </div>
 
-    <!-- Submit Button -->
-    <button type="button" onclick="submitForm()">Submit Data</button>
+      <div class="form-group">
+        <label for="village">Village *</label>
+        <input type="text" id="village" placeholder="Enter Village Name">
+      </div>
+
+      <div class="form-group">
+        <label for="beneficiary">Beneficiary Name *</label>
+        <input type="text" id="beneficiary" placeholder="Enter Full Name">
+      </div>
+
+      <button class="btn btn-location" onclick="getLocation()">
+        <i class="fas fa-map-marker-alt"></i> Get Current Location
+      </button>
+
+      <div id="location-info"></div>
+
+      <button class="btn btn-submit" onclick="submitForm()">
+        <i class="fas fa-paper-plane"></i> Submit Record
+      </button>
+    </div>
   </div>
 
   <script>
@@ -107,11 +247,11 @@
 
     function getLocation() {
       const infoDiv = document.getElementById("location-info");
-      infoDiv.innerHTML = "<p>Location dhoondh raha hoon...</p>";
+      infoDiv.innerHTML = "<p>Fetching your location... Please wait.</p>";
       infoDiv.style.display = "block";
 
       if (!navigator.geolocation) {
-        infoDiv.innerHTML = `<p class="error">Aapka browser location support nahi karta.</p>`;
+        infoDiv.innerHTML = `<p style="color: #dc3545;">⚠️ Geolocation is not supported in your browser.</p>`;
         return;
       }
 
@@ -126,53 +266,50 @@
           `;
         },
         (error) => {
-          let msg = "Location access nahi mila.";
-          if (error.code === 1) msg = "Aapne location access deny kiya hai.";
-          else if (error.code === 2) msg = "Location unavailable.";
-          else if (error.code === 3) msg = "Request timeout.";
-          infoDiv.innerHTML = `<p class="error">Error: ${msg}</p>`;
+          let msg = "Unable to access location.";
+          if (error.code === 1) msg = "Location access was denied.";
+          else if (error.code === 2) msg = "Location is unavailable.";
+          else if (error.code === 3) msg = "Request timed out.";
+          infoDiv.innerHTML = `<p style="color: #dc3545;">❌ ${msg}</p>`;
           geoLocation = null;
         }
       );
     }
 
     function submitForm() {
-      // Get form values
-      const district = document.getElementById("district").value.trim();
-      const block = document.getElementById("block").value.trim();
       const panchayat = document.getElementById("panchayat").value.trim();
       const village = document.getElementById("village").value.trim();
       const beneficiary = document.getElementById("beneficiary").value.trim();
 
-      // Validation
-      if (!district || !block || !panchayat || !village || !beneficiary) {
-        alert("Kripya sabhi fields bhar dein.");
+      if (!panchayat || !village || !beneficiary) {
+        alert("Please fill in all required fields.");
         return;
       }
 
       if (!geoLocation) {
-        alert("Kripya pahle 'Get Current Location' dabayein.");
+        alert("Please fetch your location first.");
         return;
       }
 
-      // Final data object
+      // Show success modal
+      document.getElementById("successModal").classList.add("show");
+
+      // Optional: Log to console (for future backend integration)
       const formData = {
-        district,
-        block,
+        district: "Dumka",
+        block: "Masaliya",
         panchayat,
         village,
         beneficiary,
         latitude: geoLocation.latitude,
         longitude: geoLocation.longitude,
-        timestamp: new Date().toISOString()
+        submittedAt: new Date().toLocaleString()
       };
+      console.log("Submitted Record:", formData);
+    }
 
-      // ✅ For now: log to console
-      console.log("Submitted Data:", formData);
-      alert("Data submit ho gaya! (Console mein dekhein)");
-
-      // 🔜 Agar aap Firebase ya Netlify use karna chahte hain, yahan se bhej sakte hain
-      // Example: sendToFirebase(formData);
+    function closeModal() {
+      document.getElementById("successModal").classList.remove("show");
     }
   </script>
 </body>
