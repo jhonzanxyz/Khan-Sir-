@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Dumka Records</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8f9fa;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    h1 {
+      background: #28a745;
+      color: white;
+      padding: 18px;
+      text-align: center;
+      margin: 0;
+      font-size: 22px;
+    }
+    .table-container {
+      padding: 20px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+    th, td {
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid #e9ecef;
+    }
+    th {
+      background: #f1f3f5;
+      font-weight: 600;
+      color: #495057;
+    }
+    tr:hover {
+      background: #f8f9fa;
+    }
+    .timestamp {
+      font-size: 12px;
+      color: #6c757d;
+    }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6c757d;
+    }
+    .map-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .map-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 Dumka - Masaliya Records (Admin Dashboard)</h1>
+    <div class="table-container">
+      <div id="records" class="loading">Loading records...</div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    // 🔥 Same Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAkLZnHOp2-jXMiNzhIwZE-Fgs6OEb89rw",
+      authDomain: "quiz-app-64a74.firebaseapp.com",
+      projectId: "quiz-app-64a74",
+      storageBucket: "quiz-app-64a74.firebasestorage.app",
+      messagingSenderId: "665162938804",
+      appId: "1:665162938804:web:2066494d51f97ec2561ae1",
+      measurementId: "G-D66V4R39QP"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function renderRecords(records) {
+      if (records.length === 0) {
+        document.getElementById("records").innerHTML = "<p>No records found.</p>";
+        return;
+      }
+
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Submitted At</th>
+              <th>Panchayat</th>
+              <th>Village</th>
+              <th>Beneficiary</th>
+              <th>Type</th>
+              <th>Location (Map)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      records.forEach(doc => {
+        const d = doc;
+        const date = d.submittedAt?.toDate().toLocaleString("en-IN") || "N/A";
+        const lat = d.latitude || 0;
+        const lon = d.longitude || 0;
+        html += `
+          <tr>
+            <td><div class="timestamp">${date}</div></td>
+            <td>${d.panchayat || "–"}</td>
+            <td>${d.village || "–"}</td>
+            <td>${d.beneficiary || "–"}</td>
+            <td>${d.entryType || "–"}</td>
+            <td>
+              <a class="map-link" href="https://maps.google.com/?q=${lat},${lon}" target="_blank">
+                View on Map
+              </a>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table>`;
+      document.getElementById("records").innerHTML = html;
+    }
+
+    // Real-time listener
+    db.collection("records")
+      .orderBy("submittedAt", "desc")
+      .onSnapshot(snapshot => {
+        const records = [];
+        snapshot.forEach(doc => records.push(doc.data()));
+        renderRecords(records);
+      });
+  </script>
+</body>
+</html>
